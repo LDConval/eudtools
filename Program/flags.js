@@ -86,7 +86,6 @@ function flagsTransposeArray(array) {
 
 function flagsCreateElements(arrayRaw) {
     let array = flagsTransposeArray(arrayRaw);
-    console.log(array);
     $("flags_tbody").innerHTML = "";
     for(let i=0; i<array.length; i++) {
         let r = document.createElement("tr");
@@ -179,7 +178,7 @@ function flagsGenerateTrigger(memory, length, flagValue, mode) {
         else {
             value = flagValue << (memory % 4 * 8);
             mask = mask << (memory % 4 * 8);
-            return triggerPattern_masked.replace(/\^1/g, memory).replace(/\^2/g, value).replace(/\^3/g, mask) + "\n";
+            return triggerPattern_masked.replace(/\^1/g, memory - memory % 4).replace(/\^2/g, value).replace(/\^3/g, mask) + "\n";
         }
         break;
         case 1: // Set Checked

@@ -1,0 +1,187 @@
+0,4,Previous Unit
+4,4,Next Unit
+8,4,Health Points (x256)
+12,4,Sprite
+16,2,Target Pos X
+18,2,Target Pos Y
+20,4,Target Unit
+24,2,Next Movement Waypoint
+28,4,Next Target Waypoint
+32,1,Movement Flags
+33,1,Current Direction 1
+34,1,Flingy Turn Radius
+35,1,Velocity Direction 1
+36,2,Flingy ID
+39,1,Flingy Movement Type
+40,2,Position Coordinates X
+42,2,Position Coordinates Y
+44,4,Halt Coordinate X
+48,4,Halt Coordinate Y
+52,4,Flingy Top Speed
+56,4,Move Acceleration
+60,4,Move Speed
+64,4,Move Speed On X-Axis
+68,4,Move Speed On Y-Axis
+72,2,Flingy Acceleration
+74,1,Current Direction 2
+75,1,Velocity Direction 2
+76,1,Player ID
+77,1,Main Order ID
+78,1,Main Order State
+79,1,Order Signal
+80,2,Order Unit Type
+81,4,Idle Order Timer
+84,1,Main Order Timer
+85,1,Ground Cooldown
+86,1,Air Cooldown
+87,1,Spell Cooldown
+88,2,Order Coordinates X
+90,2,Order Coordinates Y
+92,4,Target Unit
+96,4,Shield Points
+100,2,Unit Type
+104,4,Previous Player Unit
+108,4,Next Player Unit
+112,4,Sub Unit
+116,4,Order Queue Head
+120,4,Order Queue Tail
+124,4,Auto-Target Unit
+128,4,Connected Unit
+132,1,Order Queue Count
+133,1,Order Queue Timer
+134,1,Unknown 0x086
+135,1,Attack Notify Timer
+136,2,Previous Unit Type
+138,1,Last Event Timer
+139,1,Last Event Color
+140,2,Unused 0x08C
+142,1,Rank Increase
+143,1,Kill Count
+144,1,Last Attacking Player
+145,1,Secondary Order Timer
+146,1,AI Action Flag
+147,1,User Action Flags
+148,2,Button Set
+150,1,Is Cloaked
+151,1,Movement State
+152,2,Build Queue 1
+154,2,Build Queue 2
+156,2,Build Queue 3
+158,2,Build Queue 4
+160,2,Build Queue 5
+162,2,Energy
+164,1,Build Queue Slot
+165,1,Uniqueness Identifier
+166,1,Secondary Order ID
+167,1,Building Overlay State
+168,2,HP Gain
+170,2,Shield Gain
+172,2,Remaining Build Time
+174,2,Previous HP
+176,2,Loaded Unit Index 1
+178,2,Loaded Unit Index 2
+180,2,Loaded Unit Index 3
+182,2,Loaded Unit Index 4
+184,2,Loaded Unit Index 5
+186,2,Loaded Unit Index 6
+188,2,Loaded Unit Index 7
+190,2,Loaded Unit Index 8
+192,1,Vulture: Spider Mines
+192,4,Carrier/Rea: In Hangar
+192,4,Scarab/Int: Parent Unit
+192,4,Beacon: Unknown +00
+192,4,Building: Addon
+192,4,Worker: Powerup Unit
+196,4,Carrier/Rea: Out Hanger
+196,4,Scarab/Int: Previous
+196,4,Beacon: Unknown +04
+196,2,Building: Addon Building Type
+196,2,Worker: Target Resource Coord
+198,2,Building: Upgrade/Research Time
+200,1,Carrier/Rea: In Hangar Count
+200,4,Scarab/Int: Next
+200,4,Beacon: Flag Spawn Frame
+200,1,Building: Tech Type
+200,4,Worker: Target Resource Unit
+201,1,Carrier/Rea: Out Hangar Count
+201,1,Building: Upgrade Type
+202,1,Building: Larva Spawn Timer
+203,1,Building: Landing Timer
+204,1,Scarab/Int: In Hanger
+204,1,Building: Creep Timer
+204,2,Worker: Repair/Resource Timer
+205,1,Building: Upgrade Level
+206,1,Worker: Is Carring Something
+207,1,Worker: Resource Carry Count
+208,2,Resource: Resource Count
+208,4,Worker: Harvest Target Unit
+208,4,Nydus: Exit Unit
+208,4,Ghost: Nuke Dot Sprite
+208,4,Pylon: Power Overlay Sprite
+208,4,Nuke Silo: Attached Nuke
+208,2,Powerup: Origin Coordinates
+208,2,Hatchery?: Harvest Value
+210,1,Resource: Resource IScript
+211,1,Resource: Gatherer Queue Count
+212,4,Worker: Previous Harvest Unit
+212,4,Resource: Next Gatherer
+212,1,Silo: Ready
+216,1,Resource: Resource Group
+216,4,Worker: Next Harvest Unit
+217,1,Resource: Belongs to AI
+220,4,Status Flags
+224,1,Resource Type
+225,1,Wireframe Randomizer
+226,1,Secondary Order State
+227,1,Recent Order Time
+228,4,Visiblity Status
+232,2,Secondary Order Position
+236,4,Unit beingBuilt
+240,4,Previous Burrowed Unit
+244,4,Next Burrowed Unit
+248,2,Rally: Rally Coordinates
+248,4,Pylon: Previous Psi Provider
+252,4,Rally: Rally Unit
+252,4,Pylon: Next Psi Provider
+256,4,Pathing Pointer
+260,1,Pathing Collision Interval
+261,1,Pathing Flags
+263,1,Is Healing
+264,2,Contour Bounds
+272,2,Remove Timer
+274,2,Matrix Damage Absorption
+276,1,Matrix Timer
+277,1,Stim Timer
+278,1,Ensnare Timer
+279,1,Lockdown Timer
+280,1,Irradiate Timer
+281,1,Stasis Timer
+282,1,Plague Timer
+283,1,Storm Timer
+284,4,Irradiated By
+288,1,Irradiate Player ID
+289,1,Parasite Flags
+290,1,Cycle Counter
+291,1,Blind State
+292,1,Maelstorm Timer
+293,1,Unused Timer
+294,1,Acid Spore Count
+295,1,Acid Spore 1/9
+296,1,Acid Spore 2/9
+297,1,Acid Spore 3/9
+298,1,Acid Spore 4/9
+299,1,Acid Spore 5/9
+300,1,Acid Spore 6/9
+301,1,Acid Spore 7/9
+302,1,Acid Spore 8/9
+303,1,Acid Spore 9/9
+304,2,Bullet Behavior 3x3 Attack
+308,4,AI Data
+312,4,Emp Shockwave Missiles (???)
+312,2,Air Strength
+314,2,Ground Strength
+316,4,Unit Finder
+332,1,Repulse Unknown
+333,1,Repulse Angle
+334,1,Drift X
+335,1,Drift Y

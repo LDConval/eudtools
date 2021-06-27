@@ -40,6 +40,40 @@ Behavior:
 9 = Attack Target 3x3 Area
 10 = Go to Max. Range
 
+Drawing Functions:
+0 - Normal
+1 - Doesn't draw hallucination
+2 - Non-vision cloaking
+3 - Non-vision cloaked
+4 - Non-vision uncloaking
+5 - Vision cloaking
+6 - Vision cloaked
+7 - Vision uncloaking
+8 - EMP
+9 - Uses remapping (not)
+10 - Shadow
+11 - HP bar (crash)
+12 - Hidden in remastered
+13 - All green
+14 - Same as normal
+15 - Draw update rectangle
+16 - Hallucination
+17 - Warp Flash
+
+Rightclick Action:
+0 - No order/Auto attack
+1 - Normal Movement/Attack
+2 - Normal Movement/No Attack
+3 - No Movement/Attack in range
+4 - Workers (Probe, Drone)
+5 - SCV
+6 - None
+
+Flingy Move Control:
+0 - Flingy.dat control
+1 - Partial movement/weapons
+2 - Iscript.bin control
+
 Group Flags:
 0x01 - Zerg (Uses underlings, can build on creep)
 0x02 - Terran (Uses Supply, has sublabel, buildings will burn)

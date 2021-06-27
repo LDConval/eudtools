@@ -4,10 +4,11 @@
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta charset="utf-8" />
 		<meta name="format-detection" content="telephone=no, email=no, address=no" />
-		<title>Map String Loader</title>
+		<title>Map String Viewer</title>
 		<link rel="stylesheet" type="text/css" href="../Program/common.css" />
 		<script src="../Program/common.js" type="text/javascript"></script>
 		<script src="../Program/colorText.js" type="text/javascript"></script>
+		<script src="../Program/iconv-lite-browserify.js" type="text/javascript"></script>
 		<style>
 		table {
 			width: 100%;
@@ -32,6 +33,9 @@
 			vertical-align: top;
 			padding: 2px 20px 2px 2px;
 		}
+        #save-link {
+            display: none;
+        }
 		</style>
 		<script>
 		function bytes2word(byte1, byte2) {
@@ -40,18 +44,30 @@
 		function bytes2dword(byte1, byte2, byte3, byte4) {
 			return (byte4 << 24) + (byte3 << 16) + (byte2 << 8) + byte1;
 		}
+        function dword2bytes(dw) {
+            return [dw & 255, (dw >>> 8) & 255, (dw >>> 16) & 255, (dw >>> 24) & 255];
+        }
+        function word2bytes(w) {
+            return [w & 255, (w >>> 8) & 255];
+        }
 		function leftPad(str, len, buffer) {
 			while(str.length < len) {
 				str = buffer + str;
 			}
 			return str;
 		}
+        function getDecodeCharset() {
+            if(document.getElementById("decode-charset").value.length < 1) {
+                return "UTF-8";
+            }
+            return document.getElementById("decode-charset").value;
+        }
 		function parseTbl(tblBuffer) {
-			let decoder = new TextDecoder("EUC-KR");
+			let decoder = new TextDecoder(getDecodeCharset());
 			let statTxtBytes = Array.from(new Uint8Array(tblBuffer));
 			let totalStrings = bytes2word(...statTxtBytes.slice(0, 2));
 			let out = [];
-			for(let i=1; i<=totalStrings; i++) {
+			for(let i=1; i<=totalStrings && i<=10000; i++) { // add a upper limit to prevent deadloop at false chunk
 				let offset = bytes2word(...statTxtBytes.slice(i * 2, i *2 + 2));
 				let j = offset;
 				let stringArray = [];
@@ -72,13 +88,68 @@
 			}
 			return out;
 		}
+        function buildCodedString(s) {
+            return s.replace(/<[0-9a-fA-F]+>/g, c => String.fromCodePoint(parseInt(c.substring(1, c.length-1), 16)));
+        }
+        function getStringsFromHTML() {
+            let elems = Array.from(document.querySelectorAll("#addItemsHere > tr > td:nth-child(3)"));
+            return elems.map((elem, i) => ({
+                id: i+1,
+                str: elem.innerText.replace(/\n/g, "\r\n")
+            }));
+        }
+        function updateColorText() {
+            let strings = getStringsFromHTML();
+            let colorTextElems = Array.from(document.querySelectorAll("#addItemsHere > tr > td:nth-child(4)"));
+            colorTextElems.forEach((elem, i) => {
+                elem.innerHTML = strings[i].str.split("\n").map(str => colorText(buildCodedString(str))).join("<br />").replace(/\x0d/g, "");
+            });
+        }
+        function buildTbl(strings) {
+            let charset = getDecodeCharset();
+            let stringCount = strings.length;
+            let tblStringCount = stringCount <= 1024 ? 1024 : stringCount;
+            let stringOffsets = Array(tblStringCount).fill(0);
+            let bytes = [];
+            let byteHeader = [];
+            let buffer = [];
+            let len = 0;
+            byteHeader.push(...word2bytes(tblStringCount));
+            for(let i=0; i<stringCount; i++) {
+                let s = strings[i];
+
+                if(typeof iconv != "undefined") { // load iconv-lite-browserify to turn iconv on
+                    buffer = Array.from(iconv.encode(buildCodedString(s.str), charset));
+                    len = buffer.length;
+                    if(len == 0) {
+                        stringOffsets[i] = 2 + 2 * stringCount;
+                    }
+                    else {
+                        stringOffsets[i] = bytes.length + 3 + 2 * stringCount;
+                        bytes = bytes.concat(buffer);
+                        bytes.push(0);
+                    }
+                }
+                else {
+                    console.log("ERROR: iconv failed to load");
+                }
+            }
+            for(let i=0; i<stringOffsets.length; i++) {
+                byteHeader.push(...word2bytes(stringOffsets[i]));
+            }
+            byteHeader.push(0);
+            return new Uint8Array(byteHeader.concat(bytes));
+        }
 	    function findChunk(array, head) {
 	        let b = [head.charCodeAt(0), head.charCodeAt(1), head.charCodeAt(2), head.charCodeAt(3)];
 	        let found = -1;
 	        for(let i=0; i<array.length; i++) {
 	            if(array[i] == b[0] && array[i+1] == b[1] && array[i+2] == b[2] && array[i+3] == b[3]) {
-	                found = i;
-	                break;
+                    let cl = array[i+4] + (array[i+5] << 8) + (array[i+6] << 16) + (array[i+7] << 24);
+                    if(isGoodChunk(cl, array.slice(i + 8, i + cl + 8))) {
+                        found = i;
+                        break;
+                    }
 	            }
 	        }
 	        if(found == -1) {
@@ -92,15 +163,50 @@
 	            data: array.slice(found + 8, found + chunkLength + 8)
 	        };
 	    }
+        function isGoodChunk(chunkLength, chunkData) {
+            // check if it is a good chunk.
+            // since we don't load all chunks, it's possible we get a chunk head in other chunks,
+            // resulting a false positive.
+            let stringCount = bytes2word(...chunkData.slice(0, 2));
+            if(chunkLength > 256
+            && chunkLength < 1000000
+            && stringCount >= 200
+            && stringCount <= 10000
+            && bytes2word(...chunkData.slice(2, 4)) >= stringCount*2
+            && bytes2word(...chunkData.slice(2, 4)) <= chunkLength) {
+                return true;
+            }
+            return false;
+        }
+        function replaceChunk(array, head, newDataBuffer) {
+	        let b = [head.charCodeAt(0), head.charCodeAt(1), head.charCodeAt(2), head.charCodeAt(3)];
+            let newData = Array.from(newDataBuffer);
+	        let found = -1;
+	        for(let i=0; i<array.length; i++) {
+	            if(array[i] == b[0] && array[i+1] == b[1] && array[i+2] == b[2] && array[i+3] == b[3]) {
+                    let cl = array[i+4] + (array[i+5] << 8) + (array[i+6] << 16) + (array[i+7] << 24);
+                    if(isGoodChunk(cl, array.slice(i + 8, i + cl + 8))) {
+                        found = i;
+                        break;
+                    }
+	            }
+	        }
+	        if(found == -1) {
+	            return null;
+	        }
+	        let chunkLength = array[found+4] + (array[found+5] << 8) + (array[found+6] << 16) + (array[found+7] << 24);
+            console.log(array.length);
+            let output = array.slice(0, found).concat(b).concat(dword2bytes(newData.length)).concat(newData).concat(array.slice(found + chunkLength + 8));
+            console.log(output.length);
+	        return new Uint8Array(output);
+        }
 		async function loadTbl(file) {
 			let fr = new FileReader();
 			let statTxtAB = await new Promise(res => {
 				fr.onload = evt => res(evt.target.result);
 				fr.readAsArrayBuffer(file);
 			}).then(data => findChunk(new Uint8Array(data), "STR ").data);
-			window.statTxtAB = statTxtAB;
 			let statTbl = parseTbl(statTxtAB);
-			window.stringTable = statTbl;
 			document.getElementById("addItemsHere").innerHTML = `
 			<tr>
 				<th>ID</th>
@@ -118,6 +224,8 @@
 				let scrollbox = document.createElement("div");
 				scrollbox.className = "scrollbox";
 				scrollbox.textContent = str.str;
+                scrollbox.contentEditable = true;
+                scrollbox.onblur = updateColorText;
 				d3.appendChild(scrollbox);
 				let d4 = document.createElement("td");
 				let scrollbox2 = document.createElement("div");
@@ -132,6 +240,32 @@
 			})
 		}
 
+        async function processDataAndSaveChk() {
+            if(document.getElementById("loadFile").files.length < 1) {
+                console.log("Need file!");
+                return;
+            }
+            let data = buildTbl(getStringsFromHTML());
+            await saveChk(document.getElementById("loadFile").files[0], data);
+        }
+
+        function saveFile(buffer, filename, linkElem) {
+            let blob = new Blob([buffer]);
+            let url = URL.createObjectURL(blob);
+            linkElem.href = url;
+            linkElem.download = filename;
+            linkElem.click();
+        }
+
+        async function saveChk(file, newStringData) {
+			let fr = new FileReader();
+			let chkData = await new Promise(res => {
+				fr.onload = evt => res(evt.target.result);
+				fr.readAsArrayBuffer(file);
+			}).then(data => replaceChunk(Array.from(new Uint8Array(data)), "STR ", newStringData));
+            saveFile(chkData, "scenario.chk", document.getElementById("save-link"));
+        }
+
 		function init() {
 			document.getElementById("loadFile").addEventListener("change", evt => {
 				try {
@@ -141,12 +275,18 @@
 				catch(e) {
 					document.getElementById("status").textContent = "Load failed (" + document.getElementById("loadFile").files[0].name + ")";
 				}
-			})
+			});
+            document.getElementById("save-map").addEventListener("click", processDataAndSaveChk);
 		}
 		</script>
 	</head>
 	<body>
-	Map CHK: <input type="file" id="loadFile" />
+        Map CHK: <input type="file" id="loadFile" /> | Charset: <input type="text" placeholder="UTF-8" id="decode-charset" list="decode-datalist" /> | <a href="javascript:void(0)" id="save-map">Save Updated CHK</a>
+        <datalist id="decode-datalist">
+            <option>UTF-8</option>
+            <option>EUC-KR</option>
+            <option>ISO-8859-1</option>
+        </datalist>
 	<table>
 		<thead></thead>
 		<tbody id="addItemsHere">
@@ -159,6 +299,7 @@
 		</tbody>
 	</table>
 	<div id="status"></div>
+    <a id="save-link"></a>
 	<script>
 	init();
 	</script>

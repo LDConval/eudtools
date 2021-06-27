@@ -116,8 +116,8 @@ function stattblEdits(offset, sp1, sp2, content1, content2) {
 	var buffer1, buffer2;
 	var uintarr1 = [], uintarr2 = [];
 	if(typeof iconv != "undefined") { // load iconv-lite-browserify to turn iconv on
-		buffer1 = iconv.encode(content1, "EUC-KR");
-		buffer2 = iconv.encode(content2, "EUC-KR");
+		buffer1 = iconv.encode(content1, "UTF-8");
+		buffer2 = iconv.encode(content2, "UTF-8");
 		uintarr1 = [...buffer1];
 		uintarr2 = [...buffer2];
 	}
