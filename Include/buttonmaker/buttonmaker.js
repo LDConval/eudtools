@@ -27,7 +27,7 @@ var loaded = false;
 const traitNames = ["position", "icon", "reqfun", "actfun", "reqvar", "actvar", "actstr", "reqstr"];
 const buttonsetStartPtr = 0x515BE8;
 
-const addButtonTypes = ["Default", "Copy Current", "Create Unit", "Build Terran", "Build Protoss", "Build Zerg", "Use Spell", "Upgrade", "Research", "Basic Unit Commands", "Copy From"]
+const addButtonTypes = ["Default", "Copy Current", "Create Unit", "Build Terran", "Build Protoss", "Build Zerg", "Use Spell", "Upgrade", "Research", "Basic Unit Commands", "Copy From Unit"]
 
 function qs(text) {
 	return document.querySelector(text);
@@ -91,7 +91,13 @@ function parseTbl(tblBuffer) {
 }
 
 async function loadStatTbl() {
-	let statTxtAB = await fetch("stat_txt.tbl").then(f => f.arrayBuffer());
+	if(typeof statTblFileURL == "undefined") {
+		var tblFile = "stat_txt.tbl";
+	}
+	else {
+		var tblFile = statTblFileURL;
+	}
+	let statTxtAB = await fetch(tblFile).then(f => f.arrayBuffer());
 	statStrings = ["No text (crashes on ACT)"].concat(parseTbl(statTxtAB));
 }
 
@@ -117,13 +123,25 @@ function parseRawButtonPtr(n, a) {
 }
 
 async function loadOriginalButtons() {
-	let buttonPointerRaw = await fetch("../Data/button_ptr.dat").then(f => f.arrayBuffer());
+	if(typeof buttonsPtrDatFileURL == "undefined") {
+		var buttonsPtrFile = "../Data/button_ptr.dat";
+	}
+	else {
+		var buttonsPtrFile = buttonsPtrDatFileURL;
+	}
+	let buttonPointerRaw = await fetch(buttonsPtrFile).then(f => f.arrayBuffer());
 	let buttonPtrU32A = new Uint32Array(buttonPointerRaw);
 	for(let p=0; p<buttonPtrU32A.length; p+=3) {
 		buttonPointers.push(parseRawButtonPtr(buttonPtrU32A[p], buttonPtrU32A[p + 1]));
 	}
 
-	let buttonRaw = await fetch("../Data/button.dat").then(f => f.arrayBuffer());
+	if(typeof buttonsDatFileURL == "undefined") {
+		var buttonsFile = "../Data/button.dat";
+	}
+	else {
+		var buttonsFile = buttonsDatFileURL;
+	}
+	let buttonRaw = await fetch(buttonsFile).then(f => f.arrayBuffer());
 	let buttonU16A = new Uint16Array(buttonRaw);
 
 	console.assert(buttonPointers.map(q => q.start).every(s => s >= 0 && s <= buttonU16A.length), "ButtonPointer all inside memory region");
@@ -150,7 +168,12 @@ function clearButtonset() {
 
 async function createUnitArea(handler)
 {
-	let unitIDListRaw = await fetch("../Data/units_dat.txt").then(s => s.text());
+	if(typeof jsonpData == "undefined") {
+		var unitIDListRaw = await fetch("../Data/units_dat.txt").then(s => s.text());
+	}
+	else {
+		var unitIDListRaw = jsonpData["units_dat.txt"];
+	}
 	let unitIDList = unitIDListRaw.split(/\r?\n/).filter(s => s.indexOf(",") != -1).map(s => s.split(/, */));
 
 	unitIDsExt = unitIDList.map(item => item[1]);
@@ -171,11 +194,18 @@ async function createUnitArea(handler)
 }
 
 async function populateGlobalArrays() {
-	let upgradeIDListRaw = await fetch("../Data/upgrades_dat.txt").then(s => s.text());
+	if(typeof jsonpData == "undefined") {
+		var upgradeIDListRaw = await fetch("../Data/upgrades_dat.txt").then(s => s.text());
+		var techIDListRaw = await fetch("../Data/techdata_dat.txt").then(s => s.text());
+		var iconNameListRaw = await fetch("../Data/icon_names.txt").then(s => s.text());
+	}
+	else {
+		var upgradeIDListRaw = jsonpData["upgrades_dat.txt"];
+		var techIDListRaw = jsonpData["techdata_dat.txt"];
+		var iconNameListRaw = jsonpData["icon_names.txt"];
+	}
 	upgradeIDs = upgradeIDListRaw.split(/\r?\n/).filter(s => s.indexOf(",") != -1).map(s => s.split(/, */)).map(s => s[1]);
-	let techIDListRaw = await fetch("../Data/techdata_dat.txt").then(s => s.text());
 	techIDs = techIDListRaw.split(/\r?\n/).filter(s => s.indexOf(",") != -1).map(s => s.split(/, */)).map(s => s[1]);
-	let iconNameListRaw = await fetch("../Data/icon_names.txt").then(s => s.text());
 	iconNames = iconNameListRaw.split(/\r?\n/);
 }
 

@@ -20,6 +20,7 @@ function sliceTrigger(player, cond, actRaw)
 	var comment = "";
 	var commentLong = false;
 	var out = "";
+	var triggerStyle = getTriggerPattern(TriggerPatterns.NAME);
 
 	let act = actRaw.split(/\r?\n/).map(line => line.trim()).map(line => {
 		if(line.toLowerCase().indexOf("preserve trigger") == 0) {
@@ -46,26 +47,55 @@ function sliceTrigger(player, cond, actRaw)
 	}).filter(line => line.length > 1);
 
 	let actCount = 64 - (preserved ? 1 : 0) - (comment.length > 0 ? 1 : 0);
-	while(act.length) {
-		out += "Trigger(\"" + player + "\"){\n";
-		out += "Conditions:\n";
-		out += cond + "\n";
-		out += "Actions:\n";
-		out += act.splice(0, actCount).map(line => "\t" + line).join("\n") + "\n";
-		if(preserved && preserveSpace) {
-			out += "\tPreserve Trigger();\n";
+
+	if(triggerStyle == 'tep' || triggerStyle == 'tepcond') {
+		while(act.length) {
+			out += "Trigger {\n";
+			out += "\tplayers = {" + player + "},\n";
+			out += "\tconditions = {\n";
+			out += cond + "\n";
+			out += "\t},\n";
+			out += "\tactions = {\n";
+			out += act.splice(0, actCount).map(line => "\t\t" + line).join("\n") + "\n";
+			if(preserved && preserveSpace) {
+				out += "\t\tPreserve Trigger();\n";
+			}
+			else if(preserved && !preserveSpace) {
+				out += "\t\tPreserveTrigger();\n";
+			}
+			if(comment.length > 0 && commentLong) {
+				out += "\t\tComment(\"" + comment + "\", 0, 0, 0, 0, 0);\n";
+			}
+			else if(comment.length > 0 && !commentLong) {
+				out += "\t\tComment(\"" + comment + "\");\n";
+			}
+			out += "\t},\n";
+			out += "}\n\n";
 		}
-		else if(preserved && !preserveSpace) {
-			out += "\tPreserveTrigger();\n";
+
+	}
+	else {
+		while(act.length) {
+			out += "Trigger(\"" + player + "\"){\n";
+			out += "Conditions:\n";
+			out += cond + "\n";
+			out += "Actions:\n";
+			out += act.splice(0, actCount).map(line => "\t" + line).join("\n") + "\n";
+			if(preserved && preserveSpace) {
+				out += "\tPreserve Trigger();\n";
+			}
+			else if(preserved && !preserveSpace) {
+				out += "\tPreserveTrigger();\n";
+			}
+			if(comment.length > 0 && commentLong) {
+				out += "\tComment(\"" + comment + "\", 0, 0, 0, 0, 0);\n";
+			}
+			else if(comment.length > 0 && !commentLong) {
+				out += "\tComment(\"" + comment + "\");\n";
+			}
+			out += "}\n\n";
+			out += "//-----------------------------------------------------------------//\n\n";
 		}
-		if(comment.length > 0 && commentLong) {
-			out += "\tComment(\"" + comment + "\", 0, 0, 0, 0, 0);\n";
-		}
-		else if(comment.length > 0 && !commentLong) {
-			out += "\tComment(\"" + comment + "\");\n";
-		}
-		out += "}\n\n";
-		out += "//-----------------------------------------------------------------//\n\n";
 	}
 	return out;
 }

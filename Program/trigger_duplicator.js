@@ -45,13 +45,52 @@ function duplicateTrigger(trg, times, arrayData)
 			if(m.match(/;/))
 			{
 				var sp = m.split(";");
+				var n = parseInt(sp[0], 10) + i * parseInt(sp[1], 10);
+                if(sp[0].charAt(0) == "0" && sp[0].length > 1) {
+                    var pad = sp[0].length;
+                }
+                else {
+                    var pad = 0;
+                }
+			}
+			else
+			{
+				var n = parseInt(m, 10) + i;
+                if(m.charAt(0) == "0" && m.length > 1) {
+                    var pad = m.length;
+                }
+                else {
+                    var pad = 0;
+                }
+			}
+            if(pad > 0) {
+                var r = n.toString().padStart(pad, "0");
+            }
+            else {
+                var r = n.toString();
+            }
+			dat = dat.replace("[" + m + "]", r);
+		}
+		while(dat.match(/\[[0-9a-fx;\-]+\]/i)) // increments hex
+		{
+			var m = dat.match(/\[([0-9xa-f;\-]+)\]/i)[1];
+			if(m.match(/;/))
+			{
+				var sp = m.split(";");
 				var n = parseInt(sp[0]) + i * parseInt(sp[1]);
 			}
 			else
 			{
 				var n = parseInt(m) + i;
 			}
-			dat = dat.replace("[" + m + "]", n);
+            if(n < 0) {
+                n = (n % 0x100000000) + 0x100000000;
+            }
+            else {
+                n = n % 0x100000000;
+            }
+            var r = "0x" + n.toString(16).padStart(8, "0");
+			dat = dat.replace("[" + m + "]", r);
 		}
 		while(dat.match(/\[\^[0-9;\-\.]*\]/)) // countoffs
 		{

@@ -98,61 +98,31 @@ function reqwriter(type, uid, offset, opcodes) {
 	return reqwriterPushArray(memory, opcodeData) + reqwriterDatOffset(type, uid, offset);
 }
 
-function reqwriterCalcTrigger(pattern, memory, value, length) {
-	let out = "";
-	let s_value = value;
-	length = length || 4;
-
-	let byteOrder = 0;
-	if(memory % 4 != 0 && length < 4) {
-		byteOrder = memory % 4;
-		let multiplier = 1 << (byteOrder * 8);
-		memory -= byteOrder;
-		s_value *= multiplier;
-	}
-
-	switch(length)
-	{
-		case 2:
-		let bitMask = 0xFFFF << (8 * byteOrder);
-		out += pattern.replace(/\^1/g, memory).replace(/\^2/g, s_value).replace(/\^3/g, bitMask);
-		break;
-		case 4:
-		default:
-		out += pattern.replace(/\^1/g, memory).replace(/\^2/g, s_value);
-		break;
-		case -1:
-		break;
-	}
-	out += "\n";
-	return out;
-}
-
 function reqwriterDatOffset(type, uid, offset) {
 	const datPointers = [0x660A70, 0x6558C0, 0x656198, 0x6562F8, 0x665580];
 	const datLengths = [2, 2, 2, 2, 2];
-	var triggerPattern_masked = "Masked MemoryAddr(^1, Set To, ^2, ^3);";
-	return reqwriterCalcTrigger(triggerPattern_masked, datPointers[type] + datLengths[type] * uid, offset+1, 2);
+	var triggerPattern_masked = getTriggerPattern(TriggerPatterns.MASKED);
+	return calculateTrigger(triggerPattern_masked, datPointers[type] + datLengths[type] * uid, offset+1, 2);
 }
 
 function reqwriterPushArray(memory, arrayContent) {
-	var triggerPattern_masked = "Masked MemoryAddr(^1, Set To, ^2, ^3);";
-	var triggerPattern_4 = "MemoryAddr(^1, Set To, ^2);";
+	var triggerPattern_masked = getTriggerPattern(TriggerPatterns.MASKED);
+	var triggerPattern_4 = getTriggerPattern(TriggerPatterns.NORMAL);
 	var out = "";
 
 	while(arrayContent.length >= 1 && memory % 4 != 0) {
 		let t_shift = arrayContent.shift();
-		out += reqwriterCalcTrigger(triggerPattern_masked, memory, t_shift, 2);
+		out += calculateTrigger(triggerPattern_masked, memory, t_shift, 2);
 		memory += 2;
 	}
 	while(arrayContent.length >= 2) {
 		let t_splice = arrayContent.splice(0, 2);
-		out += reqwriterCalcTrigger(triggerPattern_4, memory, t_splice[0] + t_splice[1] * 65536, 4);
+		out += calculateTrigger(triggerPattern_4, memory, t_splice[0] + t_splice[1] * 65536, 4);
 		memory += 4;
 	}
 	while(arrayContent.length >= 1) {
 		let t_shift = arrayContent.shift();
-		out += reqwriterCalcTrigger(triggerPattern_masked, memory, t_shift, 2);
+		out += calculateTrigger(triggerPattern_masked, memory, t_shift, 2);
 		memory += 2;
 	}
 

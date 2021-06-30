@@ -20,7 +20,26 @@ const flagNames = {
 };
 
 function flagsParse() {
-    $("trigger_output").value += flagsGenerateTrigger(parseInt($("input_memory").value), parseInt($("input_length").value), parseInt($("input_flags_value").value), $("select_flags_mode").selectedIndex);
+    if($("input_object").value.toString().indexOf(",") != -1) {
+        // batch set for flags
+        let resetText = $("input_object").value;
+        let objects = $("input_object").value.toString().trim().split(/, */);
+        objects.forEach((item, i) => {
+            $("input_object").value = item;
+            updateMemory();
+            $("trigger_output").value += flagsGenerateTrigger(parseInt($("input_memory").value),
+                                                              parseInt($("input_length").value),
+                                                              parseInt($("input_flags_value").value),
+                                                              $("select_flags_mode").selectedIndex);
+        });
+        $("input_object").value = resetText;
+    }
+    else {
+        $("trigger_output").value += flagsGenerateTrigger(parseInt($("input_memory").value),
+                                                          parseInt($("input_length").value),
+                                                          parseInt($("input_flags_value").value),
+                                                          $("select_flags_mode").selectedIndex);
+    }
 }
 
 function flagsInit() {
@@ -164,37 +183,23 @@ function flagsCall() {
     }
 }
 
-function flagsGenerateTrigger(memory, length, flagValue, mode) {
-    var triggerPattern_4 = "MemoryAddr(^1, Set To, ^2);";
-    var triggerPattern_masked = "Masked MemoryAddr(^1, Set To, ^2, ^3);";
+function flagsGenerateTrigger(memory, length, value, mode) {
+    var triggerPattern_4 = getTriggerPattern(TriggerPatterns.NORMAL);
+    var triggerPattern_masked = getTriggerPattern(TriggerPatterns.MASKED);
     let mask = (2 ** (8 * length)) - 1;
-    var value;
     switch(mode) {
         case 0: // Set All
         if(length == 4) {
-            value = flagValue;
-            return triggerPattern_4.replace(/\^1/g, memory).replace(/\^2/g, value) + "\n";
+            return calculateTrigger(triggerPattern_4, memory, value, 4);
         }
         else {
-            value = flagValue << (memory % 4 * 8);
-            mask = mask << (memory % 4 * 8);
-            return triggerPattern_masked.replace(/\^1/g, memory - memory % 4).replace(/\^2/g, value).replace(/\^3/g, mask) + "\n";
+            return calculateTrigger(triggerPattern_masked, memory, value, length, true, mask);
         }
-        break;
         case 1: // Set Checked
-        value = flagValue << (memory % 4 * 8);
-        mask = value;
-        return triggerPattern_masked.replace(/\^1/g, memory).replace(/\^2/g, value).replace(/\^3/g, mask) + "\n";
-        break;
+        return calculateTrigger(triggerPattern_masked, memory, value, length, true, value);
         case 2: // Clear Checked
-        mask = flagValue << (memory % 4 * 8);
-        value = 0;
-        return triggerPattern_masked.replace(/\^1/g, memory).replace(/\^2/g, value).replace(/\^3/g, mask) + "\n";
-        break;
+        return calculateTrigger(triggerPattern_masked, memory, 0, length, true, value);
         case 3: // Clear Unchecked
-        value = flagValue << (memory % 4 * 8);
-        mask = mask << (memory % 4 * 8);
-        return triggerPattern_masked.replace(/\^1/g, memory).replace(/\^2/g, 0).replace(/\^3/g, mask - value) + "\n";
-        break;
+        return calculateTrigger(triggerPattern_masked, memory, 0, length, true, mask - value);
     }
 }

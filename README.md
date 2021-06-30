@@ -15,7 +15,7 @@ Link: [https://LDConval.github.io/eudtools/](https://LDConval.github.io/eudtools
 
 ### Advanced usage & EUD Tutorials
 
-Please refer to the [wiki](https://github.com/LDConval/eudtools/wiki).
+Please refer to the [wiki](https://github.com/ar3sgice/eudtools/wiki).
 
 ### Button Maker
 

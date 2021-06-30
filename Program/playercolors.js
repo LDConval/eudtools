@@ -101,8 +101,8 @@ function playerColorsCall()
 
 function playerColorsToTrigger()
 {
-	var triggerPattern_1 = "Masked MemoryAddr(^1, Set To, ^2, ^3);";
-	var triggerPattern_4 = "MemoryAddr(^1, Set To, ^2);";
+	var triggerPattern_1 = getTriggerPattern(TriggerPatterns.MASKED);
+	var triggerPattern_4 = getTriggerPattern(TriggerPatterns.NORMAL);
 	var _p = function(i){return parseInt($("input_playercolor"+i).value);};
 	var num1 = (_p(4) << 24) + (_p(3) << 16) + (_p(2) << 8) + _p(1);
 	var num2 = (_p(8) << 24) + (_p(7) << 16) + (_p(6) << 8) + _p(5);
@@ -126,10 +126,10 @@ function playerColorsToTrigger()
 	}
 	var out = "";
 	/* in SC:R, only COLOR1 and MINIMAP is needed. */
-	out += calculateTrigger(triggerPattern_1, mem1, num1 & 0xFF, 1, true, 0);
+	out += calculateTrigger(triggerPattern_1, mem1, num1 & 0xFF, 1, true);
 	// out += calculateTrigger(triggerPattern_4, mem1 + 2, (num1 >>> 16) + ((num2 & 0xFFFF) << 16), 4, true, 0);
 	// out += calculateTrigger(triggerPattern_1, mem1 + 6, num2 >>> 16, 2, true, 0);
-	out += calculateTrigger(triggerPattern_1, mem2, num0, 1, true, 0);
+	out += calculateTrigger(triggerPattern_1, mem2, num0, 1, true);
 	$("trigger_output").value += out;
 }
 

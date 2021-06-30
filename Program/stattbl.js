@@ -60,7 +60,73 @@ function stattblInit()
 	});
 }
 
+function stattblGetEncodingSelection() {
+	let selected = $("select_stattbl_encoding").selectedIndex;
+	if(selected == -1) {
+		selected = 0;
+	}
+	return ["UTF-8", "EUC-KR", "ISO-8859-1"][selected];
+}
+
 function stattblCPT(player, cond)
+{
+    // this part will be drastically different, so write individual functions instead of calcTrig()
+    switch(getTriggerPattern(TriggerPatterns.NAME)) {
+        case "tep":
+        case "tepcond":
+        return stattblCPTTEP(player, cond);
+        case "eud3":
+        return stattblCPTEUD3(player, cond);
+        case "scmd":
+        case "scmdcond":
+        default:
+        return stattblCPTSCMD(player, cond);
+    }
+}
+
+function stattblCPTTEP(player, cond)
+{
+    // If newest version still doesn't support MASKED MEMORY I'd just output "NOPE".
+    return `Trigger {
+    players = {P${player}},
+    conditions = {
+${cond}
+    },
+    actions = {
+        SetMemory(0x006509b0, SetTo, 4293515047);
+    }
+}
+for i = 31, 2, -1 do
+    Trigger {
+        players = {P${player}},
+        conditions = {
+${cond}
+            MemoryX(0x006d1238, AtLeast, 2 ^ i, 2 ^ i);
+        },
+        actions = {
+            SetMemory(0x006509b0, Add, 2 ^ (i-2));
+        }
+    }
+end
+Trigger {
+    players = {P${player}},
+    conditions = {
+${cond}
+    },
+    actions = {
+        -- PUT YOUR STRING EDIT TRIGGERS HERE --
+        SetMemory(0x006509b0, SetTo, ${player-1});
+    }
+}
+`;
+}
+
+function stattblCPTEUD3(player, cond)
+{
+    return `setcurpl(EPD(dwread(0x6D1238)));\n// PUT YOUR STRING EDIT TRIGGERS HERE\nsetcurpl(${player-1});\n`;
+}
+
+function stattblCPTSCMD(player, cond)
 {
 	var out = "";
 	var separ = "\n\n//-----------------------------------------------------------------//\n\n";
@@ -102,6 +168,12 @@ function parseColorCodes(str) {
 }
 
 function stattblEdits(offset, sp1, sp2, content1, content2) {
+	var triggerPattern_1 = getTriggerPattern(TriggerPatterns.MASKED);
+	var triggerPattern_op = getTriggerPattern(TriggerPatterns.NORMAL_OP);
+	var triggerPattern_cpt = getTriggerPattern(TriggerPatterns.CPT);
+    var triggerOp_add = getTriggerPattern(TriggerPatterns.OP_ADD);
+    var triggerOp_sub = getTriggerPattern(TriggerPatterns.OP_SUB);
+
 	// SP = StringPointer I regret for having named it STR
 	let cptSp = sp1 >>> 1;
 
@@ -116,8 +188,9 @@ function stattblEdits(offset, sp1, sp2, content1, content2) {
 	var buffer1, buffer2;
 	var uintarr1 = [], uintarr2 = [];
 	if(typeof iconv != "undefined") { // load iconv-lite-browserify to turn iconv on
-		buffer1 = iconv.encode(content1, "UTF-8");
-		buffer2 = iconv.encode(content2, "UTF-8");
+		let encoding = stattblGetEncodingSelection();
+		buffer1 = iconv.encode(content1, encoding);
+		buffer2 = iconv.encode(content2, encoding);
 		uintarr1 = [...buffer1];
 		uintarr2 = [...buffer2];
 	}
@@ -153,15 +226,15 @@ function stattblEdits(offset, sp1, sp2, content1, content2) {
 
 	// part 1
 	let out = "";
-	out += `\tMemoryAddr(0x006509b0, Add, ${cptSp});\n`;
-	out += `\tSet Deaths("Current Player", "Terran Marine", Set To, ${offsetDw});\n`;
-	out += `\tMemoryAddr(0x006509b0, Subtract, ${cptSp});\n`;
+	out += "\t" + calculateTriggerWithOp(triggerPattern_op, 0x006509b0, triggerOp_add, cptSp, 4);
+	out += "\t" + calculateTrigger(triggerPattern_cpt, 0, offsetDw, 4);
+	out += "\t" + calculateTriggerWithOp(triggerPattern_op, 0x006509b0, triggerOp_sub, cptSp, 4);
 
 	// part 2
-	out += `\tMemoryAddr(0x006509b0, Add, ${cptContent});\n`;
-	out += uint32arr.map(val => `\tSet Deaths("Current Player", "Terran Marine", Set To, ${val});\n`)
-	                .join("\tMemoryAddr(0x006509b0, Add, 1);\n");
-	out += `\tMemoryAddr(0x006509b0, Subtract, ${cptContent + cptContentNext});\n`;
+	out += "\t" + calculateTriggerWithOp(triggerPattern_op, 0x006509b0, triggerOp_add, cptContent, 4);
+	out += uint32arr.map(val => "\t" + calculateTrigger(triggerPattern_cpt, 0, val, 4))
+	                .join("\t" + calculateTriggerWithOp(triggerPattern_op, 0x006509b0, triggerOp_add, 1, 4));
+	out += "\t" + calculateTriggerWithOp(triggerPattern_op, 0x006509b0, triggerOp_sub, cptContent + cptContentNext, 4);
 	return {
 		triggers: out,
 		newOffset: offset + (1 + cptContentNext) * 4

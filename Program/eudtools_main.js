@@ -4,13 +4,16 @@ var currentHighlight2 = null;
 var currentHighlightBF = null;
 var currentHighlightCategory = null;
 var currentSelected = 0;
-var hlColor = "#444444";
-var darkColor = "#222222";
-var darkColorBF1 = "#222222";
-var darkColorBF2 = "#333333";
 var isDataExpanded = false;
-var prohibitDataExpand = false;
 var DeathTableStart = 0x58A364;
+
+var Settings = {
+    "useMasked" : true,
+    "triggerStyle" : 0,
+    "hexOutputMemory" : 0,
+    "hexOutputValue" : 0,
+    "hexOutputMask" : 0
+};
 
 function calcMemory(offs,uid,len)
 {
@@ -36,41 +39,156 @@ function calcMemoryDeaths(offs,uid,len)
 		return [0,0,0];
 	}
 }
-function hexstrToTrig(str,startOffset,trgBase)
-{
-	var out="";
-	var i;
-	var c=str;
-	var cv="";
-	var a1=0;var a2=0;var a3=0;var a4=0;var a5=0;
-	var offs=startOffset*1;
-	while(c.length%8>1)
-	{
-		c+="00";
+function uint8ArrayTriggers(patternNormal, patternMask, offset, arr) {
+	return uintArrayTriggers(patternNormal, patternMask, offset, arr, 8);
+}
+function uint16ArrayTriggers(patternNormal, patternMask, offset, arr) {
+	return uintArrayTriggers(patternNormal, patternMask, offset, arr, 16);
+}
+function uint32ArrayTriggers(patternNormal, patternMask, offset, arr) {
+	return uintArrayTriggers(patternNormal, patternMask, offset, arr, 32);
+}
+function int32ArrayTriggers(patternNormal, patternMask, offset, arr) {
+	return uintArrayTriggers(patternNormal, patternMask, offset, arr, 32);
+}
+function uintArrayTriggers(patternNormal, patternMask, offset, arr, bitLength) {
+	let out = "";
+	let mask = 0;
+	let value = 0;
+	let byteShift = 0;
+	let currentOffset = offset;
+	var baseMask, step;
+
+	const borderMasks16 = [0, 0xFFFFFF00, 0, 0xFF000000];
+	const borderMasks32 = [0, 0xFFFFFF00, 0xFFFF0000, 0xFF000000];
+
+	// uint8 or uint16 or (u)int32
+	if(bitLength == 8) {
+		baseMask = 0xFF;
+		step = 1;
 	}
-	for(i=0;i<c.length;i+=8)
-	{
-		a1=hexCode(c.charAt(i)+c.charAt(i+1));
-		a2=hexCode(c.charAt(i+2)+c.charAt(i+3));
-		a3=hexCode(c.charAt(i+4)+c.charAt(i+5));
-		a4=hexCode(c.charAt(i+6)+c.charAt(i+7));
-		if(a4>=128)
-		{
-			a5=a4*16777216+a3*65536+a2*256+a1*1-4294967296;
+	else if(bitLength == 16) {
+		baseMask = 0xFFFF;
+		step = 2;
+		if(currentOffset % 2 != 0) {
+			let prefixOffset = currentOffset - currentOffset % 4;
+			let prefixValue = (currentOffset % 4 == 1) ? words2dword(...arr.splice(0, 2)) : arr.shift();
+			out += calculateTrigger(patternMask, prefixOffset, prefixValue, 4, true, borderMasks16[currentOffset % 4]);
+			currentOffset = currentOffset - currentOffset % 4 + 4;
 		}
-		else
-		{
-			a5=a4*16777216+a3*65536+a2*256+a1*1;
-		}
-		offs=startOffset*1+i/2;
-		cv=trgBase.replace(/\^1/g,offs);
-		out+=cv.replace(/\^2/g,a5);
 	}
+	else {
+		baseMask = 0xFFFFFFFF;
+		step = 4;
+		if(currentOffset % 4 != 0) {
+			let prefixOffset = currentOffset - currentOffset % 4;
+			let prefixValue = arr.shift();
+			out += calculateTrigger(patternMask, prefixOffset, prefixValue, 4, true, borderMasks32[currentOffset % 4]);
+			currentOffset = currentOffset - currentOffset % 4 + 4;
+		}
+	}
+	// beginning
+	let locatedOffset = currentOffset - currentOffset % 4;
+	while((byteShift = currentOffset % 4) != 0 && arr.length > 0) {
+		mask |= baseMask << (8 * byteShift);
+		value |= arr.shift() << (8 * byteShift);
+		currentOffset += step;
+	}
+	if(mask != 0) {
+		out += calculateTrigger(patternMask, locatedOffset, value, 4, true, mask);
+	}
+	// middle
+	if(bitLength == 8) {
+		while(arr.length >= 4) {
+			value = bytes2dword(...arr.splice(0, 4));
+			out += calculateTrigger(patternNormal, currentOffset, value, 4, true);
+			currentOffset += 4;
+		}
+	}
+	else if(bitLength == 16) {
+		while(arr.length >= 2) {
+			value = words2dword(...arr.splice(0, 2));
+			out += calculateTrigger(patternNormal, currentOffset, value, 4, true);
+			currentOffset += 4;
+		}
+	}
+	else {
+		while(arr.length >= 1) {
+			value = arr.shift();
+			out += calculateTrigger(patternNormal, currentOffset, value, 4, true);
+			currentOffset += 4;
+		}
+	}
+	// end
+	mask = 0;
+	value = 0;
+	byteShift = 0;
+	locatedOffset = currentOffset;
+	while(arr.length > 0) {
+		mask |= baseMask << (8 * byteShift);
+		value |= arr.shift() << (8 * byteShift);
+		currentOffset += step;
+		byteShift += step;
+	}
+	if(mask != 0) {
+		out += calculateTrigger(patternMask, locatedOffset, value, 4, true, mask);
+	}
+	return out;
+}
+function hexStringTriggers(patternNormal, patternMask, offset, hexString) {
+	return uint8ArrayTriggers(patternNormal, patternMask, offset, hexStringToUint8Array(hexString));
+}
+function hexStringToUint8Array(hexString) {
+	let sanitizedHexString = hexString.replace(/[^0-9a-f]/gi, "");
+	let bytes = [];
+	for(let i=0; i<sanitizedHexString.length; i+=2) {
+		bytes.push(parseInt(sanitizedHexString.substr(i, 2), 16));
+	}
+	return bytes;
+}
+function stringToUint8Array(str, encoding) {
+	encoding = encoding || "UTF-8";
+	var arr;
+	if(typeof iconv != "undefined") { // load iconv-lite-browserify to turn iconv on
+		let buf = iconv.encode(str, encoding);
+		arr = [...buf];
+	}
+	else if(typeof TextEncoder != "undefined") {
+		let encoder = new TextEncoder();
+		let buf = encoder.encode(str);
+		arr = Array.from(buf);
+	}
+	else {
+		arr = str.split("").map(c => c.charCodeAt(0));
+	}
+	arr.push(0); // null string terminator
+	return arr;
+}
+function scmdStringToUint8Array(scmdStr, encoding) {
+	return stringToUint8Array(scmdString(scmdStr), encoding);
+}
+function scmdString(str) {
+	return str.replace(/<[0-9a-fA-F]+>/g, function(pat) {
+		return String.fromCharCode(parseInt(pat.substring(1, pat.length-1), 16) );
+	}).replace(/\\</g, "<").replace(/\\>/g, ">");
+}
+function convert3ByteArray(arr) {
+	let out = [];
+	arr.forEach(a => out = out.concat(dword2bytes(a).slice(0, 3)));
 	return out;
 }
 function leftPad(str, n, pad) {
 	return pad.repeat(Math.max(0, n-str.length)) + str;
 }
+
+function swapHighlight(newElem, oldElem) {
+	if(oldElem)
+	{
+		oldElem.classList.remove("highlight");
+	}
+	newElem.classList.add("highlight");
+}
+
 function useCategory(k, evt)
 {
 	// select category
@@ -99,11 +217,7 @@ function useCategory(k, evt)
 	}
 	$("select_container").appendChild(divSelect);
 
-	if(currentHighlightCategory)
-	{
-		currentHighlightCategory.style.background = darkColor;
-	}
-	optDiv.style.background = hlColor;
+	swapHighlight(optDiv, currentHighlightCategory);
 	currentHighlightCategory = optDiv;
 }
 function useOption(evt)
@@ -130,7 +244,9 @@ function useOption(evt)
 	$("stattbl_area").style.display = "none";
 	$("reqwrite_area").style.display = "none";
 	$("flags_area").style.display = "none";
+	$("toollinks_area").style.display = "none";
 	$("plugin_area").style.display = "none";
+	$("settings_floating").style.display="none";
 
 	if(typeof allPlugins == "object") {
 		for(let i in allPlugins) {
@@ -239,6 +355,10 @@ function useOption(evt)
 			$("input_offset").value = 0;
 			$("stattbl_area").style.display = "block";
 			break;
+			case 0x530A54:
+			$("input_offset").value = 0;
+			$("toollinks_area").style.display = "block";
+			break;
 		}
 		break;
 		case 12: // settings
@@ -313,11 +433,7 @@ function useOption(evt)
 		break;
 		default:
 	}
-	if(currentHighlight)
-	{
-		currentHighlight.style.background = darkColor; // I can use className here to contain CSS in one file, but too lazy to change this
-	}
-	optDiv.style.background = hlColor;
+	swapHighlight(optDiv, currentHighlight);
 	currentHighlight = optDiv;
 	updateMemory();
 }
@@ -330,6 +446,13 @@ async function useOption2(evt) // for filelist
 	{
 		$("data_output").value = "";
 	}
+    else if(typeof jsonpData != 'undefined') {
+		var fr = jsonpData[datalist[optID][1]];
+		$("data_output").value = fr;
+		if(datalist[optID][2]) { // font size
+			$("data_output").style.fontSize = datalist[optID][2];
+		}
+    }
 	else
 	{
 		var fr = await fetch("Data\\" + datalist[optID][1]).then(res => res.text());
@@ -338,18 +461,8 @@ async function useOption2(evt) // for filelist
 			$("data_output").style.fontSize = datalist[optID][2];
 		}
 	}
-	if(currentHighlight2)
-	{
-		currentHighlight2.style.background = darkColor;
-	}
-	optDiv.style.background = hlColor;
+	swapHighlight(optDiv, currentHighlight2);
 	currentHighlight2 = optDiv;
-}
-function useOptionDataContent(evt) // incomplete; integrate with filelist for unitlist, weaponlist etc.
-{
-	evt = evt || window.event;
-	var optDiv = evt.srcElement || evt.target;
-	var optID = optDiv.optionID;
 }
 function useOptionBF(evt) // for button functions
 {
@@ -358,11 +471,7 @@ function useOptionBF(evt) // for button functions
 	var optID = optDiv.optionID;
 	var selID = optDiv.selectID;
 	$("input_value").value = bf_list[selID][optID][0];
-	if(currentHighlightBF)
-	{
-		currentHighlightBF.style.background = (currentHighlightBF.optionID%2)?darkColorBF1:darkColorBF2; // to inherit from original setting.
-	}
-	optDiv.style.background = hlColor;
+	swapHighlight(optDiv, currentHighlightBF);
 	currentHighlightBF = optDiv;
 }
 function createCategoryArea(handler)
@@ -439,6 +548,14 @@ function createSelectAreaBF(handler,bf_type) // for button fuctions
 	}
 	$("buttonfunction_select_container").appendChild(divSelect);
 }
+function shimDataTexts() {
+	if(location.protocol.toString().indexOf("file") != -1) {
+		let scriptElem = document.createElement("script");
+		scriptElem.type = "text/javascript";
+		scriptElem.src = "Data/mergedData.jsonp";
+		document.head.appendChild(scriptElem);
+	}
+}
 function updateMemory()
 {
 	var inpLength = 0;
@@ -489,11 +606,25 @@ function settingsUpdate() {
 		$("label_origvalue").style.display = "block";
 		$("input_origvalue").style.display = "block";
 	}
+	Settings.useMasked = useMasked;
+    var selectedIndex;
+	selectedIndex = $("settings_triggerstyle").selectedIndex;
+	Settings.triggerStyle = (selectedIndex == -1) ? 0 : selectedIndex;
+	selectedIndex = $("settings_hexoutput_memory").selectedIndex;
+	Settings.hexOutputMemory = (selectedIndex == -1) ? 0 : selectedIndex;
+	selectedIndex = $("settings_hexoutput_value").selectedIndex;
+	Settings.hexOutputValue = (selectedIndex == -1) ? 0 : selectedIndex;
+	selectedIndex = $("settings_hexoutput_mask").selectedIndex;
+	Settings.hexOutputMask = (selectedIndex == -1) ? 0 : selectedIndex;
 	saveSettings();
 }
 function saveSettings() {
 	try {
 		localStorage.setItem("eudscr_usemasked", $("settings_usemasked").checked ? "1" : "0");
+		localStorage.setItem("eudscr_triggerstyle", $("settings_triggerstyle").selectedIndex);
+		localStorage.setItem("eudscr_hexoutput_memory", $("settings_hexoutput_memory").selectedIndex);
+		localStorage.setItem("eudscr_hexoutput_value", $("settings_hexoutput_value").selectedIndex);
+		localStorage.setItem("eudscr_hexoutput_mask", $("settings_hexoutput_mask").selectedIndex);
 	}
 	catch(e){}
 }
@@ -501,6 +632,18 @@ function loadSettings() {
 	var item;
 	if(item = localStorage.getItem("eudscr_usemasked")) {
 		$("settings_usemasked").checked = (item == "1");
+	}
+	if(item = localStorage.getItem("eudscr_triggerstyle")) {
+		$("settings_triggerstyle").selectedIndex = parseInt(item, 10);
+	}
+	if(item = localStorage.getItem("eudscr_hexoutput_memory")) {
+		$("settings_hexoutput_memory").selectedIndex = parseInt(item, 10);
+	}
+	if(item = localStorage.getItem("eudscr_hexoutput_value")) {
+		$("settings_hexoutput_value").selectedIndex = parseInt(item, 10);
+	}
+	if(item = localStorage.getItem("eudscr_hexoutput_mask")) {
+		$("settings_hexoutput_mask").selectedIndex = parseInt(item, 10);
 	}
 
 	settingsUpdate();
@@ -633,29 +776,9 @@ function toParseIceCC()
 }
 function hexToTrigger()
 {
-	$("trigger_output").value += hexstrToTrig($("inputarea_etg").value.toString().replace(/[^0-9a-f]/gi, ""), parseInt($("input_etg_ofs").value), $("input_etg_base").value + "\n");
-}
-function toMapString()
-{
-	// this feature under construction (make plugin first)
-}
-function bytes2word(byte1, byte2) {
-	return (byte2 << 8) + byte1;
-}
-function bytes2dword(byte1, byte2, byte3, byte4) {
-	return (byte4 << 24) + (byte3 << 16) + (byte2 << 8) + byte1;
-}
-function words2dword(word1, word2) {
-	return (word2 << 16) + word1;
-}
-function dword2bytes(dw) {
-	return [dw & 255, (dw >>> 8) & 255, (dw >>> 16) & 255, (dw >>> 24) & 255];
-}
-function word2bytes(w) {
-	return [w & 255, (w >>> 8) & 255];
-}
-function dword2words(dw) {
-	return [dw & 65535, (dw >>> 16) & 65535];
+	var triggerPattern_masked = getTriggerPattern(TriggerPatterns.MASKED);
+	var triggerPattern_normal = getTriggerPattern(TriggerPatterns.NORMAL);
+	$("trigger_output").value += hexStringTriggers($("input_etg_base").value, $("input_etg_base").value, parseInt($("input_etg_ofs").value), $("inputarea_etg").value.toString());
 }
 function triggerFormat(trg) {
 	let lines = trg.split(/\r?\n/).map(line => line.trim()).filter(line => line.length > 0);
@@ -677,12 +800,69 @@ function triggerFormat(trg) {
 		}
 	}).join("\n").replace(/\n{3,}/g, "\n\n");
 }
-function calculateTrigger(pattern, memory, value, length, useMasked, origValue) {
+function getDefaultMask(length) {
+    switch(length) {
+        case 0:
+        return 0;
+        case 1:
+        return 0xFF;
+        case 2:
+        return 0xFFFF;
+        case 3:
+        return 0xFFFFFF;
+        case 4:
+        default:
+        return 0xFFFFFFFF;
+    }
+}
+function formatDwordHex(val) {
+    if(val < 0) {
+        val += 0x100000000;
+    }
+    return "0x" + val.toString(16).padStart(8, "0");
+}
+function formatMemory(memory) {
+    if(Settings.hexOutputMemory) {
+        return formatDwordHex(memory);
+    }
+    return memory;
+}
+function formatValue(value) {
+    if(Settings.hexOutputValue) {
+        return formatDwordHex(value);
+    }
+    return value;
+}
+function formatMask(mask) {
+    if(Settings.hexOutputMask) {
+        return formatDwordHex(mask);
+    }
+    return mask;
+}
+function calcTrigOp(pattern, memory, opString, value, length, useMasked, origValueOrMask) {
+    // shorthand
+    return calculateTriggerWithOp(pattern, memory, opString, value, length, useMasked, origValueOrMask);
+}
+function calcTrig(pattern, memory, value, length, useMasked, origValueOrMask) {
+    // shorthand
+    return calculateTrigger(pattern, memory, value, length, useMasked, origValueOrMask);
+}
+function calculateTriggerWithOp(pattern, memory, opString, value, length, useMasked, origValueOrMask) {
+    // Put opString at parameter 2 because it's natural in SCMD TrigEdit & not optional like length etc.
+    return calculateTrigger(pattern, memory, value, length, useMasked, origValueOrMask).replace(/\^4/g, opString);
+}
+function calculateTrigger(pattern, memory, value, length, useMasked, origValueOrMask) {
 	let out = "";
 	let s_value = value;
 	length = length || 4;
-	useMasked = useMasked || false;
-	let s_origvalue = origValue || 0;
+	useMasked = (typeof useMasked != 'undefined') ? useMasked : Settings.useMasked;
+	let s_origvalue = origValueOrMask || 0;
+    let isMaskSet = (typeof origValueOrMask != 'undefined');
+    let s_mask = isMaskSet ? origValueOrMask : getDefaultMask(length);
+
+    if(!useMasked) {
+    	s_value -= s_origvalue;
+    }
 
 	let byteOrder = 0;
 	if(memory % 4 != 0 && length < 4) {
@@ -690,38 +870,44 @@ function calculateTrigger(pattern, memory, value, length, useMasked, origValue) 
 		let multiplier = 1 << (byteOrder * 8);
 		memory -= byteOrder;
 		s_value *= multiplier;
-		s_origvalue *= multiplier;
+	}
+
+	if(s_value > 0x7FFFFFFF)
+	{
+		s_value -= 0x100000000;
 	}
 
 	switch(length)
 	{
 		case 1:
-		if(useMasked) {
-			let bitMask = 0xFF << (8 * byteOrder);
-			out += pattern.replace(/\^1/g, memory).replace(/\^2/g, s_value).replace(/\^3/g, bitMask);
-			break;
-		}
 		case 2:
-		if(useMasked) {
-			let bitMask = 0xFFFF << (8 * byteOrder);
-			out += pattern.replace(/\^1/g, memory).replace(/\^2/g, s_value).replace(/\^3/g, bitMask);
-			break;
-		}
 		case 3:
 		if(useMasked) {
-			let bitMask = 0xFFFFFF << (8 * byteOrder);
-			out += pattern.replace(/\^1/g, memory).replace(/\^2/g, s_value).replace(/\^3/g, bitMask);
+			let bitMask = s_mask << (8 * byteOrder);
+            out += pattern.replace(/\^1/g, formatMemory(memory))
+                          .replace(/\^2/g, formatValue(s_value))
+                          .replace(/\^3/g, formatMask(bitMask));
 			break;
 		}
-		out += pattern.replace(/\^1/g, memory).replace(/\^2/g, s_value - s_origvalue);
+		out += pattern.replace(/\^1/g, formatMemory(memory))
+                      .replace(/\^2/g, formatValue(s_value));
 		break;
 		case 4:
 		default:
-		if(s_value > 0x7FFFFFFF)
-		{
-			s_value -= 0x100000000;
-		}
-		out += pattern.replace(/\^1/g, memory).replace(/\^2/g, s_value);
+        if(useMasked && isMaskSet) {
+            let bitMask = s_mask;
+            out += pattern.replace(/\^1/g, formatMemory(memory))
+                          .replace(/\^2/g, formatValue(s_value))
+                          .replace(/\^3/g, formatMask(bitMask));
+        }
+        else if(useMasked) {
+            out += pattern.replace(/\^1/g, formatMemory(memory))
+                          .replace(/\^2/g, formatValue(s_value));
+        }
+        else {
+            out += pattern.replace(/\^1/g, formatMemory(memory))
+                          .replace(/\^2/g, formatValue(s_value));
+        }
 		break;
 		case -1:
 		break;
@@ -754,41 +940,42 @@ function toTriggerEvent() {
 	}
 }
 
-function generateEUDTrigger(memory, s_length, s_value, useMasked, s_origvalue) {
-	var triggerPattern_1 = "MemoryAddr(^1, Add, ^2);";
-	var triggerPattern_masked = "Masked MemoryAddr(^1, Set To, ^2, ^3);";
-	var triggerPattern_4 = "MemoryAddr(^1, Set To, ^2);";
-	var triggerPattern_err = "Comment(\"Error: ^1\");";
+function generateEUDTrigger(memory, len, valueInput, useMasked, origValueInput) {
+	var triggerPattern_1 = getTriggerPattern(TriggerPatterns.ADD);
+	var triggerPattern_masked = getTriggerPattern(TriggerPatterns.MASKED);
+	var triggerPattern_4 = getTriggerPattern(TriggerPatterns.NORMAL);
+	var triggerPattern_err = getTriggerPattern(TriggerPatterns.ERROR);
 	var out = "";
+	var origValue = useMasked ? undefined : parseInt(origValueInput);
+	var arrayContent, origArrayContent, s_length;
 
-	if(isNaN(parseInt(s_value))) // invalid value
+	s_length = len;
+
+	if(isNaN(parseInt(valueInput))) // invalid value
 	{
-		if(s_value.charAt(0) == "\"" && s_value.charAt(s_value.length-1) == "\"") // input string
+		if(valueInput.charAt(0) == "\"" && valueInput.charAt(valueInput.length-1) == "\"") // input string
 		{
-			s_value = s_value.substr(1, s_value.length - 2);
-			s_value = s_value.replace(/<[0-9a-fA-F]+>/g, function(pat) {
-				return String.fromCharCode(parseInt(pat.substring(1, pat.length-1), 16) );
-			});
-
-			if(typeof iconv != "undefined") { // load iconv-lite-browserify to turn iconv on
-				let s_buffer1 = iconv.encode(s_value, "UTF-8"); // Display Text uses UTF-8 in SC:R
-				s_value = [...s_buffer1].map(char => String.fromCharCode(char)).join("");
-				s_values = [...s_buffer1];
+			let s = valueInput.substr(1, valueInput.length - 2);
+			arrayContent = scmdStringToUint8Array(s);
+			s_length = 1;
+			if(!useMasked) {
+				if(origValueInput.charAt(0) == "\"") {
+					let ov = origValueInput.substr(1, origValueInput.length - 2);
+					origArrayContent = scmdStringToUint8Array(ov);
+				}
 			}
-
-			var hexValue = "";
-			for(var i=0;i<s_value.length;i++)
-			{
-				hexValue += leftPad(s_value.charCodeAt(i).toString(16), 2, "0");
-			}
-			hexValue += "00"; // null string terminator
-
-			s_values.push(0); // null string terminator
-			return generateEUDTrigger(memory, 1, s_values.join(","), useMasked, s_origvalue);
 		}
-		else if(s_value.charAt(0) == "'" && s_value.charAt(s_value.length-1) == "'") // hex string
+		else if(valueInput.charAt(0) == "'" && valueInput.charAt(valueInput.length-1) == "'") // hex string
 		{
-			return hexstrToTrig(s_value.substr(1, s_value.length - 2).replace(/[^0-9a-f]/gi, ""), memory, triggerPattern_4 + "\n");
+			let s = valueInput.substr(1, valueInput.length - 2);
+			arrayContent = hexStringToUint8Array(s);
+			s_length = 1;
+			if(!useMasked) {
+				if(origValueInput.charAt(0) == "'") {
+					let ov = origValueInput.substr(1, origValueInput.length - 2);
+					origArrayContent = hexStringToUint8Array(ov);
+				}
+			}
 		}
 		else
 		{
@@ -796,57 +983,40 @@ function generateEUDTrigger(memory, s_length, s_value, useMasked, s_origvalue) {
 		}
 	}
 
-	if(s_value.indexOf(",") != -1) { // array
-		let arrayContent = s_value.split(/, */).map(s => parseInt(s));
-		if(s_length >= 4) {
-			while(arrayContent.length >= 1) {
-				let t_shift = arrayContent.shift();
-				out += calculateTrigger(triggerPattern_4, memory, t_shift, 4, useMasked, 0);
-				memory += 4;
+	if(valueInput.indexOf(",") != -1) { // array
+		arrayContent = valueInput.split(/, */).map(s => parseInt(s));
+		if(!useMasked) {
+			if(origValueInput.indexOf(",") != -1) {
+				origArrayContent = origValueInput.split(/, */).map(s => parseInt(s));
 			}
 		}
-		else if(s_length == 3) { // TODO (there is no memory with 3 probably will not do)
-			while(arrayContent.length >= 1) {
-				let t_shift = arrayContent.shift();
-				out += calculateTrigger(triggerPattern_4, memory, t_shift, 3, useMasked, 0);
-				memory += 3;
+	}
+
+	if(arrayContent) { // array from 3 extra types
+		let tpn = triggerPattern_4;
+		let tpm = triggerPattern_masked;
+		if(!useMasked) {
+			tpn = triggerPattern_1;
+			tpm = triggerPattern_1;
+			if(origArrayContent) {
+				arrayContent = arrayContent.map((v, i) => v - origArrayContent[i % origArrayContent.length]);
+			}
+			else {
+				arrayContent = arrayContent.map((v, i) => v - origValue);
 			}
 		}
-		else if(s_length == 2) {
-			while(arrayContent.length >= 1 && memory % 4 != 0) {
-				let t_shift = arrayContent.shift();
-				out += calculateTrigger(useMasked ? triggerPattern_masked : triggerPattern_1, memory, t_shift, 2, useMasked, s_origvalue);
-				memory += 2;
-			}
-			while(arrayContent.length >= 2) {
-				let t_splice = arrayContent.splice(0, 2);
-				out += calculateTrigger(triggerPattern_4, memory, t_splice[0] + t_splice[1] * 65536, 4, useMasked, 0);
-				memory += 4;
-			}
-			while(arrayContent.length >= 1) {
-				let t_shift = arrayContent.shift();
-				out += calculateTrigger(useMasked ? triggerPattern_masked : triggerPattern_1, memory, t_shift, 2, useMasked, s_origvalue);
-				memory += 2;
-			}
+		switch(s_length) {
+			case 0:
+			case 1:
+			return uint8ArrayTriggers(tpn, tpm, memory, arrayContent);
+			case 2:
+			return uint16ArrayTriggers(tpn, tpm, memory, arrayContent);
+			case 3:
+			return uint8ArrayTriggers(tpn, tpm, memory, convert3ByteArray(arrayContent));
+			case 4:
+			default:
+			return int32ArrayTriggers(tpn, tpm, memory, arrayContent);
 		}
-		else if(s_length == 1) {
-			while(arrayContent.length >= 1 && memory % 4 != 0) {
-				let t_shift = arrayContent.shift();
-				out += calculateTrigger(useMasked ? triggerPattern_masked : triggerPattern_1, memory, t_shift, 1, useMasked, s_origvalue);
-				memory ++;
-			}
-			while(arrayContent.length >= 4) {
-				let t_splice = arrayContent.splice(0, 4);
-				out += calculateTrigger(triggerPattern_4, memory, t_splice[0] + t_splice[1] * 256 + t_splice[2] * 65536 + t_splice[3] * 16777216, 4, useMasked, 0);
-				memory += 4;
-			}
-			while(arrayContent.length >= 1) {
-				let t_shift = arrayContent.shift();
-				out += calculateTrigger(useMasked ? triggerPattern_masked : triggerPattern_1, memory, t_shift, 1, useMasked, s_origvalue);
-				memory ++;
-			}
-		}
-		return out;
 	}
 
 	if(s_length <= 3) {
@@ -856,7 +1026,7 @@ function generateEUDTrigger(memory, s_length, s_value, useMasked, s_origvalue) {
 		var pattern = triggerPattern_4;
 	}
 
-	out += calculateTrigger(pattern, memory, parseInt(s_value), s_length, useMasked, s_origvalue);
+	out += calculateTrigger(pattern, memory, parseInt(valueInput), s_length, useMasked, origValue);
 	return out;
 }
 function EUD(memory, rawLength, item, value) {
@@ -879,10 +1049,10 @@ function EUD(memory, rawLength, item, value) {
 }
 function toTrigger()
 {
-	var triggerPattern_1 = "MemoryAddr(^1, Add, ^2);";
-	var triggerPattern_masked = "Masked MemoryAddr(^1, Set To, ^2, ^3);";
-	var triggerPattern_4 = "MemoryAddr(^1, Set To, ^2);";
-	var triggerPattern_err = "Comment(\"Error: ^1\");";
+	var triggerPattern_1 = getTriggerPattern(TriggerPatterns.ADD);
+	var triggerPattern_masked = getTriggerPattern(TriggerPatterns.MASKED);
+	var triggerPattern_4 = getTriggerPattern(TriggerPatterns.NORMAL);
+	var triggerPattern_err = getTriggerPattern(TriggerPatterns.ERROR);
 	var out = "";
 	var memory = parseInt($("input_memory").value);
 	var s_offset = parseInt($("input_offset").value);
@@ -900,6 +1070,11 @@ function toTrigger()
 	$("trigger_output").value += generateEUDTrigger(memory, s_length, s_value, useMasked, s_origvalue);
 	return;
 }
+
+/* Note to anyone who is curious or bored enough to look at this code:
+ * In this program, $(x) is a shorthand for document.getElementById(x). It's not jQuery.
+ */
+
 function init()
 {
 	createCategoryArea(useCategory);
@@ -915,6 +1090,10 @@ function init()
 	$("parse_icecc").onclick = toParseIceCC;
 	$("parse_etg").onclick = hexToTrigger;
 	$("settings_usemasked").onchange = settingsUpdate;
+	$("settings_triggerstyle").onchange = settingsUpdate;
+	$("settings_hexoutput_memory").onchange = settingsUpdate;
+	$("settings_hexoutput_value").onchange = settingsUpdate;
+	$("settings_hexoutput_mask").onchange = settingsUpdate;
 	$("input_upg_player").onkeydown = function(){setTimeout(upgUpdate,25);};
 	$("input_upg_uid").onkeydown = function(){setTimeout(upgUpdate,25);};
 	$("input_selgroup_player").onkeydown = function(){setTimeout(selgroupUpdate,25);};
@@ -951,6 +1130,8 @@ function init()
 			}
 		}
 	}
+
+	shimDataTexts();
 
 	loadSettings();
 	$("settings_close").onclick = function(){document.getElementById('settings_floating').style.display='none';return false;};

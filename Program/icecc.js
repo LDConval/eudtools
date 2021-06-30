@@ -43,6 +43,40 @@ var iceHeaderOffsets = {
 	"UnBurrow" : 60,
 	"Enable" : 62
 };
+
+function hexstrToTrig(str,startOffset,trgBase)
+{
+	var out="";
+	var i;
+	var c=str;
+	var cv="";
+	var a1=0;var a2=0;var a3=0;var a4=0;var a5=0;
+	var offs=startOffset*1;
+	while(c.length%8>1)
+	{
+		c+="00";
+	}
+	for(i=0;i<c.length;i+=8)
+	{
+		a1=hexCode(c.charAt(i)+c.charAt(i+1));
+		a2=hexCode(c.charAt(i+2)+c.charAt(i+3));
+		a3=hexCode(c.charAt(i+4)+c.charAt(i+5));
+		a4=hexCode(c.charAt(i+6)+c.charAt(i+7));
+		if(a4>=128)
+		{
+			a5=a4*16777216+a3*65536+a2*256+a1*1-4294967296;
+		}
+		else
+		{
+			a5=a4*16777216+a3*65536+a2*256+a1*1;
+		}
+		offs=startOffset*1+i/2;
+		cv=trgBase.replace(/\^1/g,offs);
+		out+=cv.replace(/\^2/g,a5);
+	}
+	return out;
+}
+
 function parseIceCC(texts,dca)
 {
 	dca = dca || "Comment(\"\", 0, ^1, ^2, 0, 7);\r\n";

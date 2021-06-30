@@ -8,6 +8,7 @@
 		<link rel="stylesheet" type="text/css" href="../Program/common.css" />
 		<script src="../Program/common.js" type="text/javascript"></script>
 		<script src="../Program/icedc.js" type="text/javascript"></script>
+		<script src="fileurls/fileurls.js" type="text/javascript"></script>
 		<style>
 		table {
 			width: auto;
@@ -71,8 +72,19 @@
 			showDecompiledIscript(id, anim);
 		}
 		async function init() {
-			iscriptData = await idc.readIscriptFile("iscript.bin");
-			let iscriptIDListText = await fetch("IscriptIDList.txt").then(t => t.text());
+			if(typeof iscriptBinFileURL == "undefined") {
+				var iscriptFile = "iscript.bin";
+			}
+			else {
+				var iscriptFile = iscriptBinFileURL;
+			}
+			iscriptData = await idc.readIscriptFile(iscriptFile);
+			if(typeof IscriptIDListData == "undefined") {
+				var iscriptIDListText = await fetch("IscriptIDList.txt").then(t => t.text());
+			}
+			else {
+				var iscriptIDListText = IscriptIDListData;
+			}
 			let iscriptIDList = iscriptIDListText.split(/\r?\n/);
 
 			iscriptIDList.forEach(iscID => {

@@ -49,7 +49,9 @@ function registerPlugin(plugin) {
             elem.style.display = "none";
         }
         else {
-            $("plugin_area").style.display = "block";
+            addEventListener("load", function(evt) {
+                $("plugin_area").style.display = "block";
+            });
         }
         plugin.area = elem;
     }

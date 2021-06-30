@@ -7,6 +7,7 @@
 		<title>Icons</title>
 		<link rel="stylesheet" type="text/css" href="../Program/common.css" />
 		<script src="../Program/common.js" type="text/javascript"></script>
+		<script src="fileurls/fileurls.js" type="text/javascript"></script>
 		<style>
 		th, td {
 			background-color: #333333;
@@ -35,7 +36,12 @@
 			return str;
 		}
 		async function init() {
-			let iconNames = await fetch("../Data/icon_names.txt").then(f => f.text());
+			if(typeof iconNamesData == "undefined") {
+				var iconNames = await fetch("../Data/icon_names.txt").then(f => f.text());
+			}
+			else {
+				var iconNames = iconNamesData;
+			}
 			iconNames.split(/\r?\n/).forEach((str, i) => {
 				let r = document.createElement("tr");
 				let d0 = document.createElement("td");

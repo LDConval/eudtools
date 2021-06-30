@@ -695,6 +695,13 @@ textarea
 	width: 570px;
 	height: 90px;
 }
+#select_stattbl_encoding
+{
+	position: absolute;
+	top: 495px;
+	left: 1260px;
+	width: 80px;
+}
 #parse_stattbl_cpt
 {
 	position: absolute;
@@ -1021,6 +1028,27 @@ textarea
 	padding: 8px 11px 10px 11px;
 }
 
+/* Tool Links */
+
+#toollinks_label
+{
+	position: absolute;
+	top: 293px;
+	left: 673px;
+	width: 660px;
+	height: 40px;
+	font-weight: bold;
+}
+#toollinks_links
+{
+	position: absolute;
+	top: 328px;
+	left: 673px;
+	width: 660px;
+	height: 360px;
+	line-height: 1.6;
+}
+
 /* Plugins */
 
 #plugin_area {
@@ -1049,6 +1077,7 @@ textarea
 #stattbl_area {display: none;}
 #playercolor_area {display: none;}
 #flags_area {display: none;}
+#toollinks_area {display: none;}
 #make_memory
 {
 	position: absolute;
@@ -1154,6 +1183,10 @@ textarea
 	z-index: 2;
 	background: #222222;
 }
+.settings_td {
+	height: 1.5em;
+	line-height: 1.5em;
+}
 #settings_close
 {
 	display: block;
@@ -1175,4 +1208,10 @@ textarea
 #title_text
 {
 	text-align:center;
+}
+
+/* generic activated classes */
+
+.highlight {
+	background: #444444;
 }

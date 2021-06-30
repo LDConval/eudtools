@@ -5,10 +5,10 @@ var array_upgrades = [0x5145C2,0x5145DC,0x5145F6,0x514610,0x51462E,0x514652,0x51
 var array_orders = [0x514CFA,0x514D00,0x514D06,0x514D0E,0x514D16,0x514D1E,0x514D26,0x514D94,0x514E40,0x514E48,0x514E50,0x514E58,0x514E60,0x514E68,0x514E70,0x514F28,0,0,0x514E88,0x514EA2,0x514D40,0x514E80,0x514EDA,0x514EE2,0,0x514EE8,0x514EF0,0x514F48,0x514F56,0x514F64,0x514F00,0x514F08,0x514F10,0x514F72,0x514F7A,0x514F82,0x514F18,0,0,0x514F1C,0x514F22,0x514F8A,0,0,0,0,0x514F30,0,0,0x514F98,0x514D48,0x514D68,0x514D84,0x514DC4,0x514DE4,0x514E04,0x514E20,0x514DA4,0x514D58,0x514DD4,0x514DF4,0x514E30,0x514DB4,0,0x514D2E,0x514D38,0,0x51509A,0,0x514FA0,0x514EF8,0x514FA6,0x514FAE,0,0x514FB6,0,0,0x514FD0,0x514FDA,0x514FEE,0x514FF4,0x514FFA,0x515000,0,0x515006,0x51500C,0x515012,0,0,0,0x515018,0,0x51501E,0x51503E,0x515030,0x515036,0,0x51504A,0,0,0x515050,0x515056,0x51507E,0x515070,0x515082,0,0,0x51508A,0x514F3A,0,0,0x515024,0x51502A,0,0,0,0,0,0,0,0,0,0,0x5150AA,0,0x5150B2,0x5150BA,0x5150C2,0x5150CA,0x5150D2,0x5150DA,0x5150EA,0,0x5150F8,0x5150FE,0x515108,0x515112,0,0,0,0x5150A2,0,0,0,0,0,0,0,0,0,0,0,0x515092,0,0,0x514FBC,0,0x514E78,0,0,0,0,0,0,0,0x515122,0x51512A,0x515152,0x515172,0x51518C,0x5151A6,0x5151CC,0,0,0,0x5151F2,0x5151FA,0x515202,0x51520A,0,0,0,0x515212,0,0,0,0,0,0];
 var memorylist = [ /* format: memory, length, type (0:padding, 1:memory), description */
 	[0       , 0, 0,"-----Utilities-----"],
-	[0x664080, 4,19,"Units: Special Ability Flags"],
 	[0x5A4844, 4,11, "Hex Code -> Trigger"],
 	[0x51A280, 4,11, "Trigger Duplicator"],
-	[0x530948, 1,12,"Settings"],
+    [0x530948, 1,12, "Settings"],
+    [0x530A54, 1,11, "Extra Tools"],
 	[0      ,0,0,""],
 	[0      ,0,0,"-----Commonly Used-----"],
 	[6647472,2,1,"W Damage"],
@@ -30,7 +30,7 @@ var memorylist = [ /* format: memory, length, type (0:padding, 1:memory), descri
 	[6703024,1,1,"U SP Enabled"],
 	[6693248,1,1,"U Size"],
 	[6684360,1,1,"U Armor"],
-	[6701184,4,19,"U SA.Flags"],
+	[6701184,4,19,"U Adv.Flags"],
 	[6696376,1,1,"U Acq.Range"],
 	[6697296,1,1,"U Anim.Level"],
 	[6695008,4,1,"U Bldg.BuildSize"],
@@ -436,7 +436,6 @@ var memorylist = [ /* format: memory, length, type (0:padding, 1:memory), descri
     [0x59CDD7, 1, 8, "Acid Spore 9/9"],
     [0x59CDD8, 2, 8, "Bullet Behavior 3x3 Attack"],
     [0x59CDDC, 4, 8, "AI Data"],
-    [0x59CDE0, 4, 8, "Emp Shockwave Missiles (???)"],
     [0x59CDE0, 2, 8, "Air Strength"],
     [0x59CDE2, 2, 8, "Ground Strength"],
     [0x59CDE4, 4, 8, "Unit Finder"],
@@ -455,6 +454,8 @@ var memorylist = [ /* format: memory, length, type (0:padding, 1:memory), descri
     [0x582264, 4, 1, "Protoss Supply"],
     [0x582294, 4, 1, "Protoss Supply Used"],
     [0x5822C4, 4, 1, "Protoss Supply Max"],
+    [0       , 0, 0, ""],
+    [0       , 0, 0, "-----Upgrades-----"],
     [0x58D088, 1, 5, "SC Upgrades Available"],
     [0x58D2B0, 1, 5, "SC Upgrades Researched"],
     [0x58CE24, 1, 5, "SC Techs Available"],
@@ -479,9 +480,12 @@ var memorylist = [ /* format: memory, length, type (0:padding, 1:memory), descri
     [0x640B60, 4,16, "Display Text"],
     [0x640B58, 4, 1, "Display Text Line"],
     [0x6D0F48, 4, 1, "Room Name"],
+    [0x57FD3C, 4, 1, "Map File Name"],
+    [0x57FE40, 4, 1, "Map Title"],
 	[0x650980, 4, 1, "Trigger Wait Timers"],
     [0x6509A0, 4, 1, "Trigger Execution Timer"],
     [0x6509B0, 4, 1, "Trigger Current Player"],
+    [0x58A398, 1, 1, "Masked Set CurrentPlayer"],
 	[0x515B84, 4, 1, "Damage Multipliers"]
 ];
 var categorylist =((c => [ /* begin, end, text */
@@ -501,7 +505,8 @@ var categorylist =((c => [ /* begin, end, text */
 	[c[13], c[14]-1, "Location"],
     [c[14], c[15]-1, "UnitNode"],
     [c[15], c[16]-1, "Supply"],
-	[c[16], memorylist.length, "Others"]
+    [c[16], c[17]-1, "Upgrades"],
+	[c[17], memorylist.length, "Others"]
 ])(memorylist.map((m,i) => [m[3],i]).filter(m => m[0].indexOf("---") == 0).map(m => m[1])));
 var bf_list = [ /* 1: ReqFunction, 2: ActFunction, 3: StatusFunction, 4: DisplayFunction */
 	[

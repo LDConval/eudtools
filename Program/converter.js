@@ -614,7 +614,7 @@ function convertButton(buttonMemNew, count, button) {
 			button.actfun = convertValue(button.actfun, "actfun");
 		});
 		var hexString = buttons.map(button => buttonToHex(button)).join("");
-		var triggers = hexstrToTrig(hexString, convGlobalButtonOffset, triggerPattern + "\n");
+		var triggers = hexStringTriggers(triggerPattern, triggerPattern_masked, convGlobalButtonOffset, hexString);
 		triggers += triggerPattern.replace(/\^1/g, buttonMemNew).replace(/\^2/g, count) + "\n";
 		triggers += triggerPattern.replace(/\^1/g, buttonMemNew + 4).replace(/\^2/g, convGlobalButtonOffset);
 

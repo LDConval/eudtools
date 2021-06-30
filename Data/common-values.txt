@@ -29,16 +29,16 @@ Explosion Type:
 24 = Splash (Air)
 
 Behavior:
-1 = Fly & Don't Follow Target
-2 = Fly & Follow Target
-3 = Appear on Target Unit
-4 = Persist on Target Site
-5 = Appear on Target Site
-6 = Appear on Attacker
-7 = Attack & Self-Destruct
-8 = Bounce
-9 = Attack Target 3x3 Area
-10 = Go to Max. Range
+0 = Fly & Don't Follow Target
+1 = Fly & Follow Target
+2 = Appear on Target Unit
+3 = Persist on Target Site
+4 = Appear on Target Site
+5 = Appear on Attacker
+6 = Attack & Self-Destruct
+7 = Bounce
+8 = Attack Target 3x3 Area
+9 = Go to Max. Range
 
 Drawing Functions:
 0 - Normal
