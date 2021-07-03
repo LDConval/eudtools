@@ -11,3 +11,9 @@ function include(p,r){var c = document.getElementsByTagName("script");if(!r){for
 var h=document.getElementsByTagName('head')[0];h.appendChild(s);}
 function ampEncode(c){var o="";for(var i=0;i<c.length;i++){o+="&#"+c.charCodeAt(i)+";";}return o;}
 function ampDecode(d){while(d.match(/&#[0-9]+;/)){var wp=d.match(/&#([0-9]+);/)[1];d=d.replace(/&#[0-9]+;/,String.fromCharCode(parseInt(wp)));}return d;}
+function addScript(file) {
+    let scriptElem = document.createElement("script");
+    scriptElem.type = "text/javascript";
+    scriptElem.src = file;
+    document.head.appendChild(scriptElem);
+}

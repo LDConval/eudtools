@@ -6,5 +6,5 @@ fs.readdirSync(".").filter(f => f.substr(f.length-4) == ".txt").forEach(function
     contents[fn] = cont.replace(/\r/g, "");
 });
 
-let jsonp = "const jsonpData = " + JSON.stringify(contents) + ";";
-fs.writeFileSync("mergedData.jsonp", jsonp);
+let jsonp = "var packedTextData = " + JSON.stringify(contents) + ";"; // jsonpData
+fs.writeFileSync("packedTextData.js", jsonp);

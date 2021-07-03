@@ -1,6 +1,8 @@
 # eudtools
 EUD tools for SC remastered
 
+Supports TrigEditPlus and EUDEditor3 style of triggers now.
+
 Link: [https://LDConval.github.io/eudtools/](https://LDConval.github.io/eudtools/)
 
 ## Usage
@@ -12,6 +14,10 @@ Link: [https://LDConval.github.io/eudtools/](https://LDConval.github.io/eudtools
 3. Fill in Value with the target value.
 4. Press the arrow next to Value to generate text trigger
 5. Paste text trigger in Scmdraft to make it work.
+
+For EUD Editor 3:
+
+Change the file mode from Classic Trigger to epScript to use this.
 
 ### Advanced usage & EUD Tutorials
 

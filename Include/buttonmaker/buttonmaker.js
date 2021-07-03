@@ -168,11 +168,11 @@ function clearButtonset() {
 
 async function createUnitArea(handler)
 {
-	if(typeof jsonpData == "undefined") {
+	if(typeof packedTextData == "undefined") {
 		var unitIDListRaw = await fetch("../Data/units_dat.txt").then(s => s.text());
 	}
 	else {
-		var unitIDListRaw = jsonpData["units_dat.txt"];
+		var unitIDListRaw = packedTextData["units_dat.txt"];
 	}
 	let unitIDList = unitIDListRaw.split(/\r?\n/).filter(s => s.indexOf(",") != -1).map(s => s.split(/, */));
 
@@ -194,15 +194,15 @@ async function createUnitArea(handler)
 }
 
 async function populateGlobalArrays() {
-	if(typeof jsonpData == "undefined") {
+	if(typeof packedTextData == "undefined") {
 		var upgradeIDListRaw = await fetch("../Data/upgrades_dat.txt").then(s => s.text());
 		var techIDListRaw = await fetch("../Data/techdata_dat.txt").then(s => s.text());
 		var iconNameListRaw = await fetch("../Data/icon_names.txt").then(s => s.text());
 	}
 	else {
-		var upgradeIDListRaw = jsonpData["upgrades_dat.txt"];
-		var techIDListRaw = jsonpData["techdata_dat.txt"];
-		var iconNameListRaw = jsonpData["icon_names.txt"];
+		var upgradeIDListRaw = packedTextData["upgrades_dat.txt"];
+		var techIDListRaw = packedTextData["techdata_dat.txt"];
+		var iconNameListRaw = packedTextData["icon_names.txt"];
 	}
 	upgradeIDs = upgradeIDListRaw.split(/\r?\n/).filter(s => s.indexOf(",") != -1).map(s => s.split(/, */)).map(s => s[1]);
 	techIDs = techIDListRaw.split(/\r?\n/).filter(s => s.indexOf(",") != -1).map(s => s.split(/, */)).map(s => s[1]);

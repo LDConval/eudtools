@@ -1,54 +1,74 @@
-This is an EUD tool made 10 years ago, at which time people were doing EUD for starcraft v1.08
-Only changed offsets to 1.16/remastered based on http://farty1billion.dyndns.org/EUDDB/
+This tool was originally made by Ar3sgice. I tweaked it a little to make it support TrigEditPlus and EUDEditor3 types of triggers, plus various other improvements.
 
-Basic usage:
-- click the "v" button to calculate memory and generate trigger
-- click the "v" button to the right to expand the help area
+## Basic usage
 
-Option "use MaskedMemory":
-if checked, it uses "Masked MemoryAddr" trigger which works only on remastered
-otherwise, it uses normal trigger with Add/Subtract which will need original values
+1. Select item to edit from the left
+2. Enter item ID in "object" field
+3. Enter number to change in "value" field
+4. Click the "v" after the value field
+5. Copy the generated trigger into SCMDraft
 
-Setting an address to a string:
-- put "string" (with "") in Value input
+## Advanced usage
 
-Setting an address to a hexstring:
-- put 'hex' (with '') in Value input
-- hex must not have spaces
+Click the "v" beside this box to enlarge this text area
 
-Buttons:
-- since writing the original buttons memory region often causes conflicts with other units, here we put new buttons at offset 0x590000 (an unused section) and direct pointers to them
-- each button takes 20 bytes of memory (the 8 fields)
-- set "Unit Buttons - Total Buttons" to number of buttons
-- set "Unit Buttons - Button Offset" to 0x590000 + 20 * (button object ID)
+## Settings
 
-However, for the buttons to actually work, "Requirements" is also needed
-- set the requirement corresponding to "Act Function" and "Act Variable"
-- value <ID> 00 FF FF gives free requirement (all units can use it)
-- ex: firebat (unit 32) write address 0x51420C of 0xFFFF0020 (20 00 ff ff)
-- then every building can make firebat if had the buttons
-- also you can set each opcode to all "must be broodwar" or things like that
-- might make a requirement opcode parser if I'm really bored to that level
-- also there is a pointer to requirement offset in the dat files, it shows up as 65535 in datedit but ingame it is set to half the offset from the requirement header
+- Use Add Value
+Edit the target based on a original value.
 
-Option "IceCC parser":
-- iscript doesn't work on remastered, but the parser works pretty nice so i kept it here
-- better only parse iscripts of units you edit (from .headerstart until next unit), not the entire script
+- Trigger Style
+Changes form of output triggers to match different softwares.
+The ones with "condition" are for condition triggers.
 
-Option "Stat_txt.tbl Edits":
-- you have to edit 2 strings at the same time
-- you can use color codes like it's in SCMDraft
+- Number Format
+"hex" - output hexadecimal numbers
+"decimal" - output decimal
+For SCMD style, memory and mask should be hex while value is decimal.
 
-- first generate CPT triggers
-- it defaults to condition switch 164, make sure you set it
-- then generate each string edit section
-- fill in the PUT STRING EDITS HERE section
+## Using different data types
 
-- it uses "CP Trick" to edit the dynamic (?) pointer memory
-- 2 strings same time for there is no "Masked Set CurrentPlayer Deaths"
-- personally I think it's not really dynamic since it's a simulator anyways
-- my address is 0x19184660 tell me if yours is different
+- Set an address to a string
+Put "string" in Value input. (must be double quotation)
+Uses UTF-8 to encode the string, and adds \x00 at the end.
 
-Others:
-- I understand that no one plays this game anymore. I program only for my own entertainment and feeling of accomplishment
-- In other words I was terribly bored
+- Set an address to a hexadecimal string
+Put 'hex' in Value input (must be single quotation)
+e.g. '00 0f 20 24 4a 45 4a 43'
+
+## Batch function
+
+You can add multiple values in the Object and Value fields.
+Separate values using commas, e.g. 3,4,5,17,18,19
+
+For Object field, it sets every object to the same value.
+For Value field, it sets each value continuously.
+e.g. memory 0x10000 length 2 value 1,2,4,8
+The memory from 0x10000 to 0x10008 will become 01 00 02 00 04 00 08 00
+
+## Buttons
+
+Don't use the buttons tab here. Use the Button Maker in the Extra Tools tab.
+
+To use the Button Maker:
+1. edit the buttons using the left and middle tab
+2. click "Generate JSON" to generate JSON text
+3. click "Generate Trigger" to convert JSON to triggers
+4. for other parts refer to the wiki in original repository
+
+## Requirements
+
+Also don't use the requirements here, because it conflicts with EUD Editor 3.
+
+## IceCC parser
+
+It does not work because iscript cannot be modified in starcraft remastered.
+It's a legacy tool for starcraft version 1.08 EUDs.
+
+## Editing Stat_txt.tbl
+
+1. Generate CPT triggers at the upper part (click CPT)
+2. Notice there is a part saying PUT STRING EDITS HERE
+3. Generate string triggers at the lower part. 2 strings at a time
+4. Put the generated triggers where it said PUT STRING EDITS HERE.
+5. If the trigger action count is over 64, put the last trigger in Trigger Slicer.

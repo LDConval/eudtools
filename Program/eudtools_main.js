@@ -408,7 +408,7 @@ function useOption(evt)
 			}
 		}
 		break;
-		case 18: // building dims
+		case 18: // building dims + unit HP x1
 		$("input_offset").value = memorylist[optID][0];
 		$("input_length").value = memorylist[optID][1] + "/4";
 		break;
@@ -431,6 +431,10 @@ function useOption(evt)
 		$("flags_area").style.display = "block";
 		flagsCall();
 		break;
+		case 22: // player structure
+		$("input_offset").value = memorylist[optID][0];
+		$("input_length").value = memorylist[optID][1] + "/36";
+		break;
 		default:
 	}
 	swapHighlight(optDiv, currentHighlight);
@@ -446,8 +450,8 @@ async function useOption2(evt) // for filelist
 	{
 		$("data_output").value = "";
 	}
-    else if(typeof jsonpData != 'undefined') {
-		var fr = jsonpData[datalist[optID][1]];
+    else if(typeof packedTextData != 'undefined') {
+		var fr = packedTextData[datalist[optID][1]];
 		$("data_output").value = fr;
 		if(datalist[optID][2]) { // font size
 			$("data_output").style.fontSize = datalist[optID][2];
@@ -550,10 +554,7 @@ function createSelectAreaBF(handler,bf_type) // for button fuctions
 }
 function shimDataTexts() {
 	if(location.protocol.toString().indexOf("file") != -1) {
-		let scriptElem = document.createElement("script");
-		scriptElem.type = "text/javascript";
-		scriptElem.src = "Data/mergedData.jsonp";
-		document.head.appendChild(scriptElem);
+		addScript("Data/packedTextData.js");
 	}
 }
 function updateMemory()
@@ -597,7 +598,7 @@ function toHex(num,ord)
 	}
 }
 function settingsUpdate() {
-	var useMasked = !!$("settings_usemasked").checked;
+	var useMasked = !$("settings_useaddsub").checked;
 	if(useMasked) {
 		$("label_origvalue").style.display = "none";
 		$("input_origvalue").style.display = "none";
@@ -616,35 +617,48 @@ function settingsUpdate() {
 	Settings.hexOutputValue = (selectedIndex == -1) ? 0 : selectedIndex;
 	selectedIndex = $("settings_hexoutput_mask").selectedIndex;
 	Settings.hexOutputMask = (selectedIndex == -1) ? 0 : selectedIndex;
+	if(getTranslateComponentStatus()) {
+		selectedIndex = $("settings_translate").selectedIndex;
+		Settings.translate = (selectedIndex == -1) ? 0 : selectedIndex;
+	}
 	saveSettings();
 }
 function saveSettings() {
 	try {
-		localStorage.setItem("eudscr_usemasked", $("settings_usemasked").checked ? "1" : "0");
+		localStorage.setItem("eudscr_usemasked", $("settings_useaddsub").checked ? "0" : "1");
 		localStorage.setItem("eudscr_triggerstyle", $("settings_triggerstyle").selectedIndex);
 		localStorage.setItem("eudscr_hexoutput_memory", $("settings_hexoutput_memory").selectedIndex);
 		localStorage.setItem("eudscr_hexoutput_value", $("settings_hexoutput_value").selectedIndex);
 		localStorage.setItem("eudscr_hexoutput_mask", $("settings_hexoutput_mask").selectedIndex);
+		if(getTranslateComponentStatus()) {
+			localStorage.setItem("eudscr_translate", $("settings_translate").selectedIndex);
+		}
 	}
 	catch(e){}
 }
 function loadSettings() {
-	var item;
-	if(item = localStorage.getItem("eudscr_usemasked")) {
-		$("settings_usemasked").checked = (item == "1");
+	try {
+		var item;
+		if(item = localStorage.getItem("eudscr_usemasked")) {
+			$("settings_useaddsub").checked = !(item == "1");
+		}
+		if(item = localStorage.getItem("eudscr_triggerstyle")) {
+			$("settings_triggerstyle").selectedIndex = parseInt(item, 10);
+		}
+		if(item = localStorage.getItem("eudscr_hexoutput_memory")) {
+			$("settings_hexoutput_memory").selectedIndex = parseInt(item, 10);
+		}
+		if(item = localStorage.getItem("eudscr_hexoutput_value")) {
+			$("settings_hexoutput_value").selectedIndex = parseInt(item, 10);
+		}
+		if(item = localStorage.getItem("eudscr_hexoutput_mask")) {
+			$("settings_hexoutput_mask").selectedIndex = parseInt(item, 10);
+		}
+		if(item = localStorage.getItem("eudscr_translate")) {
+			$("settings_translate").selectedIndex = parseInt(item, 10);
+		}
 	}
-	if(item = localStorage.getItem("eudscr_triggerstyle")) {
-		$("settings_triggerstyle").selectedIndex = parseInt(item, 10);
-	}
-	if(item = localStorage.getItem("eudscr_hexoutput_memory")) {
-		$("settings_hexoutput_memory").selectedIndex = parseInt(item, 10);
-	}
-	if(item = localStorage.getItem("eudscr_hexoutput_value")) {
-		$("settings_hexoutput_value").selectedIndex = parseInt(item, 10);
-	}
-	if(item = localStorage.getItem("eudscr_hexoutput_mask")) {
-		$("settings_hexoutput_mask").selectedIndex = parseInt(item, 10);
-	}
+	catch(e){}
 
 	settingsUpdate();
 }
@@ -1045,7 +1059,7 @@ function EUD(memory, rawLength, item, value) {
 		m_length = rawLength;
 		s_length = rawLength;
 	}
-	return generateEUDTrigger(memory + item * m_length, s_length, value, true, 0).trim();
+	return generateEUDTrigger(memory + item * m_length, s_length, value, true).trim();
 }
 function toTrigger()
 {
@@ -1064,22 +1078,14 @@ function toTrigger()
 		var s_length = parseInt($("input_length").value.split("/")[0]);
 	}
 	var s_value = $("input_value").value.toString();
-	var s_origvalue = parseInt($("input_origvalue").value);
-	var useMasked = !!$("settings_usemasked").checked;
+	var s_origvalue = $("input_origvalue").value.toString();
+	var useMasked = Settings.useMasked;
 
 	$("trigger_output").value += generateEUDTrigger(memory, s_length, s_value, useMasked, s_origvalue);
 	return;
 }
 
-/* Note to anyone who is curious or bored enough to look at this code:
- * In this program, $(x) is a shorthand for document.getElementById(x). It's not jQuery.
- */
-
-function init()
-{
-	createCategoryArea(useCategory);
-	createSelectArea(useOption);
-	createSelectArea2(useOption2);
+function attachEventCallbacks() {
 	$("input_object").onkeydown = delayUpdate;
 	$("input_object").onpaste = delayUpdate;
 	$("input_memory").onclick = selectMe;
@@ -1089,7 +1095,7 @@ function init()
 	$("expand_data_output").onclick = expandDataOutput;
 	$("parse_icecc").onclick = toParseIceCC;
 	$("parse_etg").onclick = hexToTrigger;
-	$("settings_usemasked").onchange = settingsUpdate;
+	$("settings_useaddsub").onchange = settingsUpdate;
 	$("settings_triggerstyle").onchange = settingsUpdate;
 	$("settings_hexoutput_memory").onchange = settingsUpdate;
 	$("settings_hexoutput_value").onchange = settingsUpdate;
@@ -1112,6 +1118,45 @@ function init()
 	$("input_textstack_disp").onclick = selectMe;
 	$("input_textstack_objs").onclick = selectMe;
 	$("input_textstack_desc").onclick = selectMe;
+}
+
+function getTranslateComponentStatus() {
+	return typeof translateComponentLoaded != 'undefined' && translateComponentLoaded;
+}
+function hideTranslateElemsIfUnused() {
+	if(!getTranslateComponentStatus()) {
+		$("settings_hide_translate_if_unused").style.display = "none";
+	}
+}
+
+function dataTextInit() {
+	if(getTranslateComponentStatus()) {
+
+	}
+	else {
+		shimDataTexts();
+	}
+}
+
+/* Note to anyone who is curious or bored enough to look at this code:
+ * In this program, $(x) is a shorthand for document.getElementById(x). It's not jQuery.
+ */
+
+function init()
+{
+	if(getTranslateComponentStatus()) {
+		translateInit();
+	}
+	else {
+		hideTranslateElemsIfUnused();
+	}
+
+	createCategoryArea(useCategory);
+	createSelectArea(useOption);
+	createSelectArea2(useOption2);
+
+	attachEventCallbacks();
+
 	duplicatorInit();
 	slicerInit();
 	converterInit();
@@ -1120,18 +1165,9 @@ function init()
 	playerColorsInit();
 	flagsInit();
 
-	if(typeof allPlugins == "object") {
-		for(let i in allPlugins) {
-			if(allPlugins[i].area) {
-        		document.getElementById("plugin_area").appendChild(allPlugins[i].area);
-			}
-			if(allPlugins[i].init) {
-				allPlugins[i].init();
-			}
-		}
-	}
+	pluginLoaderInit();
 
-	shimDataTexts();
+	dataTextInit();
 
 	loadSettings();
 	$("settings_close").onclick = function(){document.getElementById('settings_floating').style.display='none';return false;};

@@ -25,9 +25,9 @@ const TriggerStyles = [
         "cpt" : "Set Deaths(\"Current Player\", \"Terran Marine\", Set To, ^2);",
         "cpt2" : "Set Deaths(\"Current Player\", \"Terran Marine\", ^4, ^2);",
         "error" : "Comment(\"Error: ^1\");",
-        "setto" : "Set To",
-        "add" : "Add",
-        "sub" : "Subtract"
+        "opsetto" : "Set To",
+        "opadd" : "Add",
+        "opsub" : "Subtract"
     },
     {
         "name" : "scmdcond",
@@ -39,9 +39,9 @@ const TriggerStyles = [
         "cpt" : "Deaths(\"Current Player\", \"Terran Marine\", Set To, ^2);",
         "cpt2" : "Deaths(\"Current Player\", \"Terran Marine\", ^4, ^2);",
         "error" : "Never(); // Error: ^1",
-        "setto" : "Exactly",
-        "add" : "At least",
-        "sub" : "At most"
+        "opsetto" : "Exactly",
+        "opadd" : "At least",
+        "opsub" : "At most"
     },
     {
         "name" : "tep",
@@ -53,9 +53,9 @@ const TriggerStyles = [
         "cpt" : "SetDeaths(CurrentPlayer, SetTo, ^2, \"Terran Marine\");",
         "cpt2" : "SetDeaths(CurrentPlayer, ^4, ^2, \"Terran Marine\");",
         "error" : "-- Error: ^1",
-        "setto" : "SetTo",
-        "add" : "Add",
-        "sub" : "Subtract"
+        "opsetto" : "SetTo",
+        "opadd" : "Add",
+        "opsub" : "Subtract"
     },
     {
         "name" : "tepcond",
@@ -67,9 +67,9 @@ const TriggerStyles = [
         "cpt" : "Deaths(CurrentPlayer, Exactly, ^2, \"Terran Marine\");",
         "cpt2" : "Deaths(CurrentPlayer, ^4, ^2, \"Terran Marine\");",
         "error" : "-- Error: ^1",
-        "setto" : "Exactly",
-        "add" : "AtLeast",
-        "sub" : "AtMost"
+        "opsetto" : "Exactly",
+        "opadd" : "AtLeast",
+        "opsub" : "AtMost"
     },
     {
         "name" : "eud3",
@@ -81,9 +81,9 @@ const TriggerStyles = [
         "cpt" : "SetDeaths(CurrentPlayer, SetTo, ^2, 0);",
         "cpt2" : "SetDeaths(CurrentPlayer, ^4, ^2, 0);",
         "error" : "// Error: ^1",
-        "setto" : "SetTo",
-        "add" : "Add",
-        "sub" : "Subtract"
+        "opsetto" : "SetTo",
+        "opadd" : "Add",
+        "opsub" : "Subtract"
     }
 ];
 
@@ -107,11 +107,11 @@ function getTriggerPattern(type, style) {
         case TriggerPatterns.CPT_OP: // CPT + OP
         return TriggerStyles[style].cpt2;
         case TriggerPatterns.OP_ADD: // OP ADD
-        return TriggerStyles[style].add;
+        return TriggerStyles[style].opadd;
         case TriggerPatterns.OP_SUB: // OP SUB
-        return TriggerStyles[style].sub;
+        return TriggerStyles[style].opsub;
         case TriggerPatterns.OP_SET: // OP SET
-        return TriggerStyles[style].setto;
+        return TriggerStyles[style].opsetto;
         case TriggerPatterns.ERROR: // ERROR
         default:
         return TriggerStyles[style].error;

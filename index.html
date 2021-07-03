@@ -34,7 +34,7 @@
 	<table>
 		<tr>
 			<td class="settings_td">
-				<div class="labels" id="settings_label_offset">Use MaskedMemory: <input type="checkbox" id="settings_usemasked" checked="checked" class="input_ckb" /></div>
+				<div class="labels" id="settings_label_offset">Use Add Value: <input type="checkbox" id="settings_useaddsub" class="input_ckb" /></div>
 			</td>
 		</tr>
 		<tr>
@@ -54,8 +54,8 @@
 			<td class="settings_td">
 				<div class="labels" id="settings_label_hexoutput">Number Format: Memory
 					<select id="settings_hexoutput_memory">
-						<option>Decimal</option>
-						<option selected="selected">Hex</option>
+						<option selected="selected">Decimal</option>
+						<option>Hex</option>
 					</select>
                     | Value
 					<select id="settings_hexoutput_value">
@@ -64,8 +64,17 @@
 					</select>
                     | Mask
 					<select id="settings_hexoutput_mask">
-						<option>Decimal</option>
-						<option selected="selected">Hex</option>
+						<option selected="selected">Decimal</option>
+						<option>Hex</option>
+					</select>
+				</div>
+			</td>
+		</tr>
+		<tr id="settings_hide_translate_if_unused">
+			<td class="settings_td">
+				<div class="labels" id="settings_label_translate">Language:
+					<select id="settings_translate">
+						<option selected="selected">English</option>
 					</select>
 				</div>
 			</td>
@@ -158,7 +167,7 @@
 	</div>
 	<div id="trigdupl_area">
 		<div class="labels" id="label_trigdupl_count">Count: </div>
-		<input type="text" id="input_trigdupl_count" value="0" />
+		<input type="text" id="input_trigdupl_count" value="2" />
 		<div class="labels" id="label_trigdupl_area">Trigger: </div>
 		<textarea id="inputarea_trigdupl"></textarea>
 		<textarea id="inputarea_trigdupl_arrays"></textarea>

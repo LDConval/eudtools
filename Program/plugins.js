@@ -78,3 +78,16 @@ function registerPlugin(plugin) {
     categorylist[0][1]++;
     pluginCategory[1]++;
 }
+
+function pluginLoaderInit() {
+    if(typeof allPlugins == "object") {
+        for(let i in allPlugins) {
+            if(allPlugins[i].area) {
+                document.getElementById("plugin_area").appendChild(allPlugins[i].area);
+            }
+            if(allPlugins[i].init) {
+                allPlugins[i].init();
+            }
+        }
+    }
+}

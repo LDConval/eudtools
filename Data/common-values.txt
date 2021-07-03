@@ -74,6 +74,31 @@ Flingy Move Control:
 1 - Partial movement/weapons
 2 - Iscript.bin control
 
+Game Speed:
+0 - Slowest
+1 - Slower
+2 - Slow
+3 - Normal
+4 - Fast
+5 - Faster
+6 - Fastest
+
+Alliance Status:
+0 - Enemy
+1 - Ally
+2 - Allied Victory
+
+Player Type:
+0 - Inactive
+1 - Computer (Game)
+2 - Occupied by Human Player
+3 - Rescue Passive
+4 - Unused
+5 - Computer
+6 - Human (Open Slot)
+7 - Neutral
+8 - Closed slot
+
 Group Flags:
 0x01 - Zerg (Uses underlings, can build on creep)
 0x02 - Terran (Uses Supply, has sublabel, buildings will burn)

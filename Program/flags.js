@@ -1,6 +1,6 @@
 const flagsMaxRow = 12;
 
-const flagNames = {
+var flagNames = {
     "UnitsAdvancedFlags": ["Building", "Addon", "Flyer", "Worker", "Subunit", "Flying Building", "Hero", "Regenerates HP", "Animated Idle", "Cloakable", "Two Units in 1 Egg", "Single Entity", "Resource Depot", "Resource Container", "Robotic Unit", "Detector", "Organic Unit", "Requires Creep", "Unused 0x40000", "Requires Psi", "Burrowable", "Spellcaster", "Permanent Cloak", "Pickup Item", "Ignore Supply Check", "Use Medium Overlays", "Use Large Overlays", "Battle Reactions", "Full Auto-Attack", "Invincible", "Mechanical Unit", "Produces Units"],
     "UnitsMovementFlags": ["0x01", "0x02", "0x04", "0x08", "0x10", "0x20", "0x40", "Mine-safe"],
     "UnitsGroupFlags": ["Zerg", "Terran", "Protoss", "Men", "Building", "Factory", "Independant", "Neutral"],

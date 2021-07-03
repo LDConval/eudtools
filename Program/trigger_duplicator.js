@@ -71,9 +71,9 @@ function duplicateTrigger(trg, times, arrayData)
             }
 			dat = dat.replace("[" + m + "]", r);
 		}
-		while(dat.match(/\[[0-9a-fx;\-]+\]/i)) // increments hex
+		while(dat.match(/\[[0-9a-fx;\-]*0x[0-9a-fx;\-]+\]/i)) // increments hex
 		{
-			var m = dat.match(/\[([0-9xa-f;\-]+)\]/i)[1];
+			var m = dat.match(/\[([0-9a-fx;\-]*0x[0-9a-fx;\-]+)\]/i)[1];
 			if(m.match(/;/))
 			{
 				var sp = m.split(";");
