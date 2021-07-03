@@ -553,7 +553,9 @@ function createSelectAreaBF(handler,bf_type) // for button fuctions
 	$("buttonfunction_select_container").appendChild(divSelect);
 }
 function shimDataTexts() {
-	if(location.protocol.toString().indexOf("file") != -1) {
+	if(true) {
+		// location.protocol.toString().indexOf("file") != -1
+		// always preload text to reduce data transfers
 		addScript("Data/packedTextData.js");
 	}
 }
