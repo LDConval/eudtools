@@ -220,14 +220,7 @@ function useCategory(k, evt)
 	swapHighlight(optDiv, currentHighlightCategory);
 	currentHighlightCategory = optDiv;
 }
-function useOption(evt)
-{
-	evt = evt || window.event;
-	var optDiv = evt.srcElement || evt.target;
-	var optID = optDiv.optionID;
-	currentSelected = optID;
-
-	// default areas to display:none
+function hideExtraAreas() {
 	$("upg_area").style.display = "none";
 	$("selgroup_area").style.display = "none";
 	$("keygroup_area").style.display = "none";
@@ -255,8 +248,20 @@ function useOption(evt)
 			}
 		}
 	}
+}
+function useOption(evt)
+{
+	evt = evt || window.event;
+	var optDiv = evt.srcElement || evt.target;
+	var optID = optDiv.optionID;
+	currentSelected = optID;
+	let memoryType = memorylist[optID][2];
 
-	switch(memorylist[optID][2])
+	if(memoryType != 12) {
+		hideExtraAreas();
+	}
+
+	switch(memoryType)
 	{
 		case 0:
 		$("input_offset").value = 0;
@@ -362,8 +367,6 @@ function useOption(evt)
 		}
 		break;
 		case 12: // settings
-		$("input_offset").value = 0;
-		$("input_length").value = 4;
 		$("settings_floating").style.display = "block";
 		break;
 		case 13: // player alliance self
