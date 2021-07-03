@@ -7,17 +7,14 @@ Link: [https://LDConval.github.io/eudtools/](https://LDConval.github.io/eudtools
 
 ## Usage
 
-0. Tick "use MaskedMemory" in Settings
 1. Choose category and traits you want to change. it will update Offset and Length
 2. Fill in Object with object ID you need to change. it will update Memory and Hex
    e.g. unitID for units.dat items (refer to Datedit or the unit list in the right side)
-3. Fill in Value with the target value.
-4. Press the arrow next to Value to generate text trigger
-5. Paste text trigger in Scmdraft to make it work.
+3. Fill in Value with the value you need to change to
+4. Press the "v" button next to Value to generate text trigger
+5. Paste text trigger in Scmdraft, TrigEditPlus or EUDEditor to make it work.
 
-For EUD Editor 3:
-
-Change the file mode from Classic Trigger to epScript to use this.
+For TrigEditPlus it needs version 1.0 or above for SetMemoryX support.
 
 ### Advanced usage & EUD Tutorials
 
