@@ -934,6 +934,11 @@ function calculateTrigger(pattern, memory, value, length, useMasked, origValueOr
 	out += "\n";
 	return out;
 }
+function pressEnterToGenerate(evt) {
+	if(evt && evt.key == "Enter") {
+		toTriggerEvent();
+	}
+}
 function toTriggerEvent() {
 	if($("input_object").value.toString().indexOf(",") != -1) {
 		let resetText = $("input_object").value;
@@ -972,25 +977,27 @@ function generateEUDTrigger(memory, len, valueInput, useMasked, origValueInput) 
 
 	if(isNaN(parseInt(valueInput))) // invalid value
 	{
-		if(valueInput.charAt(0) == "\"" && valueInput.charAt(valueInput.length-1) == "\"") // input string
+		if((valueInput.charAt(0) == "\"" && valueInput.charAt(valueInput.length-1) == "\"")
+			|| (valueInput.charAt(0) == "\u201c" && valueInput.charAt(valueInput.length-1) == "\u201d")) // input string
 		{
 			let s = valueInput.substr(1, valueInput.length - 2);
 			arrayContent = scmdStringToUint8Array(s);
 			s_length = 1;
 			if(!useMasked) {
-				if(origValueInput.charAt(0) == "\"") {
+				if(origValueInput.charAt(0) == "\"" || origValueInput.charAt(0) == "\u201c") {
 					let ov = origValueInput.substr(1, origValueInput.length - 2);
 					origArrayContent = scmdStringToUint8Array(ov);
 				}
 			}
 		}
-		else if(valueInput.charAt(0) == "'" && valueInput.charAt(valueInput.length-1) == "'") // hex string
+		else if((valueInput.charAt(0) == "'" && valueInput.charAt(valueInput.length-1) == "'")
+			|| (valueInput.charAt(0) == "\u2018" && valueInput.charAt(valueInput.length-1) == "\u2019")) // hex string
 		{
 			let s = valueInput.substr(1, valueInput.length - 2);
 			arrayContent = hexStringToUint8Array(s);
 			s_length = 1;
 			if(!useMasked) {
-				if(origValueInput.charAt(0) == "'") {
+				if(origValueInput.charAt(0) == "'" || origValueInput.charAt(0) == "\u2018") {
 					let ov = origValueInput.substr(1, origValueInput.length - 2);
 					origArrayContent = hexStringToUint8Array(ov);
 				}
@@ -1095,6 +1102,7 @@ function attachEventCallbacks() {
 	$("input_object").onpaste = delayUpdate;
 	$("input_memory").onclick = selectMe;
 	$("input_hex").onclick = selectMe;
+	$("input_value").onkeydown = pressEnterToGenerate;
 	$("make_memory").onclick = updateMemory;
 	$("make_trigger").onclick = toTriggerEvent;
 	$("expand_data_output").onclick = expandDataOutput;

@@ -70,7 +70,9 @@ textarea
 #label_buttonfunction
 {
 	top: 288px;
-	left: 578px;
+	left: 530px;
+	text-align: right;
+	width: 140px;
 }
 .select_bf
 {
@@ -361,12 +363,16 @@ textarea
 #label_icecc
 {
 	top: 288px;
-	left: 569px;
+	left: 530px;
+	text-align: right;
+	width: 140px;
 }
 #label_icecc2
 {
 	top: 314px;
-	left: 574px;
+	left: 530px;
+	text-align: right;
+	width: 140px;
 }
 #inputarea_icecc
 {
@@ -437,17 +443,23 @@ textarea
 #label_etg_base
 {
 	top: 288px;
-	left: 575px;
+	left: 530px;
+	text-align: right;
+	width: 140px;
 }
 #label_etg_ofs
 {
 	top: 314px;
-	left: 619px;
+	left: 530px;
+	text-align: right;
+	width: 140px;
 }
 #label_etg_cont
 {
 	top: 340px;
-	left: 594px;
+	left: 530px;
+	text-align: right;
+	width: 140px;
 }
 #input_etg_base
 {
@@ -484,7 +496,9 @@ textarea
 #label_textstack_text
 {
 	top: 288px;
-	left: 567px;
+	left: 530px;
+	text-align: right;
+	width: 140px;
 }
 #input_textstack_text
 {
@@ -496,7 +510,9 @@ textarea
 #label_textstack_unit
 {
 	top: 314px;
-	left: 588px;
+	left: 530px;
+	text-align: right;
+	width: 140px;
 }
 #input_textstack_unit
 {
@@ -508,7 +524,9 @@ textarea
 #label_textstack_disp
 {
 	top: 340px;
-	left: 575px;
+	left: 530px;
+	text-align: right;
+	width: 140px;
 }
 #input_textstack_disp
 {
@@ -520,7 +538,9 @@ textarea
 #label_textstack_objs
 {
 	top: 366px;
-	left: 584px;
+	left: 530px;
+	text-align: right;
+	width: 140px;
 }
 #input_textstack_objs
 {
@@ -532,7 +552,9 @@ textarea
 #label_textstack_desc
 {
 	top: 392px;
-	left: 581px;
+	left: 530px;
+	text-align: right;
+	width: 140px;
 }
 #input_textstack_desc
 {
@@ -547,7 +569,9 @@ textarea
 #label_trigconv_buttonoffset
 {
 	top: 288px;
-	left: 567px;
+	left: 530px;
+	text-align: right;
+	width: 140px;
 }
 #input_trigconv_buttonoffset
 {
@@ -559,7 +583,9 @@ textarea
 #label_trigconv_area
 {
 	top: 314px;
-	left: 607px;
+	left: 530px;
+	text-align: right;
+	width: 140px;
 }
 #inputarea_trigconv
 {
@@ -582,12 +608,16 @@ textarea
 #label_trigdupl_count
 {
 	top: 288px;
-	left: 617px;
+	left: 530px;
+	text-align: right;
+	width: 140px;
 }
 #label_trigdupl_area
 {
 	top: 314px;
-	left: 607px;
+	left: 530px;
+	text-align: right;
+	width: 140px;
 }
 #input_trigdupl_count
 {
@@ -625,17 +655,23 @@ textarea
 #label_trigslice_player
 {
 	top: 288px;
-	left: 622px;
+	left: 530px;
+	text-align: right;
+	width: 140px;
 }
 #label_trigslice_cond
 {
 	top: 314px;
-	left: 592px;
+	left: 530px;
+	text-align: right;
+	width: 140px;
 }
 #label_trigslice_act
 {
 	top: 434px;
-	left: 615px;
+	left: 530px;
+	text-align: right;
+	width: 140px;
 }
 #input_trigslice_player
 {
@@ -673,12 +709,16 @@ textarea
 #label_stattbl_player
 {
 	top: 288px;
-	left: 587px;
+	left: 530px;
+	text-align: right;
+	width: 140px;
 }
 #label_stattbl_cond
 {
 	top: 314px;
-	left: 589px;
+	left: 530px;
+	text-align: right;
+	width: 140px;
 }
 #input_stattbl_player
 {
@@ -719,27 +759,37 @@ textarea
 #label_stattbl_offset
 {
 	top: 439px;
-	left: 621px;
+	left: 530px;
+	text-align: right;
+	width: 140px;
 }
 #label_stattbl_str1
 {
 	top: 465px;
-	left: 615px;
+	left: 530px;
+	text-align: right;
+	width: 140px;
 }
 #label_stattbl_str2
 {
 	top: 491px;
-	left: 615px;
+	left: 530px;
+	text-align: right;
+	width: 140px;
 }
 #label_stattbl_content1
 {
 	top: 517px;
-	left: 600px;
+	left: 530px;
+	text-align: right;
+	width: 140px;
 }
 #label_stattbl_content2
 {
 	top: 543px;
-	left: 600px;
+	left: 530px;
+	text-align: right;
+	width: 140px;
 }
 #input_stattbl_offset
 {
@@ -789,7 +839,9 @@ textarea
 #label_reqwrite_type
 {
 	top: 288px;
-	left: 626px;
+	left: 530px;
+	text-align: right;
+	width: 140px;
 }
 #label_reqwrite_uid
 {
@@ -806,12 +858,16 @@ textarea
 #label_reqwrite_add
 {
 	top: 314px;
-	left: 599px;
+	left: 530px;
+	text-align: right;
+	width: 140px;
 }
 #label_reqwrite_area
 {
 	top: 340px;
-	left: 599px;
+	left: 530px;
+	text-align: right;
+	width: 140px;
 }
 #input_reqwrite_uid
 {
@@ -862,18 +918,24 @@ textarea
 #label_playercolor_id
 {
 	top: 288px;
-	left: 617px;
+	left: 530px;
+	text-align: right;
+	width: 140px;
 }
 #label_playercolor_colors
 {
 	top: 314px;
-	left: 617px;
+	left: 530px;
+	text-align: right;
+	width: 140px;
 }
 #label_playercolor_colors2
 {
 	/*top: 522px;*/
 	top: 340px;
-	left: 602px;
+	left: 530px;
+	text-align: right;
+	width: 140px;
 }
 #playercolor_imgcontainer
 {
@@ -975,7 +1037,9 @@ textarea
 #label_flags_table {
 	position: absolute;
 	top: 294px;
-	left: 627px;
+	left: 530px;
+	text-align: right;
+	width: 140px;
 }
 #flags_table_wrapper
 {
@@ -998,7 +1062,9 @@ textarea
 {
 	position: absolute;
 	top: 650px;
-	left: 627px;
+	left: 530px;
+	text-align: right;
+	width: 140px;
 }
 #label_flags_mode
 {
