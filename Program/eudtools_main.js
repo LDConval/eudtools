@@ -891,9 +891,12 @@ function calculateTrigger(pattern, memory, value, length, useMasked, origValueOr
 		s_value *= multiplier;
 	}
 
-	if(s_value > 0x7FFFFFFF)
-	{
+	s_value %= 0x100000000;
+	if(s_value > 0x7FFFFFFF) {
 		s_value -= 0x100000000;
+	}
+	else if(s_value < -0x80000000) {
+		s_value += 0x100000000;
 	}
 
 	switch(length)
