@@ -28,6 +28,13 @@ Explosion Type:
 23 = Unused (Crash)
 24 = Splash (Air)
 
+Damage Types:
+0 = Independent
+1 = Explosive
+2 = Concussive
+3 = Normal
+4 = Ignore Armor
+
 Behavior:
 0 = Fly & Don't Follow Target
 1 = Fly & Follow Target
@@ -68,6 +75,12 @@ Rightclick Action:
 4 - Workers (Probe, Drone)
 5 - SCV
 6 - None
+
+Computer AI Unit Type:
+0 - None
+1 - Ignore "Strategic Suicide" AI
+2 - Will not become "Guard" status
+3 - 1 & 2
 
 Flingy Move Control:
 0 - Flingy.dat control
