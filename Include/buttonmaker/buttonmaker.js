@@ -27,7 +27,7 @@ var loaded = false;
 const traitNames = ["position", "icon", "reqfun", "actfun", "reqvar", "actvar", "actstr", "reqstr"];
 const buttonsetStartPtr = 0x515BE8;
 
-const addButtonTypes = ["Default", "Copy Current", "Create Unit", "Build Terran", "Build Protoss", "Build Zerg", "Use Spell", "Upgrade", "Research", "Basic Unit Commands", "Copy From Unit"]
+var addButtonTypes = ["Default", "Copy Current", "Create Unit", "Build Terran", "Build Protoss", "Build Zerg", "Use Spell", "Upgrade", "Research", "Basic Unit Commands", "Copy From Unit"]
 
 function qs(text) {
 	return document.querySelector(text);
