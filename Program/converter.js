@@ -680,7 +680,7 @@ function converterInit()
 {
 	if($("inputarea_trigconv").value == "")
 	{
-		$("inputarea_trigconv").value = "Parse 1.08 EUD to SC:R EUD.\n\nCurrently supports Dat edits, buttons, requirements & upgrades.";
+		$("inputarea_trigconv").value = "Convert 1.08 EUD to SC:R EUD.\n\nCurrently supports Dat edits, buttons, requirements & upgrades.";
 	}
 	$("parse_trigconv").onclick = convert108Triggers;
 }
