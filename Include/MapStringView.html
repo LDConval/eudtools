@@ -59,6 +59,14 @@
             }
             return str;
         }
+        function coloredTextLinebreaks(strArray) {
+            return strArray.map((s,i) => {
+                if(i == strArray.length - 1 || s.indexOf("style='position:relative;display:block") != -1) {
+                    return s.replace(/\x0d/g, "");
+                }
+                return s.replace(/\x0d/g, "") + "<br />";
+            }).join("");
+        }
         function getDecodeCharset() {
             if(document.getElementById("decode-charset").value.length < 1) {
                 return "UTF-8";
@@ -86,7 +94,7 @@
                     offset: offset,
                     str: rawStr.replace(/\x0d/g, "").replace(/[\x00-\x1f]/g, rep => rep=="\x0a" ? "\n" : "<" + leftPad(rep.charCodeAt(0).toString(16).toUpperCase(), 2, "0") + ">"),
                     strPlain: rawStr.replace(/[\x00-\x1f]/g, rep => rep=="\x0a" ? "\n" : ""),
-                    strColor: rawStr.split("\n").map(str => colorText(str)).join("<br />").replace(/\x0d/g, "")
+                    strColor: coloredTextLinebreaks(rawStr.split("\n").map(str => colorText(str)))
                 });
             }
             return out;
@@ -105,7 +113,7 @@
             let strings = getStringsFromHTML();
             let colorTextElems = Array.from(document.querySelectorAll("#addItemsHere > tr > td:nth-child(4)"));
             colorTextElems.forEach((elem, i) => {
-                elem.innerHTML = strings[i].str.split("\n").map(str => colorText(buildCodedString(str))).join("<br />").replace(/\x0d/g, "");
+                elem.innerHTML = coloredTextLinebreaks(strings[i].str.split("\n").map(str => colorText(buildCodedString(str))));
             });
         }
         function getFormatters() {
@@ -152,6 +160,11 @@
             });
             updateAllTexts(stringArray);
         }
+        function updateEditableText(evt) {
+        }
+        function editedEditableText(evt) {
+            updateColorText();
+        }
         function updateAllTexts(stringArray) {
             document.getElementById("addItemsHere").innerHTML = `
             <tr>
@@ -171,7 +184,8 @@
                 scrollbox.className = "scrollbox";
                 scrollbox.textContent = str.str;
                 scrollbox.contentEditable = true;
-                scrollbox.onblur = updateColorText;
+                scrollbox.onfocus = updateEditableText;
+                scrollbox.onblur = editedEditableText;
                 d3.appendChild(scrollbox);
                 let d4 = document.createElement("td");
                 let scrollbox2 = document.createElement("div");
