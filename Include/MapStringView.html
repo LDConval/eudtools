@@ -17,6 +17,10 @@
         .scrollbox {
             width: 100%;
             overflow-x: auto;
+            resize: none;
+            background: transparent;
+            font: inherit;
+            border: none;
         }
         td:first-child { width: 60px;}
         td:nth-child(2) { width: 60px;}
@@ -103,10 +107,10 @@
             return s.replace(/<[0-9a-fA-F]+>/g, c => String.fromCodePoint(parseInt(c.substring(1, c.length-1), 16)));
         }
         function getStringsFromHTML() {
-            let elems = Array.from(document.querySelectorAll("#addItemsHere > tr > td:nth-child(3)"));
+            let elems = Array.from(document.querySelectorAll("#addItemsHere > tr > td:nth-child(3) > textarea"));
             return elems.map((elem, i) => ({
                 id: i+1,
-                str: elem.innerText.replace(/\r?\n/g, "\r\n")
+                str: elem.value.replace(/\r?\n/g, "\r\n")
             }));
         }
         function updateColorText() {
@@ -165,6 +169,9 @@
         function editedEditableText(evt) {
             updateColorText();
         }
+        function getRows(str) {
+            return str.split('\n').length;
+        }
         function updateAllTexts(stringArray) {
             document.getElementById("addItemsHere").innerHTML = `
             <tr>
@@ -180,12 +187,14 @@
                 let d2 = document.createElement("td");
                 d2.textContent = str.offset;
                 let d3 = document.createElement("td");
-                let scrollbox = document.createElement("div");
+                let scrollbox = document.createElement("textarea");
                 scrollbox.className = "scrollbox";
                 scrollbox.textContent = str.str;
-                scrollbox.contentEditable = true;
+                scrollbox.rows = getRows(str.str);
+                // scrollbox.contentEditable = true;
                 scrollbox.onfocus = updateEditableText;
                 scrollbox.onblur = editedEditableText;
+                scrollbox.onkeydown = contentEditKeydownEvent;
                 d3.appendChild(scrollbox);
                 let d4 = document.createElement("td");
                 let scrollbox2 = document.createElement("div");
@@ -328,6 +337,11 @@
             if(files.length > 0) {
                 await loadStringsData(document.getElementById("load-strings-file").files[0]);
             }
+        }
+        function contentEditKeydownEvent(evt) {
+            requestAnimationFrame(function() {
+                evt.target.rows = getRows(evt.target.value);
+            });
         }
 
         function saveFile(buffer, filename, linkElem) {
