@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no, email=no, address=no" />
+        <title>Map String Viewer EX</title>
+        <link rel="stylesheet" type="text/css" href="../Program/common.css" />
+        <script src="../Program/common.js" type="text/javascript"></script>
+        <script src="../Program/colorText.js" type="text/javascript"></script>
+        <script src="../Program/iconv-lite-browserify.js" type="text/javascript"></script>
+        <script src="../Program/stormjs.bundle.js" type="text/javascript"></script>
+        <script src="../Program/mapstringview.js" type="text/javascript"></script>
+        <style>
+        table {
+            width: 100%;
+            overflow: scroll;
+        }
+        .header {
+            line-height: 1.5;
+        }
+        .scrollbox {
+            width: 100%;
+            overflow-x: auto;
+            resize: none;
+            background: transparent;
+            font: inherit;
+            border: none;
+        }
+        td:first-child { width: 60px;}
+        td:nth-child(2) { width: 60px;}
+        td:nth-child(3) { width: calc(50% - 140px);}
+        td:nth-child(4) { width: calc(50% - 140px);}
+        th, td {
+            background-color: #333333;
+            max-width: 300px;
+            overflow: hidden;
+            line-height: 1.4;
+        }
+        td {
+            white-space: pre;
+            vertical-align: top;
+            padding: 2px 20px 2px 2px;
+        }
+        #save-link, #load-strings-file {
+            display: none;
+        }
+        #only-show-after-loaded-chk {
+            display: none;
+        }
+        #status {
+            position: absolute;
+            left: 50px;
+            top: 50px;
+            display: none;
+            background: #333333;
+            border: solid 1px #dddddd;
+            width: 50vw;
+            min-height: 30vh;
+            padding: 5px;
+        }
+        #status-close {
+            position: absolute;
+            right: 5px;
+            top: 5px;
+            color: #cc9999;
+        }
+        #status-message {
+            position: absolute;
+            left: 5px;
+            top: 5px;
+            color: #ff8866;
+        }
+        </style>
+        <script>
+        function coloredTextLinebreaks(strArray) {
+            return strArray.map((s,i) => {
+                if(i == strArray.length - 1 || s.indexOf("style='position:relative;display:block") != -1) {
+                    return s.replace(/\x0d/g, "");
+                }
+                return s.replace(/\x0d/g, "") + "<br />";
+            }).join("");
+        }
+        function getDecodeCharset() {
+            if(document.getElementById("decode-charset").value.length < 1) {
+                return "UTF-8";
+            }
+            return document.getElementById("decode-charset").value;
+        }
+
+        function getStringsFromHTML() {
+            let elems = Array.from(document.querySelectorAll("#addItemsHere > tr > td:nth-child(3) > textarea"));
+            return elems.map((elem, i) => ({
+                id: i+1,
+                str: elem.value.replace(/\r?\n/g, "\r\n")
+            }));
+        }
+        function getOffsetsFromHTML() {
+            let elems = Array.from(document.querySelectorAll("#addItemsHere > tr > td:nth-child(2)"));
+            return elems.map((elem, i) => parseInt(elem.innerText, 10));
+        }
+        function updateColorText() {
+            let strings = getStringsFromHTML();
+            let colorTextElems = Array.from(document.querySelectorAll("#addItemsHere > tr > td:nth-child(4)"));
+            colorTextElems.forEach((elem, i) => {
+                elem.innerHTML = coloredTextLinebreaks(strings[i].str.split("\n").map(str => colorText(buildCodedString(str))));
+            });
+        }
+        function getFormatters() {
+            return ["\r\n", "\"\"\"\n", "\n\"\"\""];
+        }
+        function saveStringsData() {
+            let [linebreak, multilineStart, multilineEnd] = getFormatters();
+            let strings = getStringsFromHTML();
+            let data = strings.map(s => s.str.indexOf("\n") != -1 ? multilineStart + s.str + multilineEnd : s.str).join(linebreak);
+            if(typeof iconv != "undefined") { // load iconv-lite-browserify to turn iconv on
+                buffer = iconv.encode(data, "UTF-8");
+            }
+            else {
+                console.log("ERROR: iconv failed to load");
+            }
+            saveFile(data, "strings.txt", document.getElementById("save-link"));
+        }
+        async function loadStringsData(file, retainOffsets = false) {
+            let fr = new FileReader();
+            let dataText = await new Promise(res => {
+                fr.onload = evt => res(evt.target.result);
+                fr.readAsText(file, "UTF-8");
+            });
+
+            let [linebreak, multilineStart, multilineEnd] = getFormatters();
+            dataText = dataText.replace(/\r/g, "");
+
+            let offsets = retainOffsets ? getOffsetsFromHTML() : [];
+
+            let stringArray = [];
+            let id = 1;
+            dataText.match(/\"\"\"\n[\w\W]+?\n\"\"\"|.+|^$/gm).forEach(str => {
+                if(str.substring(0, multilineStart.length) == multilineStart
+                && str.substring(str.length - multilineEnd.length, str.length) == multilineEnd) {
+                    str = str.substring(multilineStart.length, str.length - multilineEnd.length);
+                }
+                let codedStr = buildCodedString(str);
+                stringArray.push({
+                    id: id,
+                    offset: retainOffsets ? "null" : (typeof offsets[id - 1] == 'string' ? parseInt(offsets[id], 10) : 0),
+                    str: str,
+                    strPlain: codedStr.replace(/[\x00-\x1f]/g, rep => rep=="\x0a" ? "\n" : ""),
+                    strColor: colorText(codedStr)
+                });
+                id++;
+            });
+            updateAllTexts(stringArray);
+        }
+        function updateEditableText(evt) {
+        }
+        function editedEditableText(evt) {
+            updateColorText();
+        }
+        function getRows(str) {
+            return str.split('\n').length;
+        }
+        function updateAllTexts(stringArray) {
+            document.getElementById("addItemsHere").innerHTML = `
+            <tr>
+                <th>ID</th>
+                <th>Offset</th>
+                <th>Content</th>
+                <th>ColorText</th>
+            </tr>`;
+            stringArray.forEach(str => {
+                let r = document.createElement("tr");
+                let d1 = document.createElement("td");
+                d1.textContent = str.id;
+                let d2 = document.createElement("td");
+                d2.textContent = str.offset;
+                let d3 = document.createElement("td");
+                let scrollbox = document.createElement("textarea");
+                scrollbox.className = "scrollbox";
+                scrollbox.textContent = str.str;
+                scrollbox.rows = getRows(str.str);
+                // scrollbox.contentEditable = true;
+                scrollbox.onfocus = updateEditableText;
+                scrollbox.onblur = editedEditableText;
+                scrollbox.onkeydown = contentEditKeydownEvent;
+                d3.appendChild(scrollbox);
+                let d4 = document.createElement("td");
+                let scrollbox2 = document.createElement("div");
+                scrollbox2.className = "scrollbox";
+                scrollbox2.innerHTML = str.strColor;
+                d4.appendChild(scrollbox2);
+                r.appendChild(d1);
+                r.appendChild(d2);
+                r.appendChild(d3);
+                r.appendChild(d4);
+                document.getElementById("addItemsHere").appendChild(r);
+            });
+        }
+
+        async function getStringChunk(file) {
+            let fr = new FileReader();
+            let mapChkData = await new Promise(res => {
+                fr.onload = evt => res(evt.target.result);
+                fr.readAsArrayBuffer(file);
+            }).then(data => extractChk(data));
+            let statTxtFind = findChunk(new Uint8Array(mapChkData), "STR ", isGoodStrChunk);
+            if(statTxtFind) {
+                return {
+                    "type" : "STR",
+                    "found" : statTxtFind,
+                    "data" : statTxtFind.data
+                };
+            }
+            else {
+                let statTxtFindX = findChunk(new Uint8Array(mapChkData), "STRx", isGoodStrXChunk);
+                if(statTxtFindX) {
+                    return {
+                        "type" : "STRx",
+                        "found" : statTxtFindX,
+                        "data" : statTxtFindX.data
+                    };
+                }
+                else {
+                    return {
+                        "type" : "notFound"
+                    };
+                }
+            }
+        }
+
+        async function loadTbl(file) {
+            let chunkData = await getStringChunk(file);
+            if(chunkData.type == "STR") {
+                let statTbl = parseTbl(chunkData.data, getDecodeCharset());
+                updateAllTexts(statTbl);
+                setStrXCheckbox(false);
+            }
+            else if(chunkData.type == "STRx"){
+                let statTblX = parseTblX(chunkData.data, getDecodeCharset());
+                updateAllTexts(statTblX);
+                setStrXCheckbox(true);
+            }
+            else {
+                updateAllTexts([{
+                    "id" : 1,
+                    "offset" : -1,
+                    "str" : "Unable to read map strings.",
+                    "strColor" : "Unable to read map strings.",
+                }]);
+            }
+        }
+
+        function setStrXCheckbox(state) {
+            document.getElementById("build-str-x").checked = state;
+        }
+
+        async function processDataAndSaveMpq(saveChk = false) {
+            if(document.getElementById("loadFile").files.length < 1) {
+                console.log("Need file!");
+                return;
+            }
+            let file = document.getElementById("loadFile").files[0];
+            let strings = getStringsFromHTML();
+            let buildStrX = !!document.getElementById("build-str-x").checked;
+            let saveLinkElem = document.getElementById("save-link");
+            let data = buildTbl(strings, getDecodeCharset(), buildStrX);
+            await saveMpq(file, data, strings, saveChk, buildStrX, saveLinkElem);
+        }
+
+        async function processDataAndSaveStrings(evt) {
+            if(document.getElementById("loadFile").files.length < 1) {
+                console.log("Need file!");
+                return;
+            }
+            saveStringsData();
+        }
+
+        async function loadStringsEvent(evt) {
+            document.getElementById("load-strings-file").click();
+        }
+
+        async function loadStringsFileEvent(evt) {
+            let files = document.getElementById("load-strings-file").files;
+            if(files.length > 0) {
+                await loadStringsData(document.getElementById("load-strings-file").files[0]);
+            }
+        }
+        function contentEditKeydownEvent(evt) {
+            requestAnimationFrame(function() {
+                evt.target.rows = getRows(evt.target.value);
+            });
+        }
+
+        function saveFile(buffer, filename, linkElem) {
+            let blob = new Blob([buffer]);
+            let url = URL.createObjectURL(blob);
+            linkElem.href = url;
+            linkElem.download = filename;
+            linkElem.click();
+        }
+
+        async function extractChk(mpqData) {
+            let mpq = await MPQ.fromArrayBuffer(mpqData);
+            let chkData = mpq.readFile("staredit\\scenario.chk");
+            mpq.close();
+            return chkData;
+        }
+
+        async function loadMPQ(mpqData) {
+            let mpq = await MPQ.fromArrayBuffer(mpqData);
+            return mpq;
+        }
+
+        function replaceChk(mpq, chkData) {
+            // Starcraft 1.16 must use PKWARE compression.
+            // zlib, bzip2 compressed maps can be read in SC:R, but will kill 1.16.
+            // lzma does not work in either game.
+            return mpq.addFileFromArrayBuffer("staredit\\scenario.chk", chkData, {
+                "compression" : ["pkware"],
+                "encrypt" : true,
+                "fixKey" : false,
+                "replace" : true
+            });
+        }
+
+        async function saveMpq(file, newStringData, strings, saveChk, strX, saveLinkElem) {
+            let fr = new FileReader();
+            let mpq = await new Promise(res => {
+                fr.onload = evt => res(evt.target.result);
+                fr.readAsArrayBuffer(file);
+            }).then(data => loadMPQ(data));
+            let chkArrayBuffer = mpq.readFile("staredit\\scenario.chk");
+            let newStrType = strX ? "STRx" : "STR ";
+            let chkData = replaceChunk(Array.from(new Uint8Array(chkArrayBuffer)), "STR ", newStrType, isGoodStrChunk, newStringData);
+
+            if(!chkData) {
+                chkData = replaceChunk(Array.from(new Uint8Array(chkArrayBuffer)), "STRx", newStrType, isGoodStrXChunk, newStringData);
+            }
+
+            // Remove the framework trigger
+            chkData = chkValueReplace(chkData, 120391885, 120389632, 2, 0);
+            chkData = chkValueReplace(chkData, 120415682, 120389632, 2, 0);
+
+            if(!chkData) {
+                throw new Error("Unable to replace chunk on map!")
+                return;
+            }
+
+            if(saveChk) {
+                saveFile(chkData, "scenario.chk", saveLinkElem);
+                return;
+            }
+
+            let resultMPQData;
+            // Try replacing the chk file first
+            try {
+                replaceChk(mpq, chkData);
+                resultMPQData = mpq.toArrayBuffer();
+            }
+            // If replacing fails (e.g. a protected map), use the other method.
+            catch(ef) {
+                // Construct a new MPQ.
+                // These are the default parameters, so the entire param object can be omitted.
+                // These options must be used for Starcraft 1.16 or the game will crash.
+                let newMpq = await MPQ.create(`temp_${new Date().valueOf()}.mpq`, {
+                    "version" : 1,
+                    "fileFlagsListfile" : {
+                        "compression" : ["pkware"],
+                        "encrypt" : true,
+                        "fixKey" : false,
+                    },
+                    "fileFlagsAttributes" : {
+                    },
+                    "fileFlagsSignature" : {
+                    },
+                });
+
+                // Add the map to the newly created MPQ.
+                replaceChk(newMpq, chkData);
+
+                // Try each string if it contains data file (i.e. WAVs), then add to the new archive.
+                let baseName = `tempfile_${new Date().valueOf()}_`;
+                strings.forEach((data, i) => {
+                    let str = data.str;
+                    if(!/[\r\n\x00-\x1f<>]/.test(str)) {
+                        try {
+                            if(str.length > 1 && mpq.hasFile(str)) {
+                                let tempFileName = baseName + i.toString(16) + ".xxx";
+                                mpq.extractFile(str, tempFileName);
+                                newMpq.addFile(tempFileName, str);
+                                console.log("added file " + str);
+                            }
+                        }
+                        catch(e) {
+                            console.log("failed to added file " + str);
+                        }
+                    }
+                });
+
+                // Get the data.
+                resultMPQData = newMpq.toArrayBuffer();
+                newMpq.close();
+            }
+            finally {
+                mpq.close();
+            }
+
+            // save file
+            saveFile(resultMPQData, file.name, saveLinkElem);
+        }
+
+        function showStatus(t) {
+            document.getElementById("status").style.display = "block";
+            document.getElementById("status-message").innerHTML = coloredTextLinebreaks(t.split("\n").map(s => colorText(s)));
+        }
+
+        function hideStatus() {
+            document.getElementById("status").style.display = "none";
+            document.getElementById("status-message").innerHTML = "";
+        }
+
+        function init() {
+            document.getElementById("loadFile").addEventListener("change", evt => {
+                try {
+                    loadTbl(document.getElementById("loadFile").files[0]);
+                    document.getElementById("only-show-after-loaded-chk").style.display = "block";
+                }
+                catch(e) {
+                    showStatus("Load failed (" + document.getElementById("loadFile").files[0].name + ")");
+                }
+            });
+            document.getElementById("save-map").addEventListener("click", processDataAndSaveMpq.bind(null, false));
+            document.getElementById("save-map-chk").addEventListener("click", processDataAndSaveMpq.bind(null, true));
+            document.getElementById("save-strings").addEventListener("click", processDataAndSaveStrings);
+            document.getElementById("load-strings").addEventListener("click", loadStringsEvent);
+            document.getElementById("load-strings-file").addEventListener("change", loadStringsFileEvent);
+            document.getElementById("status-close").addEventListener("click", evt => hideStatus());
+        }
+        </script>
+    </head>
+    <body>
+        <div class="header">
+            Map: <input type="file" id="loadFile" accept=".scx, .scm">
+            | Encoding：<input type="text" placeholder="UTF-8" id="decode-charset" list="decode-datalist">
+            <datalist id="decode-datalist">
+                <option>UTF-8</option>
+                <option>EUC-KR</option>
+                <option>ISO-8859-1</option>
+            </datalist>
+            <div id="only-show-after-loaded-chk">
+                <a href="javascript:void(0)" id="save-map">Save Map</a>
+                | <a href="javascript:void(0)" id="save-map-chk">Save CHK</a>
+                | <a href="javascript:void(0)" id="save-strings">Export Strings</a>
+                | <a href="javascript:void(0)" id="load-strings">Import Strings</a>
+                <br>
+                <div id="build-str-x-wrapper">
+                    <input id="build-str-x" type="checkbox">
+                    <span id="build-str-x-label">Build Extended String Table</span>
+                </div>
+            </div>
+        </div>
+        <table>
+            <thead></thead>
+            <tbody id="addItemsHere">
+                <tr>
+                    <th>ID</th>
+                    <th>Offset</th>
+                    <th>Content</th>
+                    <th>ColorText</th>
+                </tr>
+            </tbody>
+        </table>
+        <div id="status">
+            <div id="status-message"></div>
+            <a href="javascript:void(0)" id="status-close">x</a>
+        </div>
+        <a id="save-link"></a><input type="file" id="load-strings-file" accept="text/*,.txt">
+        <script>
+        init();
+        </script>
+    </body>
+</html>
