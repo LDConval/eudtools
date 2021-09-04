@@ -86,9 +86,13 @@ var elementAttribsData = {
     ],
     "ko" : [
         ["#unitqr-input-text, #tileqr-input-text", "placeholder", "QR 코드로 변환하려면 여기에 텍스트를 입력하십시오"],
+        ["#mmdraw-size-width", "placeholder", "너비"],
+        ["#mmdraw-size-height", "placeholder", "높이"],
     ],
     "zh" : [
         ["#unitqr-input-text, #tileqr-input-text", "placeholder", "输入想要转换为二维码的文字或链接"],
+        ["#mmdraw-size-width", "placeholder", "宽度"],
+        ["#mmdraw-size-height", "placeholder", "高度"],
     ]
 };
 

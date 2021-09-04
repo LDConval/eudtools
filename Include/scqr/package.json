@@ -1,17 +1,20 @@
 {
   "name": "eudtools-qrcode",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "index.js",
   "dependencies": {
     "bufferpack": "^0.0.6",
-    "qrcode": "^1.4.4",
-    "sharp": "^0.29.0"
+    "qrcode": "^1.4.4"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@babel/core": "^7.15.5",
+    "@babel/preset-env": "^7.15.4",
+    "babelify": "^10.0.0"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "browserify src/main.js | uglifyjs -c > bundle.js"
+    "build": "browserify src/main.js -t babelify --presets @babel/preset-env | uglifyjs -c > bundle.js"
   },
   "author": "LDConval",
   "license": "MIT"

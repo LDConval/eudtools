@@ -367,7 +367,7 @@ input[type="radio"] {
 }
 
 #function-options-tileqr {
-    display: none;
+    // display: none;
 }
 
 #function-options-mmdraw {
@@ -375,7 +375,7 @@ input[type="radio"] {
 }
 
 .map-info, .function-tabs, .results {
-    display: none;
+    // display: none;
 }
 
 .status-container {
