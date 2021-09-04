@@ -1,0 +1,17 @@
+{
+  "name": "eudtools-qrcode",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "bufferpack": "^0.0.6",
+    "qrcode": "^1.4.4",
+    "sharp": "^0.29.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "LDConval",
+  "license": "MIT"
+}
