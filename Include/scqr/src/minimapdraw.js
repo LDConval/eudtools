@@ -158,7 +158,15 @@ async function patchChkDrawMinimap(chkData, imageFile, options = {}) {
     let unitsData = findChunk(chkData, "UNIT", validateUnitSection);
     let units = chkstructs.unpackAllUnits(unitsData.data);
 
-    let unitsNew = mergeUnits(minimapUnits, units);
+    // Layer down start locations for other players.
+    // This will make the qrcode harder to scan idk why.
+    if(options.layerDown) {
+        var unitsNew = mergeUnitsLayerDown(units, minimapUnits, []);
+    }
+    else {
+        var unitsNew = mergeUnits(minimapUnits, units);
+    }
+
     unitsNew = mergeUnits(unitsNew, gasUnits);
 
     let unitsNewBuffer = chkstructs.packAllUnits(unitsNew);
