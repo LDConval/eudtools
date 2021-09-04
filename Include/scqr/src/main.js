@@ -50,7 +50,10 @@ function init() {
     $Q("#download-map").addEventListener("click", saveMapClick);
     $Q("#download-chk").addEventListener("click", saveChkClick);
 
-    $Q("#link-change-language").addEventListener("click", changeLocale);
+    $Q("#link-change-language").addEventListener("click", evt => {
+        let locale = changeLocale();
+        document.body.lang = locale;
+    });
 
     let locale = autoSetLocale();
     document.body.lang = locale;

@@ -152,6 +152,7 @@ function changeLocale() {
         currentLocale = "ko";
     }
     translateElements(elementsData[currentLocale], elementAttribsData[currentLocale]);
+    return currentLocale;
 }
 
 function translateElements(elemsData, elemsAttribsData) {
