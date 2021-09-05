@@ -1,5 +1,3 @@
-(function(exports) {
-
 function bytes2word(byte1, byte2) {
 	return (byte2 << 8) + byte1;
 }
@@ -19,11 +17,9 @@ function dword2words(dw) {
 	return [dw & 65535, (dw >>> 16) & 65535];
 }
 
-exports.bytes2word = bytes2word;
-exports.bytes2dword = bytes2dword;
-exports.words2dword = words2dword;
-exports.dword2bytes = dword2bytes;
-exports.word2bytes = word2bytes;
-exports.dword2words = dword2words;
-	
-})(typeof window === 'object' ? window : module.exports);
+module.exports.bytes2word = bytes2word;
+module.exports.bytes2dword = bytes2dword;
+module.exports.words2dword = words2dword;
+module.exports.dword2bytes = dword2bytes;
+module.exports.word2bytes = word2bytes;
+module.exports.dword2words = dword2words;
