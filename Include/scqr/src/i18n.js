@@ -106,7 +106,9 @@ var textData = {
         "Unknown error! cannot convert map" : "알 수없는 오류! 맵을 변환할 수 없습니다.",
         "Cannot save file!" : "파일을 저장할 수 없습니다!",
         "Error! cannot pack map as MPQ (try saving as CHK)" : "오류! 맵을 MPQ로 포장할 수 없습니다(CHK로 저장해 보십시오)",
-        "Failed to read map data!" : "지도 데이터를 읽지 못했습니다!"
+        "Failed to read map data!" : "지도 데이터를 읽지 못했습니다!",
+        "No input text!" : "텍스트를 입력하십시오!",
+        "Please upload image file!" : "이미지를 업로드해 주세요!"
     },
     "zh" : {
         "No input map!": "没有输入图！",
@@ -116,7 +118,9 @@ var textData = {
         "Unknown error! cannot convert map": "未知错误！无法转换地图",
         "Cannot save file!": "无法保存文件！",
         "Error! cannot pack map as MPQ (try saving as CHK)": "错误！不能将地图打包为 MPQ（尝试将地图保存为 CHK）",
-        "Failed to read map data!" : "无法读取地图数据！"
+        "Failed to read map data!" : "无法读取地图数据！",
+        "No input text!" : "没有输入文本！",
+        "Please upload image file!" : "请上传图像文件！"
     }
 }
 

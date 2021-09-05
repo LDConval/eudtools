@@ -358,7 +358,7 @@ async function packMpq(origMpqData, chkData) {
 }
 
 async function createMpq(chkData) {
-    let mpq = await MPQ.create(`temp_scqr.mpq`, {
+    let mpq = await MPQ.create(`temp_scqr_${Math.floor(Math.random()*100000)}.mpq`, {
         "version" : 1,
         "fileFlagsListfile" : {
             "compression" : ["pkware"],
@@ -393,12 +393,24 @@ async function saveMapOrChkClick(outputRawChk, evt) {
     try {
         var newChkData;
         if(selectedFunction == 1) {
+            if($Q("#unitqr-input-text").value == "") {
+                warning(getI18n("No input text!"));
+                return;
+            }
             newChkData = unitqrUpdateChk(mapChkData);
         }
         else if(selectedFunction == 2) {
+            if($Q("#tileqr-input-text").value == "") {
+                warning(getI18n("No input text!"));
+                return;
+            }
             newChkData = tileqrUpdateChk(mapChkData);
         }
         else if(selectedFunction == 3) {
+            if(!$Q("#mmdraw-image-file").files[0]) {
+                warning(getI18n("Please upload image file!"));
+                return;
+            }
             newChkData = await mmdrawUpdateChk(mapChkData);
         }
         else {
