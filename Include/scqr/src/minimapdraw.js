@@ -187,17 +187,22 @@ async function previewMinimapImage(imageFile, canvas, outputCanvasElem, width, h
     let colorArray = applyPlayerColors(pColors).map(s => s.reduce((a,b) => a.concat(b).concat([255]), [])).reduce((a,b) => a.concat(b), []);
     let _canvasW = outputCanvasElem.offsetWidth;
     let _canvasH = outputCanvasElem.offsetHeight;
-    outputCanvasElem.width = width;
-    outputCanvasElem.height = height;
+
+    let size = Math.max(width, height);
+    let xPos = Math.floor((size - width) / 2);
+    let yPos = Math.floor((size - height) / 2);
+
+    outputCanvasElem.width = size;
+    outputCanvasElem.height = size;
     outputCanvasElem.style.setProperty("width",  `${_canvasW}px`);
     outputCanvasElem.style.setProperty("height", `${_canvasH}px`);
 
     let outputCanvas = outputCanvasElem.getContext('2d');
     outputCanvas.fillStyle = 'rgb(0, 0, 0)';
-    outputCanvas.fillRect(0, 0, width, height);
+    outputCanvas.fillRect(0, 0, size, size);
 
     let newImageData = new ImageData(new Uint8ClampedArray(colorArray), width, height);
-    outputCanvas.putImageData(newImageData, 0, 0);
+    outputCanvas.putImageData(newImageData, xPos, yPos);
 }
 
 module.exports = {
