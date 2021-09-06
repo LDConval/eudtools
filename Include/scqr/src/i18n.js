@@ -102,8 +102,8 @@ var textData = {
     "en" : {},
     "ko" : {
         "No input map!" : "입력맵이 없습니다!",
-        "No map data! load map from input first" : "지도 데이터가 없습니다! 입력에서 먼저 로드 맵",
-        "No function selected!" : "어떤 기능을 선택하지 않습니다!",
+        "No map data! load map from input first" : "지도 데이터가 없습니다! 먼저 입력에서 지도 업로드",
+        "No function selected!" : "기능을 선택하지 않았습니다.",
         "Cannot apply function!" : "기능을 적용할 수 없습니다!",
         "Unknown error! cannot convert map" : "알 수없는 오류! 맵을 변환할 수 없습니다.",
         "Cannot save file!" : "파일을 저장할 수 없습니다!",
