@@ -38,7 +38,8 @@ var elementsData = {
         ["#bubble-hint-mmdraw-usegas", 0, "청록색을 위해 플레이어 11용 간헐천을 만듭니다. 게임이 시작될 때 트리거를 사용하여 제거해야 합니다."],
         ["#bubble-hint-tileqr-tiles", 0, "SCMDraft 타일 인덱스 도구(예: 0100.01)에서 번호를 사용할 수 있습니다."],
         ["#bubble-hint-mmdraw-image", 0, "블랙은 투명합니다."],
-        ["#bubble-hint-mmdraw-size", 0, "단위 수입니다."]
+        ["#bubble-hint-mmdraw-size", 0, "단위 수입니다."],
+        ["#palette-details", 0, "팔레트: f40404,0c49cc,2cb494,87409c,f88e14,703014,cce0d0,fcfc38,088008,fcfc7c,ebc4b0,4067d4,000000[,00e3fc]"],
     ],
     "zh" : [
         ["title", 0, "星际重制版二维码工具"],
@@ -78,6 +79,7 @@ var elementsData = {
         ["#bubble-hint-tileqr-tiles", 0, "可以填SCMDraft的地形工具标题栏上的数字（如0100.01）"],
         ["#bubble-hint-mmdraw-image", 0, "黑色是透明"],
         ["#bubble-hint-mmdraw-size", 0, "单位的数量"],
+        ["#palette-details", 0, "调色板：f40404,0c49cc,2cb494,87409c,f88e14,703014,cce0d0,fcfc38,088008,fcfc7c,ebc4b0,4067d4,000000[,00e3fc]"],
     ]
 };
 
