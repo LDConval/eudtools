@@ -1,15 +1,42 @@
 let availableTranslations = [{
     "key": "en",
     "text": "English"
-}, /*{
-    "key": "kr",
+}, {
+    "key": "ko",
     "text": "\ud55c\uad6d\uc5b4"
-},*/ {
+}, {
     "key": "zh-CN",
     "text": "\u4e2d\u6587"
 }];
 
 var i18nButtonMakerData = {
+    "ko" : [
+        ["title", 0, "버튼 작성자"],
+        ["#title_text", 0, "버튼 작성자"],
+        ["#trait-position-label", 0, "위치"],
+        ["#trait-icon-label a", 0, "아이콘"],
+        ["#trait-icon-label", 0, ""],
+        ["#trait-reqfun-label", 0, "요구 기능"],
+        ["#trait-actfun-label", 0, "행동 기능"],
+        ["#trait-reqvar-label", 0, "요구 변수"],
+        ["#trait-actvar-label", 0, "행동 변수"],
+        ["#trait-actstr-label", 0, "액티브 라벨"],
+        ["#trait-reqstr-label", 0, "비활성"],
+        ["#trait-reqstr-label a", 0, "라벨"],
+        ["#trait-reqstr-label", 1, ""],
+        ["#input-player-label", 0, "선수"],
+        ["#input-cond-label", 0, "조건"],
+        ["#input-act-label", 0, "행동"],
+        ["#input-offset-label", 0, "오프셋"],
+        ["#generate-json-action", 0, "JSON 생성"],
+        ["#generate-trigger-action", 0, "트리거 생성"],
+        ["#button-add-action", 0, "더하다"],
+        ["#button-sort-action", 0, "종류"],
+        ["#button-delete-action", 0, "삭제"],
+        ["#button-reset-action", 0, "재설정"],
+        ["#redirect-action", 0, "리디렉션할"],
+        ["#redirect-cancel", 0, "취소"],
+    ],
     "zh-CN" : [
         ["title", 0, "按钮制作器"],
         ["#title_text", 0, "按钮制作器"],
@@ -41,6 +68,9 @@ var i18nButtonMakerData = {
 
 function translateOthers(key) {
     switch(key) {
+        case "ko":
+        addButtonTypes = ["기본", "현재 복사", "빌드 유닛", "테란 건물", "프로토스 빌딩", "저그 빌딩", "기술 사용", "업그레이드", "기술 개발", "기본 버튼", "복사 단위"];
+        break;
         case "zh-CN":
         addButtonTypes = ["默认", "复制当前显示", "建造单位", "人族建筑", "星灵建筑", "虫族建筑", "使用技能", "升级科技", "研究技能", "基础按钮组", "从单位复制"];
         break;
