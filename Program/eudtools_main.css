@@ -346,6 +346,33 @@ textarea
 	width: 30px;
 }
 
+/* Tables */
+
+#label_tables_player
+{
+	top: 100px;
+	left: 628px;
+}
+#input_tables_player
+{
+	position: absolute;
+	top: 100px;
+	left: 712px;
+	width: 30px;
+}
+#label_tables_unit
+{
+	top: 125px;
+	left: 628px;
+}
+#input_tables_unit
+{
+	position: absolute;
+	top: 125px;
+	left: 712px;
+	width: 30px;
+}
+
 /* Reqs */
 
 #label_req
@@ -1130,6 +1157,7 @@ textarea
 #selgroup_area {display: none;}
 #keygroup_area {display: none;}
 #unitnodehelper_area {display: none;}
+#tables_area {display: none;}
 #req_area {display: none;}
 #buttonfunction_area {display: none;}
 #icecc_area {display: none;}

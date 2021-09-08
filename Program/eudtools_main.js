@@ -225,6 +225,7 @@ function hideExtraAreas() {
 	$("selgroup_area").style.display = "none";
 	$("keygroup_area").style.display = "none";
 	$("unitnodehelper_area").style.display = "none";
+	$("tables_area").style.display = "none";
 	$("req_area").style.display = "none";
 	$("buttonfunction_area").style.display = "none";
 	$("icecc_area").style.display = "none";
@@ -437,6 +438,11 @@ function useOption(evt)
 		case 22: // player structure
 		$("input_offset").value = memorylist[optID][0];
 		$("input_length").value = memorylist[optID][1] + "/36";
+		break;
+		case 23: // tables
+		$("input_offset").value = memorylist[optID][0];
+		$("input_length").value = memorylist[optID][1];
+		$("tables_area").style.display = "block";
 		break;
 		default:
 	}
@@ -715,6 +721,10 @@ function keygroupUpdate3() {
 }
 function unitnodehelperUpdate() {
 	$("input_object").value = (parseInt($("input_unitnodehelper").value) == 0) ? 0 : 1700 - parseInt($("input_unitnodehelper").value);
+	updateMemory();
+}
+function tablesUpdate() {
+	$("input_object").value = (parseInt($("input_tables_unit").value)) * 12 + parseInt($("input_tables_player").value) - 1;
 	updateMemory();
 }
 function reqUpdate()
@@ -1127,6 +1137,8 @@ function attachEventCallbacks() {
 	$("input_keygroup_unit").onkeydown = function(){setTimeout(keygroupUpdate2,25);};
 	$("input_keygroup_index").onkeydown = function(){setTimeout(keygroupUpdate3,25);};
 	$("input_unitnodehelper").onkeydown = function(){setTimeout(unitnodehelperUpdate,25);};
+	$("input_tables_unit").onkeydown = function(){setTimeout(tablesUpdate,25);};
+	$("input_tables_player").onkeydown = function(){setTimeout(tablesUpdate,25);};
 	$("input_req").onkeydown = function(){setTimeout(reqUpdate,25);};
 	$("input_textstack_text").onkeydown = function(){setTimeout(stackTextUpdate,25);};
 	$("input_textstack_text").onpaste = function(){setTimeout(stackTextUpdate,25);};
