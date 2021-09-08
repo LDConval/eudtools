@@ -1,0 +1,18 @@
+weapon224 scourge(target)
+weapon181,184 scourge(player)
+
+weapon198,206,208,212,214,216,218,220,220,226 stone(target)
+weapon197,199~205,207,211,213,215,217,219,221,223 stone(player)
+
+weapon164,166,167,169,170,173~175,177,178,182,183,185,186,188~194 attack but doesnt do anything
+weapon163 attack but doesnt do anything
+
+weapon163 has a Ghost icon!
+
+Weapon180 Machine Shop이 공격자에게 나타났습니다.
+Weapon179 침몰한 식민지가 공격자에게 나타났습니다.
+Weapon172 스카라베가 공격자에게 나타났습니다.
+Weapon171 포톤 캐논이 공격자에게 나타났습니다.
+Weapon165 오버마인드가 공격자에게 나타났습니다.
+
+weapon130 gives error message when attacking any unit (NoWeapon)

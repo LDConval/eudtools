@@ -1,0 +1,13 @@
+0x657998 Target Flags
+
+0x001 Air
+0x002 Ground
+0x004 Mechanical
+0x008 Organic
+0x010 non-Building
+0x020 non-Robotic
+0x040 Terrain
+0x080 Organic or Mechanical
+0x100 Own
+
+이것은 실제로 "이 무기가 피해를 줄 수 있는 유닛"에 대한 더 나은 생각입니다. 예를 들어 지상 무기에 공중 + 지상 대상과 스플래시를 부여하면 지상 유닛을 공격할 때 주변의 모든 공중 유닛도 스플래쉬 피해를 입습니다. 또한 기계 타겟팅으로 설정하면 무기는 모든 유형의 지상 유닛을 공격할 수 있지만 기계 플래그가 있는 유닛에만 피해를 줍니다.

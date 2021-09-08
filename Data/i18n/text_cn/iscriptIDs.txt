@@ -1,0 +1,412 @@
+0,Scourge
+1,Unknown1
+2,Scourge Death
+3,Scourge Explosion
+4,Broodling
+5,Broodling Remnants
+6,Infested Terran
+7,Infested Terran Explosion
+8,Guardian Cocoon
+9,Defiler
+10,Defiler Remnants
+11,Drone
+12,Drone Remnants
+13,Egg
+14,Egg Remnants
+15,Guardian
+16,Guardian Birth
+17,Guardian Death
+18,Hydralisk
+19,Hydralisk Remnants
+20,Infested Kerrigan
+21,Larva
+22,Larva Remnants
+23,Mutalisk
+24,Mutalisk Death
+25,Overlord
+26,Overlord Death
+27,Queen
+28,Queen Death
+29,Ultralisk
+30,Ultralisk Remnants
+31,Zergling
+32,Zergling Remnants
+33,Zerg Air Death Explosion
+34,Zerg Building Explosion
+35,Unknown35
+36,Zerg Birth
+37,Egg Spawn
+38,Cerebrate
+39,Infested Command Center
+40,Spawning Pool
+41,Evolution Chamber
+42,Creep Colony
+43,Hatchery
+44,Hive
+45,Lair
+46,Sunken Colony
+47,Mature Chrysalis
+48,Greater Spire
+49,Defiler Mound
+50,Queen Nest
+51,Nydus Canal
+52,Overmind(with Shell)
+53,Overmind Remnants
+54,Overmind(without Shell)
+55,Ultralisk Cavern
+56,Extractor
+57,Hydralisk Den
+58,Spire
+59,Spore Colony
+60,Infested Command Center Overlay
+61,Zerg Construction(Small)
+62,Zerg Construction(Medium)
+63,Zerg Building Morph
+64,Zerg Construction(Large)
+65,Zerg Building Spawn
+66,Battlecruiser
+67,Civilian
+68,Dropship
+69,Firebat
+70,Ghost
+71,Ghost Remnants
+72,Ghost Death
+73,Nuke Beam
+74,Nuke Target Dot
+75,Goliath(Base)
+76,Goliath(Turret)
+77,Sarah Kerrigan
+78,Marine
+79,Marine Remnants
+80,Marine Death
+81,Scanner Sweep
+82,Wraith
+83,Wraith Afterburners
+84,SCV
+85,Unknown85
+86,Vulture
+87,Spider Mine
+88,Science Vessel(Base)
+89,Science Vessel(Turret)
+90,Siege Tank(Tank) Base
+91,Siege Tank(Tank) Turret
+92,Siege Tank(Siege) Base
+93,Siege Tank(Siege) Turret
+94,Academy
+95,Academy Overlay
+96,Barracks
+97,Armory
+98,Armory Overlay
+99,Comsat Station
+100,Comsat Connector
+101,Comsat Overlay
+102,Command Center
+103,Command Center Overlay
+104,Crashed Battlecruiser
+105,Supply Depot
+106,Supply Depot Overlay
+107,Control Tower
+108,Control Tower Connector
+109,Control Tower Overlay
+110,Unknown110
+111,Factory
+112,Factory Overlay
+113,Covert Ops
+114,Covert Ops Connector
+115,Covert Ops Overlay
+116,Ion Cannon
+117,Machine Shop
+118,Machine Shop Connector
+119,Missile Turret(Base)
+120,Missile Turret(Turret)
+121,Physics Lab
+122,Physics Lab Connector
+123,Bunker
+124,Bunker Overlay
+125,Refinery
+126,Science Facility
+127,Science Facility Overlay
+128,Nuclear Silo
+129,Nuclear Silo Connector
+130,Nuclear Silo Overlay
+131,Nuclear Missile
+132,Unknown132
+133,Nuke Explosion
+134,Starport
+135,Starport Overlay
+136,Engineering Bay
+137,Engineering Bay Overlay
+138,Terran Construction(Large)
+139,Terran Construction(Medium)
+140,Terran Construction(Small)
+141,Addon Construction
+142,Explosion(Small)
+143,Explosion(Medium)
+144,Explosion(Large)
+145,Building Rubble Header
+146,Arbiter
+147,Archon Energy
+148,Archon Being
+149,Archon Swirl
+150,Unknown150
+151,Carrier
+152,Dark Templar(Hero)
+153,Dragoon
+154,Dragoon Remnants
+155,Interceptor
+156,Probe
+157,Shuttle
+158,High Templar
+159,Reaver
+160,Scarab
+161,Scout
+162,Scout Engines
+163,Zealot
+164,Zealot Death
+165,Observer
+166,Templar Archives
+167,Assimilator
+168,Observatory
+169,Unknown169
+170,Citadel Of Adun
+171,Forge
+172,Forge Overlay
+173,Gateway
+174,Cybernetics Core
+175,Cybrnetics Core Overlay
+176,Khaydarin Crystal Formation
+177,Nexus
+178,Nexus Overlay
+179,Photon Cannon
+180,Arbiter Tribunal
+181,Pylon
+182,Robotics Facility
+183,Shield Battery
+184,Shield Battery Overlay
+185,Stargate
+186,Stargate Overlay
+187,Stasis Cell/Prison
+188,Robotics Support Bay
+189,Temple
+190,Fleet Beacon
+191,Warp Anchor
+192,Warp Flash Header
+193,Warp Texture
+194,Unknown194
+195,Unknown195
+196,Unknown196
+197,Unknown197
+198,Ragnasaur(Ashworld Critter)
+199,Rhynadon(Badlands Critter)
+200,Bengalaas(Jungle Critter)
+201,Vespene Geyser
+202,Vespene Geyser2
+203,Vespene Geyser Shadow
+204,Mineral Field Type1
+205,Mineral Field Type2
+206,Mineral Field Type3
+207,Unknown207
+208,Zerg Beacon Overlay
+209,Terran Beacon Overlay
+210,Protoss Beacon Overlay
+211,Zerg Beacon
+212,Protoss Beacon
+213,Terran Beacon
+214,Unknwon214
+215,Powerups Shadow Header
+216,Flag
+217,Psi Emitter
+218,Data Disk
+219,Crystals Shadows
+220,Young Chrysalis
+221,Ore Chunk
+222,Ore Chunk2
+223,Gas Sac
+224,Gas Sac2
+225,Gas Orb
+226,Gas Orb2
+227,Gas Tank
+228,Gas Tank2
+229,Archon Overlay
+230,Particle Beam Hit
+231,Dual Photon Blaster Hit
+232,Anti-Matter Missile
+233,Pulse Cannon
+234,Phase Disruptor
+235,STA/STS Photon Cannon Overlay
+236,Psionic Storm
+237,Fusion Cutter Hit
+238,Gauss Rifle Hit
+239,Gemini Missiles
+240,Longbolt Missile
+241,C-10 Canister Rifle Hit
+242,Fragmentation Grenade
+243,ATA/ATS Laser Battery/Burst Lasers
+244,Unknown244
+245,Lockdown Hit
+246,Arclite Shock Cannon Hit
+247,Yamato Gun
+248,Yamato Gun Trail
+249,Lockdown/EMP Shockwave Missile
+250,Siege Tank(Tank) Turret Overlay
+251,Siege Tank(Siege) Turret Overlay
+252,Science Vessel Overlay
+253,Hallucination Hit
+254,Unknown254
+255,Unknown255
+256,Needle Spines Hit
+257,Venom (Unused)
+258,Subterranean Tentacle
+259,Venom Hit (Unused)
+260,Acid Spore
+261,Acid Spore Hit
+262,Guardian Attack Overlay
+263,Unknown263
+264,Glave Wurm
+265,Glave Wurm Hit
+266,Seeker Spores
+267,Queen Spell Holder
+268,Psionic Shockwave Hit
+269,Glave Wurm Trail
+270,Seeker Spores Overlay
+271,Acid Spray
+272,Unknown272
+273,Longbolt\Halo\Gemini Missiles Trail
+274,Burowing Dust
+275,Shadow Header
+276,Shield Overlay
+277,Unknown277
+278,Double Explosion
+279,Nuclear Missile Death
+280,Spider Mine Explosion
+281,Vespene Geyser Smokes
+282,Unknown282
+283,Fragmentation Grenade Hit
+284,Grenade Shot Smoke
+285,Phase Disruptor/Anti-Matter Missile Hit
+286,Scarab/Anti-Matter Missile Overlay
+287,Scarab Hit
+288,Cursor Marker
+289,Circle Marker
+290,Carrier Engines
+291,Engines/Glow Header
+292,White Circle
+293,Battlecruiser Attack Overlay
+294,ATA/ATS Laser Battery/Burst Lasers Hit
+295,Unknown295
+296,Plague Cloud
+297,Plague Overlay
+298,Consume
+299,Dark Swarm
+300,Defensive Matrix Overlay
+301,Defensive Matrix Hit
+302,Ensnare
+303,Ensnare Overlay
+304,Irradiate
+305,Recall Field
+306,Stasis Field Overlay
+307,Stasis Field Hit
+308,Recharge Shields(Large)
+309,Recharge Shields(Small)
+310,High Templar Glow
+311,Needle Spines Overlay
+312,Flamethrower
+313,Gemini Missiles Explosion
+314,Yamato Gun Overlay
+315,Yamato Gun Hit
+316,Unknown316
+317,Psionic Storm Part Variant1
+318,Psionic Storm Part Variant2
+319,EMP Shockwave Hit(Part1)
+320,EMP Shockwave Hit(Part2)
+321,Hallucination Death
+322,Flames(Small)
+323,Unknown323
+324,Bleeding(Small) Variant1
+325,Bleeding(Small) Variant2
+326,Flames(Large)
+327,Unknown327
+328,Bleeding(Large) Variant1
+329,Bleeding(Large) Variant2
+330,Dust Variant1
+331,Dust Variant2
+332,Confirm Circle
+333,Psi Field Type1
+334,Psi Field Type2
+335,Start Location
+336,Doodad Header
+337,Doodad Header(secondary)
+338,Space Platform Doodad
+339,Space Platform Doodad2
+340,Installation Doodad
+341,Installation Doodad2
+342,Installation Right Wall Fans
+343,Installation Left Wall Fans
+344,Installation Gear
+345,Floor Missile Trap
+346,Floor Missile Trap Turret
+347,Floor Gun Trap
+348,Wall Missile Trap Type1
+349,Wall Missile Trap Typet2
+350,Wall Flame Trap Type1
+351,Wall Flame Trap Type2
+352,Map Revealer
+353,Lurker Egg
+354,Lurker
+355,Unknown355
+356,Lurker Remnants
+357,Devourer
+358,Devourer Birth
+359,Devourer Death
+360,Medic
+361,Medic Remnants
+362,Valkyrie
+363,Unknown363
+364,Unknown364
+365,Dark Archon Energy
+366,Dark Archon Being
+367,Dark Archon Swirl
+368,Dark Archon Death
+369,Corsair
+370,Corsair Engines
+371,Unknown371
+372,Dark Templar(Unit)
+373,Neutron Flare
+374,Disruption Web
+375,Scantid(Desert Critter)
+376,Kakaru(Twilight Critter)
+377,Ursadon(Ice Critter)
+378,Halo Rocket
+379,Optical Flare
+380,Subterranean Spines
+381,Corrosive Acid
+382,Corrosive Acid Hit
+383,Acid Spores (1) Overlay
+384,Acid Spores (2-3) Overlay
+385,Acid Spores (4-5) Overlay
+386,Acid Spores (6-9) Overlay
+387,Ice Doodad
+388,Doodad Shadows Header (BW)
+389,Restoration Hit
+390,Mind Control Hit
+391,Optical Flare Hit
+392,Feedback
+393,Maelstorm Overlay
+394,Unknown394
+395,Unknown395
+396,Desert Doodad
+397,Desert Doodad2
+398,Desert Doodad3
+399,Desert Doodad Overlay
+400,Desert Doodad
+401,Twilight Doodad
+402,Twilight Doodad
+403,Twilight Doodad
+404,Twilight Doodad
+405,Overmind Cocoon
+406,Warp Gate
+407,Psi Disrupter
+408,Power Generator
+409,Warp Gate Overlay
+410,Xel'Naga Temple
+411,Maelstrom Hit
