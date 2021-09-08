@@ -1,8 +1,8 @@
 // must be "var"!! "const" will make the object unreachable with window.objectname
 
 var i18nElementsData = [
-    ["title", 0, "EUD工具箱 v1.25"],
-    ["#title_text", 0, "EUD工具箱 v1.25"],
+    ["title", 0, "EUD工具箱 v1.28"],
+    ["#title_text", 0, "EUD工具箱 v1.28"],
     ["#label_offset", 0, "起始："],
     ["#label_length", 0, "长度："],
     ["#label_object", 0, "物体："],
