@@ -40,6 +40,10 @@ Please refer to the [wiki](https://github.com/ar3sgice/eudtools/wiki).
 
 [https://LDConval.github.io/eudtools/Include/Icons.html](https://LDConval.github.io/eudtools/Include/Icons.html)
 
-### MapStrings.html
+### MapStringsViewX
 
-[https://LDConval.github.io/eudtools/Include/MapStringView.html](https://LDConval.github.io/eudtools/Include/MapStringView.html)
+[https://LDConval.github.io/eudtools/Include/MapStringViewX.html](https://LDConval.github.io/eudtools/Include/MapStringViewX.html)
+
+### SCQR (create QR code and minimap drawings)
+
+[https://LDConval.github.io/eudtools/Include/MapStringViewX.html](https://LDConval.github.io/eudtools/Include/SCQR.html)
