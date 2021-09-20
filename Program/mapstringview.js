@@ -226,10 +226,19 @@ function isGoodStrChunk(chunkLength, chunkData) {
     let stringCount = bytes2word(...chunkData.slice(0, 2));
     if(chunkLength > 256
     && chunkLength < 1000000
-    && stringCount >= 200
+    && stringCount >= 30
     && stringCount <= 10000
     && bytes2word(...chunkData.slice(2, 4)) >= stringCount*2
     && bytes2word(...chunkData.slice(2, 4)) <= chunkLength) {
+        try {
+            let d = Array.from(chunkData.slice(stringCount * 2 + 2)).map(s => s == 0 ? " " : "*").join("").split(" ");
+            if(!d.some(s => s.length >= 3) && d.length > 10) {
+                return false;
+            }
+        }
+        catch(e) {
+
+        }
         return true;
     }
     return false;
