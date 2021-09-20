@@ -39,11 +39,16 @@ function parseTbl(tblBuffer, charset = "utf8") {
         let j = offset;
         let stringArray = [];
         let c = 255;
-        while(c != 0) {
-            c = statTxtBytes[j++];
-            stringArray.push(c);
+        if(j > tblBuffer.length) {
+
         }
-        stringArray.pop();
+        else {
+            while(c != 0 && stringArray.length < 9999) {
+                c = statTxtBytes[j++];
+                stringArray.push(c);
+            }
+            stringArray.pop();
+        }
         try {
             rawStr = decoder.decode(new Uint8Array(stringArray));
         }
@@ -72,11 +77,16 @@ function parseTblX(tblBuffer, charset = "utf8") {
         let j = offset;
         let stringArray = [];
         let c = 255;
-        while(c != 0 && stringArray.length < 9999) {
-            c = statTxtBytes[j++];
-            stringArray.push(c);
+        if(j > tblBuffer.length) {
+
         }
-        stringArray.pop();
+        else {
+            while(c != 0 && stringArray.length < 9999) {
+                c = statTxtBytes[j++];
+                stringArray.push(c);
+            }
+            stringArray.pop();
+        }
         let rawStr;
         try {
             rawStr = decoder.decode(new Uint8Array(stringArray));
