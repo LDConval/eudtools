@@ -113,10 +113,10 @@ function readIscript(array, offset) {
             break;
 
             case 0x01: // PLAYFRAMTILE
-            case 0x2B: // ENGFRAME
             out.push(opcodeName + "\t" + readg(array, p, 2));
             p += 2;
             break;
+            case 0x2B: // ENGFRAME
             case 0x2C: // ENGSET
             out.push(opcodeName + "\t" + readg(array, p, 1));
             p += 1;
