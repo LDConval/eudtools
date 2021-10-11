@@ -48,6 +48,7 @@ var i18nElementsData = [
 	["#label_stattbl_content1",0,"문자열 1："],
 	["#label_stattbl_content2",0,"문자열 2："],
 	["#parse_stattbl",0,"생성하다"],
+    ["#parse_stattbl_batch", 0, "일괄"],
 	["#label_trigslice_player",0,"플레이어："],
 	["#label_trigslice_cond",0,"상태："],
 	["#label_trigslice_act",0,"동작："],

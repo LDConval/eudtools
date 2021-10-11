@@ -48,6 +48,7 @@ var i18nElementsData = [
     ["#label_stattbl_content1", 0, "字符串1："],
     ["#label_stattbl_content2", 0, "字符串2："],
     ["#parse_stattbl", 0, "生成"],
+    ["#parse_stattbl_batch", 0, "批量"],
     ["#label_trigslice_player", 0, "玩家："],
     ["#label_trigslice_cond", 0, "条件："],
     ["#label_trigslice_act", 0, "动作："],

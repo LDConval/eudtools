@@ -760,60 +760,60 @@ textarea
 	top: 314px;
 	left: 680px;
 	width: 570px;
-	height: 90px;
+	height: 60px;
 }
 #select_stattbl_encoding
 {
 	position: absolute;
-	top: 495px;
+	top: 465px;
 	left: 1260px;
 	width: 80px;
 }
 #parse_stattbl_cpt
 {
 	position: absolute;
-	top: 367px;
+	top: 337px;
 	left: 1260px;
 	padding: 8px 10px 10px 10px;
 }
 #hr_stattbl
 {
 	position: absolute;
-	top: 414px;
+	top: 384px;
 	left: 680px;
 	width: 570px;
 }
 #label_stattbl_offset
 {
-	top: 439px;
+	top: 409px;
 	left: 530px;
 	text-align: right;
 	width: 140px;
 }
 #label_stattbl_str1
 {
-	top: 465px;
+	top: 435px;
 	left: 530px;
 	text-align: right;
 	width: 140px;
 }
 #label_stattbl_str2
 {
-	top: 491px;
+	top: 461px;
 	left: 530px;
 	text-align: right;
 	width: 140px;
 }
 #label_stattbl_content1
 {
-	top: 517px;
+	top: 487px;
 	left: 530px;
 	text-align: right;
 	width: 140px;
 }
 #label_stattbl_content2
 {
-	top: 543px;
+	top: 513px;
 	left: 530px;
 	text-align: right;
 	width: 140px;
@@ -821,42 +821,64 @@ textarea
 #input_stattbl_offset
 {
 	position: absolute;
-	top: 439px;
+	top: 409px;
 	left: 680px;
 	width: 570px;
 }
 #input_stattbl_str1
 {
 	position: absolute;
-	top: 465px;
+	top: 435px;
 	left: 680px;
 	width: 570px;
 }
 #input_stattbl_str2
 {
 	position: absolute;
-	top: 491px;
+	top: 461px;
 	left: 680px;
 	width: 570px;
 }
 #input_stattbl_content1
 {
 	position: absolute;
-	top: 517px;
+	top: 487px;
 	left: 680px;
 	width: 570px;
 }
 #input_stattbl_content2
 {
 	position: absolute;
-	top: 543px;
+	top: 513px;
 	left: 680px;
 	width: 570px;
 }
 #parse_stattbl
 {
 	position: absolute;
-	top: 521px;
+	top: 491px;
+	left: 1260px;
+	padding: 8px 10px 10px 10px;
+}
+#hr_stattbl_batch
+{
+	position: absolute;
+	top: 539px;
+	left: 680px;
+	width: 570px;
+}
+#inputarea_stattbl_batch
+{
+	position: absolute;
+	top: 564px;
+	left: 680px;
+	width: 570px;
+	height: 60px;
+}
+#parse_stattbl_batch
+{
+	position: absolute;
+	top: 587px;
 	left: 1260px;
 	padding: 8px 10px 10px 10px;
 }

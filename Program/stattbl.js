@@ -22,10 +22,18 @@ function stattblInit()
 		$("input_stattbl_str1").value = "664";
 		$("input_stattbl_str2").value = "665";
 		$("input_stattbl_content1").value = "m<0><3>M<1>ove";
-		$("input_stattbl_content2").value = "s<0><3>S<1>top";
+        $("input_stattbl_content2").value = "s<0><3>S<1>top";
+        $("inputarea_stattbl_batch").value = `cpt=false
+offset=27380
+664=m<0><3>M<1>ove
+665="""
+s<0><3>S<1>top
+"""
+`;
 	}
 	$("parse_stattbl_cpt").onclick = stattblParseCPT;
 	$("parse_stattbl").onclick = stattblParse;
+    $("parse_stattbl_batch").onclick = stattblBatchParse;
 	$("input_stattbl_str1").addEventListener("change", function() {
 		let st = parseInt($("input_stattbl_str1").value);
 		if(isNaN(st)) {
@@ -68,23 +76,23 @@ function stattblGetEncodingSelection() {
 	return ["UTF-8", "EUC-KR", "ISO-8859-1"][selected];
 }
 
-function stattblCPT(player, cond)
+function stattblCPT(player, cond, includeLastTrigger = true)
 {
     // this part will be drastically different, so write individual functions instead of calcTrig()
     switch(getTriggerPattern(TriggerPatterns.NAME)) {
         case "tep":
         case "tepcond":
-        return stattblCPTTEP(player, cond);
+        return stattblCPTTEP(player, cond, includeLastTrigger);
         case "eud3":
-        return stattblCPTEUD3(player, cond);
+        return stattblCPTEUD3(player, cond, includeLastTrigger);
         case "scmd":
         case "scmdcond":
         default:
-        return stattblCPTSCMD(player, cond);
+        return stattblCPTSCMD(player, cond, includeLastTrigger);
     }
 }
 
-function stattblCPTTEP(player, cond)
+function stattblCPTTEP(player, cond, includeLastTrigger = true)
 {
     // If newest version still doesn't support MASKED MEMORY I'd just output "NOPE".
     return `Trigger {
@@ -108,7 +116,7 @@ ${cond}
         }
     }
 end
-Trigger {
+` + (!includeLastTrigger ? `` : `Trigger {
     players = {P${player}},
     conditions = {
 ${cond}
@@ -118,15 +126,18 @@ ${cond}
         SetMemory(0x006509b0, SetTo, ${player-1});
     }
 }
-`;
+`);
 }
 
-function stattblCPTEUD3(player, cond)
+function stattblCPTEUD3(player, cond, includeLastTrigger = true)
 {
+	if(!includeLastTrigger) {
+		return `setcurpl(EPD(dwread(0x6D1238)));\n`;
+	}
     return `setcurpl(EPD(dwread(0x6D1238)));\n// PUT YOUR STRING EDIT TRIGGERS HERE\nsetcurpl(${player-1});\n`;
 }
 
-function stattblCPTSCMD(player, cond)
+function stattblCPTSCMD(player, cond, includeLastTrigger = true)
 {
 	var out = "";
 	var separ = "\n\n//-----------------------------------------------------------------//\n\n";
@@ -158,7 +169,7 @@ Actions:
 	MemoryAddr(0x006509b0, Set To, ${player-1});
 }`;
 
-	return trgHead + separ + trgMid + separ + trgTail + separ;
+	return trgHead + separ + trgMid + separ + (includeLastTrigger ? trgTail + separ : "");
 }
 
 function parseColorCodes(str) {
@@ -239,4 +250,208 @@ function stattblEdits(offset, sp1, sp2, content1, content2) {
 		triggers: out,
 		newOffset: offset + (1 + cptContentNext) * 4
 	};
+}
+
+/*
+ * Batch editing format:
+
+   offset=28000
+   cpt=true
+   664=m<0><3>M<1>ove
+   665="""
+   Move requires:
+     Move research
+   """
+
+ */
+
+function stattblParseSettingsString(str) {
+	let lines = str.split(/\r?\n/);
+	let out = {
+		error: false,
+		cpt: true,
+		offset: 27380,
+		stringIDs: [],
+		strings: []
+	};
+	let inQuotation = false;
+	let currentQuotation = "";
+	for(let i=0; i<lines.length; i++) {
+        let line = lines[i].trim();
+        if(line.length == 0) {
+            continue;
+        }
+		if(inQuotation) {
+			if(line == "\"\"\"") {
+				inQuotation = false;
+				out.strings.push(currentQuotation);
+			}
+			else {
+				if(currentQuotation.length > 0) {
+					currentQuotation += "\n";
+				}
+				currentQuotation += line;
+			}
+		}
+		else {
+			let splitter = line.indexOf("=");
+			if(splitter == -1) {
+				out.error = true;
+				out.errorMessage = `Bad string format: ${line}`;
+				return out;
+			}
+			let id = line.slice(0, splitter);
+			let content = line.slice(splitter+1);
+
+			let idInt = parseInt(id);
+			if(id.toLowerCase() == "cpt") {
+				out.cpt = (content.trim() == "false" || content.trim() == "0") ? false : !!content;
+			}
+			else if(id.toLowerCase() == "offset") {
+				out.offset = parseInt(content);
+			}
+			else if(isFinite(idInt)) {
+				if(content == "\"\"\"") {
+					inQuotation = true;
+					currentQuotation = "";
+					out.stringIDs.push(idInt);
+				}
+				else {
+					out.strings.push(content);
+					out.stringIDs.push(idInt);
+				}
+			}
+		}
+	}
+
+	if(out.strings.length < out.stringIDs.length) {
+		if(inQuotation && out.strings.length == out.stringIDs.length-1) {
+			out.strings.append(currentQuotation);
+		}
+		else {
+			out.error = true;
+			out.errorMessage = "String Mismatch";
+		}
+	}
+
+	return out;
+}
+
+function stattblPairStrings(ids, strs) {
+	let outs = [];
+	while(ids.length) {
+		let id = ids.shift();
+		let str = strs.shift();
+		if(id % 2 == 0) {
+			if(ids.indexOf(id + 1) == -1) {
+				return {
+					error: true,
+					errorMessage: `Unpaired string: ${id}`
+				};
+			}
+			else {
+				let ptr2 = ids.indexOf(id + 1);
+				outs.push({
+					id: id,
+					str: [str, strs[ptr2]]
+				});
+                ids.splice(ptr2, 1);
+                strs.splice(ptr2, 1);
+			}
+		}
+		else {
+			if(ids.indexOf(id - 1) == -1) {
+				return {
+					error: true,
+					errorMessage: `Unpaired string: ${id}`
+				};
+			}
+			else {
+				let ptr2 = ids.indexOf(id - 1);
+				outs.push({
+					id: id - 1,
+					str: [strs[ptr2], str]
+				});
+                ids.splice(ptr2, 1);
+                strs.splice(ptr2, 1);
+			}
+		}
+	}
+	outs = outs.sort((a,b) => a.id - b.id);
+	return outs;
+}
+
+function stattblCPTForBatch(player, cond) {
+	return stattblCPT(player, cond, false);
+}
+
+function stattblTailAction(player) {
+    switch(getTriggerPattern(TriggerPatterns.NAME)) {
+        case "tep":
+        case "tepcond":
+        return `SetMemory(0x006509b0, SetTo, ${player-1});\n`;
+        case "eud3":
+        return `setcurpl(${player-1});\n`;
+        case "scmd":
+        case "scmdcond":
+        default:
+        return `MemoryAddr(0x006509b0, Set To, ${player-1});\n`;
+    }
+}
+
+function stattblSliceForBatch(actions, player, conds) {
+	if(getTriggerPattern(TriggerPatterns.NAME) == "eud3") {
+		return actions;
+	}
+	return sliceTrigger(player, conds, actions);
+}
+
+function stattblBatchEdit(settingsString, player, cond) {
+	let settings = stattblParseSettingsString(settingsString);
+
+	if(settings.error) {
+		return {
+			error: `Error: ${settings.errorMessage}\n`
+		};
+	}
+
+	let pairedStrings = stattblPairStrings(settings.stringIDs, settings.strings);
+
+	if(pairedStrings.error) {
+		return {
+			error: `Error: ${pairedStrings.errorMessage}\n`
+		};
+	}
+
+	let out = settings.cpt ? stattblCPTForBatch(player, cond) : "";
+	let triggers = "";
+	let currentOffset = settings.offset;
+	pairedStrings.forEach(s => {
+		let id = s.id;
+		let [str1, str2] = s.str;
+		let result = stattblEdits(currentOffset, id, id+1, str1, str2);
+		triggers += result.triggers;
+		currentOffset = result.newOffset;
+	});
+
+	triggers += stattblTailAction(player);
+	out += stattblSliceForBatch(triggers, `Player ${player}`, cond);
+
+	return {
+		triggers: out,
+		newOffset: currentOffset
+	};
+}
+
+function stattblBatchParse()
+{
+	let result = stattblBatchEdit($("inputarea_stattbl_batch").value,
+								  parseInt($("input_stattbl_player").value),
+								  $("inputarea_stattbl_cond").value);
+	if(result.error) {
+		$("trigger_output").value += result.error;
+		return;
+	}
+	$("trigger_output").value += result.triggers;
+	$("input_stattbl_offset").value = result.newOffset;
 }
