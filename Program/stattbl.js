@@ -25,6 +25,7 @@ function stattblInit()
         $("input_stattbl_content2").value = "s<0><3>S<1>top";
         $("inputarea_stattbl_batch").value = `cpt=false
 offset=27380
+comment=StatText
 664=m<0><3>M<1>ove
 665="""
 s<0><3>S<1>top
@@ -76,23 +77,23 @@ function stattblGetEncodingSelection() {
 	return ["UTF-8", "EUC-KR", "ISO-8859-1"][selected];
 }
 
-function stattblCPT(player, cond, includeLastTrigger = true)
+function stattblCPT(player, cond, includeLastTrigger = true, comment = "")
 {
     // this part will be drastically different, so write individual functions instead of calcTrig()
     switch(getTriggerPattern(TriggerPatterns.NAME)) {
         case "tep":
         case "tepcond":
-        return stattblCPTTEP(player, cond, includeLastTrigger);
+        return stattblCPTTEP(player, cond, includeLastTrigger, comment);
         case "eud3":
-        return stattblCPTEUD3(player, cond, includeLastTrigger);
+        return stattblCPTEUD3(player, cond, includeLastTrigger, comment);
         case "scmd":
         case "scmdcond":
         default:
-        return stattblCPTSCMD(player, cond, includeLastTrigger);
+        return stattblCPTSCMD(player, cond, includeLastTrigger, comment);
     }
 }
 
-function stattblCPTTEP(player, cond, includeLastTrigger = true)
+function stattblCPTTEP(player, cond, includeLastTrigger = true, comment = "")
 {
     // If newest version still doesn't support MASKED MEMORY I'd just output "NOPE".
     return `Trigger {
@@ -101,7 +102,7 @@ function stattblCPTTEP(player, cond, includeLastTrigger = true)
 ${cond}
     },
     actions = {
-        SetMemory(0x006509b0, SetTo, 4293515047);
+        SetMemory(0x006509b0, SetTo, 4293515047);` + (comment.length > 0 ? `\n        Comment("${comment}");` : "") + `
     }
 }
 for i = 31, 2, -1 do
@@ -112,7 +113,7 @@ ${cond}
             MemoryX(0x006d1238, AtLeast, 2 ^ i, 2 ^ i);
         },
         actions = {
-            SetMemory(0x006509b0, Add, 2 ^ (i-2));
+            SetMemory(0x006509b0, Add, 2 ^ (i-2));` + (comment.length > 0 ? `\n            Comment("${comment}");` : "") + `
         }
     }
 end
@@ -123,13 +124,13 @@ ${cond}
     },
     actions = {
         -- PUT YOUR STRING EDIT TRIGGERS HERE --
-        SetMemory(0x006509b0, SetTo, ${player-1});
+        SetMemory(0x006509b0, SetTo, ${player-1});` + (comment.length > 0 ? `\n        Comment("${comment}");` : "") + `
     }
 }
 `);
 }
 
-function stattblCPTEUD3(player, cond, includeLastTrigger = true)
+function stattblCPTEUD3(player, cond, includeLastTrigger = true, comment = "")
 {
 	if(!includeLastTrigger) {
 		return `setcurpl(EPD(dwread(0x6D1238)));\n`;
@@ -137,7 +138,7 @@ function stattblCPTEUD3(player, cond, includeLastTrigger = true)
     return `setcurpl(EPD(dwread(0x6D1238)));\n// PUT YOUR STRING EDIT TRIGGERS HERE\nsetcurpl(${player-1});\n`;
 }
 
-function stattblCPTSCMD(player, cond, includeLastTrigger = true)
+function stattblCPTSCMD(player, cond, includeLastTrigger = true, comment = "")
 {
 	var out = "";
 	var separ = "\n\n//-----------------------------------------------------------------//\n\n";
@@ -146,7 +147,7 @@ Conditions:
 ${cond}
 
 Actions:
-	MemoryAddr(0x006509b0, Set To, 4293515047);
+	MemoryAddr(0x006509b0, Set To, 4293515047);` + (comment.length > 0 ? `\n	Comment("${comment}");` : "") + `
 }
 `; // 4293515047 == -(0x58a364)/4 DeathTableStart
 
@@ -156,7 +157,7 @@ ${cond}
 	Masked MemoryAddr(0x006d1238, At least, VAL1, VAL1);
 
 Actions:
-	MemoryAddr(0x006509b0, Add, VAL2);
+	MemoryAddr(0x006509b0, Add, VAL2);` + (comment.length > 0 ? `\n	Comment("${comment}");` : "") + `
 }`;
 	var trgMid = Array(30).fill("").map((t,i) => trgMidS.replace(/VAL1/g, 2**(31-i)).replace(/VAL2/g, 2**(29-i))).join(separ);
 
@@ -166,7 +167,7 @@ ${cond}
 
 Actions:
 	//--- PUT YOUR STRING EDIT TRIGGERS HERE ---//
-	MemoryAddr(0x006509b0, Set To, ${player-1});
+	MemoryAddr(0x006509b0, Set To, ${player-1});` + (comment.length > 0 ? `\n	Comment("${comment}");` : "") + `
 }`;
 
 	return trgHead + separ + trgMid + separ + (includeLastTrigger ? trgTail + separ : "");
@@ -272,7 +273,8 @@ function stattblParseSettingsString(str) {
 		cpt: true,
 		offset: 27380,
 		stringIDs: [],
-		strings: []
+		strings: [],
+		comment: ""
 	};
 	let inQuotation = false;
 	let currentQuotation = "";
@@ -309,6 +311,9 @@ function stattblParseSettingsString(str) {
 			}
 			else if(id.toLowerCase() == "offset") {
 				out.offset = parseInt(content);
+			}
+			else if(id.toLowerCase() == "comment") {
+				out.comment = content;
 			}
 			else if(isFinite(idInt)) {
 				if(content == "\"\"\"") {
@@ -381,21 +386,21 @@ function stattblPairStrings(ids, strs) {
 	return outs;
 }
 
-function stattblCPTForBatch(player, cond) {
-	return stattblCPT(player, cond, false);
+function stattblCPTForBatch(player, cond, comment = "") {
+	return stattblCPT(player, cond, false, comment);
 }
 
-function stattblTailAction(player) {
+function stattblTailAction(player, comment = "") {
     switch(getTriggerPattern(TriggerPatterns.NAME)) {
         case "tep":
         case "tepcond":
-        return `SetMemory(0x006509b0, SetTo, ${player-1});\n`;
+        return `SetMemory(0x006509b0, SetTo, ${player-1});\n` + (comment.length > 0 ? `Comment("${comment}");\n` : "");
         case "eud3":
         return `setcurpl(${player-1});\n`;
         case "scmd":
         case "scmdcond":
         default:
-        return `MemoryAddr(0x006509b0, Set To, ${player-1});\n`;
+        return `MemoryAddr(0x006509b0, Set To, ${player-1});\n` + (comment.length > 0 ? `Comment("${comment}");\n` : "");
     }
 }
 
@@ -423,7 +428,7 @@ function stattblBatchEdit(settingsString, player, cond) {
 		};
 	}
 
-	let out = settings.cpt ? stattblCPTForBatch(player, cond) : "";
+	let out = settings.cpt ? stattblCPTForBatch(player, cond, settings.comment) : "";
 	let triggers = "";
 	let currentOffset = settings.offset;
 	pairedStrings.forEach(s => {
@@ -434,7 +439,7 @@ function stattblBatchEdit(settingsString, player, cond) {
 		currentOffset = result.newOffset;
 	});
 
-	triggers += stattblTailAction(player);
+	triggers += stattblTailAction(player, settings.comment);
 	out += stattblSliceForBatch(triggers, `Player ${player}`, cond);
 
 	return {
