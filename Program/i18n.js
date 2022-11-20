@@ -28,18 +28,18 @@ function addScript(file, callback) {
 async function translatePage(lang) {
 	switch(lang) {
 		case "kr":
+            new Promise((res, rej) => addScript("Data/i18n/packedTextData_kr.js", res)).then(() => globalScope.populateLibrary());
             await Promise.all([
                 new Promise((res, rej) => addScript("Data/i18n/eudtools_data_kr.js", res)).then(translateDataList),
                 new Promise((res, rej) => addScript("Data/i18n/elements_kr.js", res)).then(translateElements),
             ]);
-            new Promise((res, rej) => addScript("Data/i18n/packedTextData_kr.js", res)).then(() => globalScope.populateLibrary());
 		return;
 		case "zh-CN":
+            new Promise((res, rej) => addScript("Data/i18n/packedTextData_cn.js", res)).then(() => globalScope.populateLibrary());
             await Promise.all([
                 new Promise((res, rej) => addScript("Data/i18n/eudtools_data_cn.js", res)).then(translateDataList),
                 new Promise((res, rej) => addScript("Data/i18n/elements_cn.js", res)).then(translateElements),
             ]);
-            new Promise((res, rej) => addScript("Data/i18n/packedTextData_cn.js", res)).then(() => globalScope.populateLibrary());
 		return;
 		case "en":
 		default:
@@ -174,6 +174,7 @@ async function translateInit() {
         if(availableTranslations[item]) {
             await translatePage(availableTranslations[item].key);
             Settings.language = parseInt(item);
+            globalScope.updateSettingsDisplay();
         }
     }
     else {
