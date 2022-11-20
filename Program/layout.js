@@ -226,6 +226,9 @@ function setMemoryInfoFromMemory(mem) {
 	if(mem in MemoryDescription) {
 		setMemoryInfo(MemoryDescription[mem]);
 	}
+	else {
+		setMemoryInfo("");
+	}
 }
 
 function getMemoryInfo() {
