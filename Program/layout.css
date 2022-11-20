@@ -97,6 +97,11 @@ a:hover {
     grid-column: 5 / 6;
 }
 
+.gr_offset_info {
+    grid-row: 3 / 6;
+    grid-column: 5 / 8;
+}
+
 .gr_library {
     grid-row: 3 / 4;
     grid-column: 6 / 8;
@@ -413,11 +418,22 @@ a:hover {
     grid-row: 8;
 }
 
+/*
+ * Offset Info
+ */
+
+.gr_offset_info {
+    pointer-events: none;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
 #offset_info_area {
-    grid-template-columns: 5px 1fr 5px;
-    grid-template-rows: 1fr 5px;
-    column-gap: 5px;
-    row-gap: 5px;
+    grid-template-columns: 15px 1fr 15px;
+    grid-template-rows: 15px 1fr 15px;
+
+    height: 100%;
+    width: 100%;
 }
 
 #offset_info_wrapper {
@@ -425,16 +441,22 @@ a:hover {
     grid-row: 1;
     width: auto;
     height: auto;
+    padding: 5px;
 }
 
 #offset_info {
     padding: 5px;
     border-bottom: solid 1px #cccccc;
-    background: rgba(255, 255, 255, 0.25);
+    background: rgba(70, 70, 70, 0.85);
     box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
     transition: 300ms;
     font-size: var(--smaller-font);
     line-height: 1.5;
+    white-space: pre-wrap;
+    padding-right: 2em;
+
+    display: inline-block;
+    max-width: 75%;
 }
 
 /* grid -> grid_supplementary */
@@ -1108,6 +1130,10 @@ a:hover {
 /*
  * Hide subgrids
  */
+
+.gr_offset_info > .subgrid_hidden {
+    display: none;
+}
 
 .gr_helpers > .subgrid_hidden {
     display: none;

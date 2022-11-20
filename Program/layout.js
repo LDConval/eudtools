@@ -223,8 +223,8 @@ function setMemoryInfo(str) {
 }
 
 function setMemoryInfoFromMemory(mem) {
-	if(mem in MemoryInfo) {
-		setMemoryInfo(MemoryInfo[mem]);
+	if(mem in MemoryDescription) {
+		setMemoryInfo(MemoryDescription[mem]);
 	}
 }
 
@@ -737,6 +737,7 @@ function evtSelectMemory(k, elem, evt) {
 }
 
 function evtMouseOverOffsetInfo(evt) {
+	setMemoryInfoFromMemory(MemData.offset);
 	if(getMemoryInfo() != "") {
 		showMemoryInfo();
 	}
