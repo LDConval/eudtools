@@ -2,198 +2,99 @@
 
 (function() {
 
+    function triggerFormat(trg) {
+        let lines = trg.split(/\r?\n/).map(line => line.trim()).filter(line => line.length > 0);
+        return lines.map(line => {
+            if(line.indexOf("Trigger") == 0) {
+                return "\n" + line;
+            }
+            else if(line.indexOf("}") == 0) {
+                return line + "\n";
+            }
+            else if(line.indexOf("Conditions") == 0 || line.indexOf("Actions") == 0) {
+                return line;
+            }
+            else if(line.indexOf("/") == 0) {
+                return line;
+            }
+            else {
+                return "\t" + line;
+            }
+        }).join("\n").replace(/\n{3,}/g, "\n\n");
+    }
+
     const tf = triggerFormat;
 
     const html = `
-        <div class="labels" id="label_memorycopy_player">Player: </div>
-        <input type="text" id="input_memorycopy_player" value="" />
-        <div class="labels" id="label_memorycopy_conds">Conds: </div>
-        <textarea id="textarea_memorycopy_conds"></textarea>
-        <div class="labels" id="label_memorycopy_acts">Actions: </div>
-        <textarea id="textarea_memorycopy_acts"></textarea>
-        <hr id="hr_memorycopy_1" />
-        <div class="labels" id="label_memorycopy_src">Source: </div>
-        <input type="text" id="input_memorycopy_src" value="0x590000" />
-        <div class="labels" id="label_memorycopy_dest">Dest: </div>
-        <input type="text" id="input_memorycopy_dest" value="0x590000" />
-        <div class="labels" id="label_memorycopy_minerals">Minerals: </div>
-        <input type="checkbox" id="input_memorycopy_minerals" />
-        <div class="divbutton" id="parse_memorycopy">Parse</div>
-        <hr id="hr_memorycopy_2" />
-        <div class="labels" id="label_memorycopy_name_src">PlayerID: </div>
-        <input type="text" id="input_memorycopy_name_src" value="1" />
-        <div class="labels" id="label_memorycopy_name_srcMem">Memory: </div>
-        <input type="text" id="input_memorycopy_name_srcMem" value="0x6D0FDC" />
-        <div class="labels" id="label_memorycopy_name_dest">Dest: </div>
-        <input type="text" id="input_memorycopy_name_dest" value="0x6413E5" />
-        <div class="labels" id="label_memorycopy_name_dummy">RepChar: </div>
-        <input type="text" id="input_memorycopy_name_dummy" value="3" />
-        <div class="labels" id="label_memorycopy_name_endcond">EndCond: </div>
-        <input type="text" id="input_memorycopy_name_endcond" value="Set Switch(&quot;Switch140&quot;, Clear);" />
-        <div class="divbutton" id="parse_memorycopy_name">CopyName</div>
+        <div class="labels text_mid gd_s_labels gd_s_row_1" id="label_memorycopy_player">Player: </div>
+        <input class="gd_s_input_x gd_s_row_1" type="text" id="input_memorycopy_player" value="" />
+        <div class="labels text_mid gd_s_labels gd_s_row_2" id="label_memorycopy_conds">Conds: </div>
+        <textarea class="gd_s_input_x gd_s_row_2" id="textarea_memorycopy_conds"></textarea>
+        <div class="labels text_mid gd_s_labels gd_s_row_4" id="label_memorycopy_acts">Actions: </div>
+        <textarea class="gd_s_input_x gd_s_row_4" id="textarea_memorycopy_acts"></textarea>
+        <div class="labels text_mid gd_s_labels gd_s_row_6" class="labels" id="label_memorycopy_src">Source: </div>
+        <input class="labels text_mid gd_s_labels gd_s_row_6" type="text" id="input_memorycopy_src" value="0x590000" />
+        <div class="labels text_mid gd_s_labels gd_s_row_6" class="labels" id="label_memorycopy_dest">Dest: </div>
+        <input class="labels text_mid gd_s_labels gd_s_row_6" type="text" id="input_memorycopy_dest" value="0x590000" />
+        <div class="labels text_mid gd_s_labels gd_s_row_6" class="labels" id="label_memorycopy_minerals">Minerals: </div>
+        <input class="gd_s_row_6" type="checkbox" id="input_memorycopy_minerals" />
+        <div class="clickables text_mid gd_s_buttons memorycopy_buttons gd_s_row_7" type="checkbox" id="parse_memorycopy">Parse</div>
+        <div class="labels text_mid gd_s_labels memorycopy_row_8" id="label_memorycopy_name_src">PlayerID: </div>
+        <input class="labels text_mid gd_s_labels memorycopy_row_8" type="text" id="input_memorycopy_name_src" value="1" />
+        <div class="labels text_mid memorycopy_row_8" id="label_memorycopy_name_srcMem">Memory: </div>
+        <input class="labels text_mid gd_s_labels memorycopy_row_8" type="text" id="input_memorycopy_name_srcMem" value="0x6D0FDC" />
+        <div class="labels text_mid memorycopy_row_8" id="label_memorycopy_name_dest">Dest: </div>
+        <input class="labels text_mid gd_s_labels memorycopy_row_8" type="text" id="input_memorycopy_name_dest" value="0x6413E5" />
+        <div class="labels text_mid gd_s_labels memorycopy_row_9" id="label_memorycopy_name_dummy">RepChar: </div>
+        <input class="labels text_mid gd_s_labels memorycopy_row_9" type="text" id="input_memorycopy_name_dummy" value="3" />
+        <div class="labels text_mid memorycopy_row_9" id="label_memorycopy_name_endcond">EndCond: </div>
+        <input class="labels text_mid gd_s_labels memorycopy_row_9" type="text" id="input_memorycopy_name_endcond" value="Set Switch(&quot;Switch140&quot;, Clear);" />
+        <div class="clickables text_mid gd_s_buttons memorycopy_buttons memorycopy_row_10" id="parse_memorycopy_name">CopyName</div>
     `;
 
     const css = `
-        #label_memorycopy_player
-        {
-            top: 0px;
-            left: 90px;
+        #plugin_memorycopy_area {
+            grid-template-columns: 6em minmax(3em, 1fr) minmax(5em, 1fr) minmax(3em, 1fr) minmax(5em, 1fr) minmax(3em, 1fr) 3em 5px;
+            grid-template-rows: 5px 2em 2em 2em 2em 2em 2em 2em 2em 2em 1fr 5px;
         }
-        #label_memorycopy_conds
-        {
-            top: 26px;
-            left: 93px;
+        #input_memorycopy_player, #textarea_memorycopy_conds, #textarea_memorycopy_acts {
+            grid-column: 2 / 7;
         }
-        #label_memorycopy_acts
-        {
-            top: 96px;
-            left: 85px;
+        .memorycopy_buttons {
+            grid-column: 2 / 4;
         }
-        #input_memorycopy_player
-        {
-            position: absolute;
-            top: 0px;
-            left: 150px;
-            width: 420px;
+        #textarea_memorycopy_conds{
+            grid-row: 3 / 5;
         }
-        #textarea_memorycopy_conds
-        {
-            position: absolute;
-            top: 26px;
-            left: 150px;
-            height: 60px;
-            width: 420px;
+        #textarea_memorycopy_acts{
+            grid-row: 5 / 7;
         }
-        #textarea_memorycopy_acts
-        {
-            position: absolute;
-            top: 96px;
-            left: 150px;
-            height: 60px;
-            width: 420px;
+        #input_memorycopy_src, #input_memorycopy_name_src, #input_memorycopy_name_dummy {
+            grid-column: 2 / 3;
         }
-        #hr_memorycopy_1
-        {
-            position: absolute;
-            top: 165px;
-            left: 150px;
-            width: 420px;
+        #label_memorycopy_dest, #label_memorycopy_name_srcMem, #label_memorycopy_name_endcond {
+            grid-column: 3 / 4;
         }
-        #label_memorycopy_src
-        {
-            top: 190px;
-            left: 90px;
+        #input_memorycopy_dest, #input_memorycopy_name_srcMem {
+            grid-column: 4 / 5;
         }
-        #label_memorycopy_dest
-        {
-            top: 190px;
-            left: 265px;
+        #label_memorycopy_minerals, #label_memorycopy_name_dest {
+            grid-column: 5 / 6;
         }
-        #label_memorycopy_minerals
-        {
-            top: 190px;
-            left: 425px;
+        #input_memorycopy_minerals, #input_memorycopy_name_dest {
+            grid-column: 6 / 7;
         }
-        #input_memorycopy_src
-        {
-            position: absolute;
-            top: 190px;
-            left: 150px;
-            width: 100px;
+        #input_memorycopy_name_endcond {
+            grid-column: 4 / 7;
         }
-        #input_memorycopy_dest
-        {
-            position: absolute;
-            top: 190px;
-            left: 310px;
-            width: 100px;
+        .memorycopy_row_8 {
+            grid-row: 9;
         }
-        #input_memorycopy_minerals
-        {
-            position: absolute;
-            top: 190px;
-            left: 495px;
+        .memorycopy_row_9 {
+            grid-row: 10;
         }
-        #parse_memorycopy
-        {
-            position: absolute;
-            top: 217px;
-            left: 150px;
-            padding: 8px 11px 10px 11px;
-        }
-        #hr_memorycopy_2
-        {
-            position: absolute;
-            top: 262px;
-            left: 150px;
-            width: 420px;
-        }
-        #label_memorycopy_name_src
-        {
-            top: 285px;
-            left: 80px;
-        }
-        #label_memorycopy_name_srcMem
-        {
-            top: 285px;
-            left: 215px;
-        }
-        #label_memorycopy_name_dest
-        {
-            top: 285px;
-            left: 400px;
-        }
-        #label_memorycopy_name_dummy
-        {
-            top: 311px;
-            left: 80px;
-        }
-        #label_memorycopy_name_endcond
-        {
-            top: 311px;
-            left: 210px;
-        }
-        #input_memorycopy_name_src
-        {
-            position: absolute;
-            top: 285px;
-            left: 150px;
-            width: 50px;
-        }
-        #input_memorycopy_name_srcMem
-        {
-            position: absolute;
-            top: 285px;
-            left: 285px;
-            width: 100px;
-        }
-        #input_memorycopy_name_dest
-        {
-            position: absolute;
-            top: 285px;
-            left: 445px;
-            width: 100px;
-        }
-        #input_memorycopy_name_dummy
-        {
-            position: absolute;
-            top: 311px;
-            left: 150px;
-            width: 50px;
-        }
-        #input_memorycopy_name_endcond
-        {
-            position: absolute;
-            top: 311px;
-            left: 285px;
-            width: 260px;
-        }
-        #parse_memorycopy_name
-        {
-            position: absolute;
-            top: 340px;
-            left: 150px;
-            padding: 8px 11px 10px 11px;
+        .memorycopy_row_10 {
+            grid-row: 11;
         }
     `;
 

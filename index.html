@@ -1,34 +1,395 @@
 <!DOCTYPE html>
-<html><head><title>Ar3's EUD Tools v1.28</title>
-<meta charset="utf-8" />
-<link rel="stylesheet" type="text/css" href="Program/common.css" />
-<link rel="stylesheet" type="text/css" href="Program/eudtools_main.css" />
-<script src="Program/common.js" type="text/javascript"></script>
-<script src="Program/bitops.js" type="text/javascript"></script>
-<script src="Program/patterns.js" type="text/javascript"></script>
-<script src="Program/eudtools_data.js" type="text/javascript"></script>
-<script src="Program/eudtools_main.js" type="text/javascript"></script>
-<script src="Program/datdata.js" type="text/javascript"></script>
-<script src="Program/icecc.js" type="text/javascript"></script>
-<script src="Program/overlap.js" type="text/javascript"></script>
-<script src="Program/trigger_duplicator.js" type="text/javascript"></script>
-<script src="Program/trigger_slicer.js" type="text/javascript"></script>
-<script src="Program/converter.js" type="text/javascript"></script>
-<script src="Program/stattbl.js" type="text/javascript"></script>
-<script src="Program/reqwriter.js" type="text/javascript"></script>
-<script src="Program/playercolors.js" type="text/javascript"></script>
-<script src="Program/flags.js" type="text/javascript"></script>
-<script src="Program/i18n.js" type="text/javascript"></script>
-<script src="Program/plugins.js" type="text/javascript"></script>
-<script src="Program/Plugins/memorycopy.js" type="text/javascript"></script>
-<script src="Program/Plugins/unitcreator.js" type="text/javascript"></script>
-<script src="Program/Plugins/epdcalc.js" type="text/javascript"></script>
-<script src="Program/Plugins/startlocconverter.js" type="text/javascript"></script>
-<script src="Program/iconv-lite-browserify.js" charset="utf-8" type="text/javascript"></script>
-</head>
-<body id="eudtools_body">
+<html>
+	<head>
+		<title>LayoutTest</title>
+		<meta charset="utf-8" />
+		<link rel="stylesheet" type="text/css" href="Program/layout.css" />
+		<script src="Program/eudtools_data.js" type="text/javascript"></script>
+		<script src="Program/layout.js" type="text/javascript"></script>
+		<script src="Program/core.js" type="text/javascript"></script>
+		<script src="Program/iconv-lite-browserify.js" type="text/javascript"></script>
+		<script src="Program/meminfo.js" type="text/javascript"></script>
+		<script src="Program/trigpatterns.js" type="text/javascript"></script>
+		<script src="Program/memorytypes.js" type="text/javascript"></script>
+		<script src="Program/subareas.js" type="text/javascript"></script>
+		<script src="Program/popup.js" type="text/javascript"></script>
+		<script src="Program/settings.js" type="text/javascript"></script>
+		<script src="Program/utils.js" type="text/javascript"></script>
+		
+		<script src="Program/datatypes.js" type="text/javascript"></script>
+		<script src="Program/datacheck.js" type="text/javascript"></script>
 
-<div id="title_text" class="c_title">Ar3's EUD Tools v1.28</div>
+		<script src="Program/i18n.js" type="text/javascript"></script>
+
+		<script src="Program/library.js" type="text/javascript"></script>
+		<script src="Program/playercolors.js" type="text/javascript"></script>
+		<script src="Program/overlap.js" type="text/javascript"></script>
+		<script src="Program/reqwriter.js" type="text/javascript"></script>
+		<script src="Program/stattbl.js" type="text/javascript"></script>
+		<script src="Program/flags.js" type="text/javascript"></script>
+		<script src="Program/converter.js" type="text/javascript"></script>
+		<script src="Program/trigger_duplicator.js" type="text/javascript"></script>
+		<script src="Program/trigger_slicer.js" type="text/javascript"></script>
+		<script src="Program/icecc.js" type="text/javascript"></script>
+
+		<script src="Program/spaceplatform.js" type="text/javascript"></script>
+
+		<script src="Program/plugins.js" type="text/javascript"></script>
+		<script src="Program/Plugins/unitcreator.js" type="text/javascript"></script>
+		<script src="Program/Plugins/memorycopy.js" type="text/javascript"></script>
+	</head>
+	<body id="eudtools_body">
+		<div class="gr_space_platforms">
+			<div class="space_platforms_container"></div>
+		</div>
+		<div class="main_grid">
+			<div class="gr_memory_selection gd_ms_left">
+				<div class="gr_memory_selection_inner">
+					<div id="category_container"></div>
+					<div id="select_container"></div>
+				</div>
+			</div>
+			<div class="gr_input">
+				<!-- Grid layout of input fields -->
+				<div class="labels text_mid gd_i_labels gd_i_row_1" id="label_offset">Offset: </div>
+				<input class="gd_i_input_x gd_i_row_1" type="text" id="input_offset_x" value="0" />
+				<input class="gd_i_input_d gd_i_row_1" type="text" id="input_offset_d" value="0" />
+				<div class="hoverables text_mid gd_i_right gd_i_row_1" id="hover_offset_help">Info</div>
+				<div class="labels text_mid gd_i_labels gd_i_row_2" id="label_length">Length: </div>
+				<div class="gr_input_length_subgrid">
+					<input class="" type="text" id="input_length_data" value="1" />
+					<div class="labels text_mid" id="label_length_next">Next: </div>
+					<input class="" type="text" id="input_length_next" value="1" />
+				</div>
+				<div class="labels text_mid gd_i_labels gd_i_row_3" id="label_object">Object: </div>
+				<input class="gd_i_input_z gd_i_row_3" type="text" id="input_object" value="0" />
+				<!--
+					input class="gd_i_input_d gd_i_row_3" type="text" id="input_object_d" value="0" /
+				-->
+				<!-- <div class="clickables text_mid gd_i_right gd_i_row_3" id="link_object_check">Check</div> -->
+				<div class="clickables text_mid" id="link_calc_update_memory">↓↓</div>
+				<div class="labels text_mid gd_i_labels gd_i_row_4" id="label_memory">Memory: </div>
+				<input class="gd_i_input_x gd_i_row_4" type="text" id="input_memory_x" value="0" />
+				<input class="gd_i_input_d gd_i_row_4" type="text" id="input_memory_d" value="0" />
+				<div class="labels text_mid gd_i_labels gd_i_row_5" id="label_value">Value: </div>
+				<input class="gd_i_input_z gd_i_row_5" type="text" id="input_value" value="0" />
+				<!-- <div class="clickables text_mid gd_i_right gd_i_row_5" id="link_value_check">Check</div> -->
+				<div class="labels text_mid gd_i_labels gd_i_row_6" id="label_generate">Generate: </div>
+				<div class="clickables text_mid gd_i_row_6" id="link_generate_condition">Condition</div>
+				<div class="clickables text_mid gd_i_row_6" id="link_generate_action">Action</div>
+				<div class="gr_input_eud3gen_subgrid gr_input_hidden">
+					<div class="clickables text_mid" id="link_generate_read_eud3">Read</div>
+					<div class="clickables text_mid" id="link_generate_condition_eud3">Cond</div>
+					<div class="clickables text_mid" id="link_generate_action_eud3">Action</div>
+				</div>
+			</div>
+			<div class="gr_helpers">
+				<div class="subgrid subgrid_hidden" id="upg_area">
+					<div class="labels text_mid gd_h_labels gd_h_row_2" id="label_upg_player">Player: </div>
+					<input class="gd_h_input gd_h_row_2" type="text" id="input_upg_player" value="1" />
+					<div class="labels text_mid gd_h_labels gd_h_row_3" id="label_upg_uid">Upgrade: </div>
+					<input class="gd_h_input gd_h_row_3" type="text" id="input_upg_uid" value="0" />
+					<!-- <div class="clickables text_mid gd_h_right gd_h_row_3" id="link_upg_check">Check</div> -->
+				</div>
+				<div class="subgrid subgrid_hidden" id="selgroup_area">
+					<div class="labels text_mid gd_h_labels gd_h_row_1" id="label_selgroup_player">Player: </div>
+					<input class="gd_h_input gd_h_row_1" type="text" id="input_selgroup_player" value="1" />
+					<div class="labels text_mid gd_h_labels gd_h_row_2" id="label_selgroup_id">Group #: </div>
+					<input class="gd_h_input gd_h_row_2" type="text" id="input_selgroup_id" value="1" />
+					<div class="labels text_mid gd_h_labels gd_h_row_3" id="label_selgroup_unit">Unit #: </div>
+					<input class="gd_h_input gd_h_row_3" type="text" id="input_selgroup_unit" value="0" />
+				</div>
+				<div class="subgrid subgrid_hidden" id="keygroup_area">
+					<div class="labels text_mid gd_h_labels gd_h_row_1" id="label_keygroup_player">Player: </div>
+					<input class="gd_h_input gd_h_row_1" type="text" id="input_keygroup_player" value="1" />
+					<div class="labels text_mid gd_h_labels gd_h_row_2" id="label_keygroup_hotkey">Hotkey #: </div>
+					<input class="gd_h_input gd_h_row_2" type="text" id="input_keygroup_hotkey" value="0" />
+					<div class="labels text_mid gd_h_labels gd_h_row_3" id="label_keygroup_id">Group #: </div>
+					<input class="gd_h_input gd_h_row_3" type="text" id="input_keygroup_id" value="1" />
+					<div class="labels text_mid gd_h_labels gd_h_row_5" id="label_keygroup_unit">UnitNode: </div>
+					<input class="gd_h_input gd_h_row_5" type="text" id="input_keygroup_unit" value="0" />
+					<div class="labels text_mid gd_h_labels gd_h_row_6" id="label_keygroup_index">MapIndex: </div>
+					<input class="gd_h_input gd_h_row_6" type="text" id="input_keygroup_index" value="0" />
+				</div>
+				<div class="subgrid subgrid_hidden" id="unitnodehelper_area">
+					<div class="labels text_mid gd_h_labels gd_h_row_2" id="label_unitnodehelper_offset">COffset: </div>
+					<input class="gd_h_input gd_h_row_2" type="text" readonly="readonly" id="input_unitnodehelper_offset" value="0" />
+					<div class="labels text_mid gd_h_labels gd_h_row_3" id="label_unitnodehelper">MapIndex: </div>
+					<input class="gd_h_input gd_h_row_3" type="text" id="input_unitnodehelper" value="0" />
+				</div>
+				<div class="subgrid subgrid_hidden" id="tables_area">
+					<div class="labels text_mid gd_h_labels gd_h_row_2" id="label_tables_player">Player: </div>
+					<input class="gd_h_input gd_h_row_2" type="text" id="input_tables_player" value="1" />
+					<div class="labels text_mid gd_h_labels gd_h_row_3" id="label_tables_unit">UnitID: </div>
+					<input class="gd_h_input gd_h_row_3" type="text" id="input_tables_unit" value="0" />
+					<!-- <div class="clickables text_mid gd_h_right gd_h_row_3" id="link_tables_check">Check</div> -->
+				</div>
+				<div class="subgrid subgrid_hidden" id="req_area">
+					<div class="labels text_mid gd_h_labels gd_h_row_3" id="label_req">Req. ID: </div>
+					<input class="gd_h_input gd_h_row_3" type="text" id="input_req" value="0" />
+					<!-- <div class="clickables text_mid gd_h_right gd_h_row_3" id="link_req_check">Check</div> -->
+				</div>
+				<div class="subgrid subgrid_hidden" id="alliance_area">
+					<div class="labels text_mid gd_h_labels gd_h_row_2" id="label_alliance_from">From: </div>
+					<input class="gd_h_input gd_h_row_2" type="text" id="input_alliance_from" value="1" />
+					<div class="labels text_mid gd_h_labels gd_h_row_3" id="label_alliance_to">To Player: </div>
+					<input class="gd_h_input gd_h_row_3" type="text" id="input_alliance_to" value="1" />
+				</div>
+				<div class="subgrid subgrid_hidden" id="dmgmult_area">
+					<div class="labels text_mid gd_h_labels gd_h_row_2" id="label_dmgmult_from">From: </div>
+					<input class="gd_h_input gd_h_row_2" type="text" id="input_dmgmult_from" value="1" />
+					<!-- <div class="clickables text_mid gd_h_right gd_h_row_2" id="link_dmgmult_from_check">Check</div> -->
+					<div class="labels text_mid gd_h_labels gd_h_row_3" id="label_dmgmult_to">To: </div>
+					<input class="gd_h_input gd_h_row_3" type="text" id="input_dmgmult_to" value="1" />
+					<!-- <div class="clickables text_mid gd_h_right gd_h_row_3" id="link_dmgmult_to_check">Check</div> -->
+				</div>
+				<div class="subgrid subgrid_hidden" id="hp_area">
+					<div class="labels text_mid gd_h_labels gd_h_row_5" id="label_hp">HP/SP: </div>
+					<input class="gd_h_input gd_h_row_5" type="text" id="input_hp" value="0" />
+				</div>
+				<div id="offset_info_area" class="subgrid subgrid_hidden">
+					<div id="offset_info_wrapper">
+						<div id="offset_info"></div>
+					</div>
+				</div>
+			</div>
+			<div class="gr_library">
+
+			</div>
+			<div class="gr_output">
+				<textarea id="trigger_output" spellcheck="false"></textarea>
+			</div>
+			<div class="gr_supplementary">
+				<div class="subgrid subgrid_hidden" id="icecc_area">
+					<div class="labels text_mid gd_s_labels gd_s_row_1" id="label_icecc">Trigger Base: </div>
+					<input class="gd_s_input_x gd_s_row_1" type="text" id="input_icecc_trigbase" value="Comment(&quot;Iscript&quot;, 0, ^1, ^2, 0, 7);" />
+					<div class="labels text_mid gd_s_labels gd_s_row_2" id="label_icecc2">IceCC Code: </div>
+					<textarea class="gd_s_textarea gd_s_row_2 gd_s_row_until_last" id="inputarea_icecc"></textarea>
+					<div class="clickables text_mid gd_s_buttons gd_s_row_last" id="parse_icecc">Action</div>
+				</div>
+				<div class="subgrid subgrid_hidden" id="etg_area">
+					<div class="labels text_mid gd_s_labels gd_s_row_1" id="label_etg_base">Trigger Base: </div>
+					<input class="gd_s_input_x gd_s_row_1" type="text" id="input_etg_base" value="MemoryAddr(^1, Set To, ^2);" />
+					<div class="labels text_mid gd_s_labels gd_s_row_2" id="label_etg_ofs">Offset: </div>
+					<input class="gd_s_input_x gd_s_row_2" type="text" id="input_etg_ofs" value="0" />
+					<div class="labels text_mid gd_s_labels gd_s_row_3" id="label_etg_cont">Hex Code: </div>
+					<textarea class="gd_s_textarea gd_s_row_3 gd_s_row_until_last" id="inputarea_etg"></textarea>
+					<div class="clickables text_mid gd_s_buttons gd_s_row_last" id="parse_etg">Action</div>
+				</div>
+				<div class="subgrid subgrid_hidden" id="textstack_area">
+					<div class="labels text_mid gd_s_labels gd_s_row_1" id="label_textstack_text">Text to Stack: </div>
+					<input class="gd_s_input_x gd_s_row_1" type="text" id="input_textstack_text" value="" />
+					<div class="labels text_mid gd_s_labels gd_s_row_2" id="label_textstack_unit">Unit Name: </div>
+					<input class="gd_s_input_x gd_s_row_2" type="text" id="input_textstack_unit" value="" />
+					<div class="labels text_mid gd_s_labels gd_s_row_3" id="label_textstack_disp">Display Text: </div>
+					<input class="gd_s_input_x gd_s_row_3" type="text" id="input_textstack_disp" value="" />
+					<div class="labels text_mid gd_s_labels gd_s_row_4" id="label_textstack_objs">Objectives: </div>
+					<input class="gd_s_input_x gd_s_row_4" type="text" id="input_textstack_objs" value="" />
+					<div class="labels text_mid gd_s_labels gd_s_row_5" id="label_textstack_desc">Description: </div>
+					<input class="gd_s_input_x gd_s_row_5" type="text" id="input_textstack_desc" value="" />
+				</div>
+				<div class="subgrid subgrid_hidden subgrid_cutright" id="trigdupl_area">
+					<div class="labels text_mid gd_s_labels gd_s_row_1" id="label_trigdupl_count">Count: </div>
+					<input class="gd_s_input_x gd_s_row_1" type="text" id="input_trigdupl_count" value="2" />
+					<div class="labels text_mid gd_s_labels gd_s_row_2" id="label_trigdupl_area">Trigger: </div>
+					<textarea class="gd_s_textarea gd_s_row_2 gd_s_row_until_last" id="inputarea_trigdupl"></textarea>
+					<textarea class="gd_s_textarea gd_s_row_2 gd_s_row_until_last" id="inputarea_trigdupl_arrays"></textarea>
+					<div class="clickables text_mid gd_s_buttons gd_s_row_last" id="parse_trigdupl">Action</div>
+				</div>
+				<div class="subgrid subgrid_hidden subgrid_cutright" id="trigslice_area">
+					<div class="labels text_mid gd_s_labels gd_s_row_1" id="label_trigslice_player">Player: </div>
+					<input class="gd_s_input_x gd_s_row_1" type="text" id="input_trigslice_player" value="Player 8" />
+					<div class="labels text_mid gd_s_labels gd_s_row_2" id="label_trigslice_cond">Conditions: </div>
+					<textarea class="gd_s_textarea gd_s_row_2" id="inputarea_trigslice_cond"></textarea>
+					<div class="labels text_mid gd_s_labels gd_s_row_5" id="label_trigslice_act">Actions: </div>
+					<textarea class="gd_s_textarea gd_s_row_5 gd_s_row_until_last" id="inputarea_trigslice_act"></textarea>
+					<div class="clickables text_mid gd_s_buttons gd_s_row_last" id="parse_trigslice">Action</div>
+				</div>
+				<div class="subgrid subgrid_hidden" id="trigconv_area">
+					<div class="labels text_mid gd_s_labels gd_s_row_1" id="label_trigconv_buttonoffset">Button Offset: </div>
+					<input class="gd_s_input_x gd_s_row_1" type="text" id="input_trigconv_buttonoffset" value="0x590000" />
+					<div class="labels text_mid gd_s_labels gd_s_row_2" id="label_trigconv_area">Triggers: </div>
+					<textarea class="gd_s_textarea gd_s_row_2 gd_s_row_until_last" id="inputarea_trigconv"></textarea>
+					<div class="clickables text_mid gd_s_buttons gd_s_row_last" id="parse_trigconv">Action</div>
+				</div>
+				<div class="subgrid subgrid_hidden" id="reqwrite_area">
+					<div class="labels text_mid gd_s_labels gd_s_row_1" id="label_reqwrite_type">Type: </div>
+					<div class="reqwrite_row_1_container">
+						<select class="gd_s_select" type="text" id="select_reqwrite_type">
+							<option id="input_reqwrite_reqtype_units" value="1">Units</option>
+							<option id="input_reqwrite_reqtype_upgrades" value="2">Upgrades</option>
+							<option id="input_reqwrite_reqtype_researchtech" value="3">Research Tech</option>
+							<option id="input_reqwrite_reqtype_usetech" value="4">Use Tech</option>
+							<option id="input_reqwrite_reqtype_orders" value="5">Orders</option>
+						</select>
+						<div class="labels text_mid gd_s_labels gd_s_row_1" id="label_reqwrite_uid">For ID: </div>
+						<input class="gd_s_input_x" type="text" id="input_reqwrite_uid" value="0" />
+						<div class="labels text_mid gd_s_labels gd_s_row_1" id="label_reqwrite_offset">Req Offset: </div>
+						<input class="gd_s_input_x" type="text" id="input_reqwrite_offset" value="0" />
+					</div>
+					<div class="labels text_mid gd_s_labels gd_s_row_2" id="label_reqwrite_add">Opcodes: </div>
+					<select class="gd_s_select gd_s_row_2" type="text" id="select_reqwrite_add">
+					</select>
+					<div class="labels text_mid gd_s_labels gd_s_row_3" id="label_reqwrite_area"></div>
+					<textarea class="gd_s_textarea gd_s_row_3 gd_s_row_until_end" id="inputarea_reqwrite"></textarea>
+					<div class="clickables text_mid gd_s_buttons_right gd_s_row_last" id="parse_reqwrite">Action</div>
+				</div>
+				<div class="subgrid subgrid_hidden" id="stattbl_area">
+					<div class="labels text_mid gd_s_labels gd_s_row_1" id="label_stattbl_offset">Offset: </div>
+					<input class="gd_s_input_x gd_s_row_1" type="text" id="input_stattbl_offset" value="27380" />
+					<div class="labels text_mid gd_s_labels gd_s_row_2" id="label_stattbl_str">String: </div>
+					<input class="gd_s_input_x gd_s_row_2" type="text" id="input_stattbl_str" value="" />
+					<div class="labels text_mid gd_s_labels gd_s_row_3" id="label_stattbl_content">Content: </div>
+					<input class="gd_s_input_x gd_s_row_3" type="text" id="input_stattbl_content" value="" />
+					<select class="gd_s_select gd_s_row_2" id="select_stattbl_encoding">
+						<option>UTF-8</option>
+						<option selected="selected">EUC-KR</option>
+						<option>ISO-8859-1</option>
+					</select>
+					<div class="clickables text_mid gd_s_buttons_right gd_s_row_3" id="parse_stattbl">Action</div>
+					<hr class="gd_s_hr gd_s_row_4" id="hr_stattbl_batch" />
+					<div class="labels text_mid gd_s_labels gd_s_row_5" id="label_stattbl_batch">Batch: </div>
+					<textarea class="gd_s_textarea gd_s_row_5 gd_s_row_until_end" id="inputarea_stattbl_batch"></textarea>
+					<div class="clickables text_mid gd_s_buttons_right gd_s_row_last" id="parse_stattbl_batch">Batch</div>
+				</div>
+				<div class="subgrid subgrid_hidden" id="playercolor_area">
+					<div class="labels text_mid gd_s_labels playercolor_labels gd_s_row_1" id="label_playercolor_id">Player: </div>
+					<input class="gd_s_input_x playercolor_input_l gd_s_row_1" type="text" id="input_playercolor_id" value="1" />
+					<div class="labels text_mid gd_s_labels playercolor_labels gd_s_row_2" id="label_playercolor_colors">Color: </div>
+					<div class="labels text_mid gd_s_labels playercolor_labels gd_s_row_3" id="label_playercolor_colors2">Minimap: </div>
+					<input class="gd_s_input_x playercolor_input_s gd_s_row_2 playercolor_i" type="text" id="input_playercolor1" value="111" />
+					<input class="gd_s_input_x playercolor_input_s gd_s_row_3 playercolor_i" type="text" id="input_playercolor0" value="111" />
+					<div class="playercolor_d gd_s_row_2" id="div_playercolor1"></div>
+					<div class="playercolor_d gd_s_row_3" id="div_playercolor0"></div>
+					<div id="playercolor_imgwrapper">
+						<div id="playercolor_imgcontainer"></div>
+					</div>
+					<div id="playercolor_select_container"></div>
+					<div class="labels text_mid gd_s_labels playercolor_labels gd_s_row_5" id="label_playercolor_tileset">Tileset: </div>
+					<select class="gd_s_select playercolor_input_l gd_s_row_5" type="text" id="playercolor_select_tileset">
+						<option id="playercolor_select_tileset_0" value="0" selected="selected">Badlands</option>
+						<option id="playercolor_select_tileset_1" value="1">Space Platform</option>
+						<option id="playercolor_select_tileset_2" value="2">Installation</option>
+						<option id="playercolor_select_tileset_3" value="3">Ash World</option>
+						<option id="playercolor_select_tileset_4" value="4">Jungle</option>
+						<option id="playercolor_select_tileset_5" value="5">Desert</option>
+						<option id="playercolor_select_tileset_6" value="6">Ice World</option>
+						<option id="playercolor_select_tileset_7" value="7">Twilight</option>
+						<option id="playercolor_select_tileset_8" value="8">Game Menu</option>
+					</select>
+					<div class="clickables text_mid gd_s_buttons gd_s_row_6" id="parse_playercolor">Action</div>
+				</div>
+				<div class="subgrid subgrid_hidden" id="mapstr_area">
+					<div class="labels text_mid gd_s_labels gd_s_row_1" id="label_mapstr_sid">String ID: </div>
+					<input class="gd_s_input_x gd_s_row_1" type="text" id="input_mapstr_sid" value="0" />
+					<div class="labels text_mid gd_s_labels gd_s_row_2" id="label_mapstr_ofs">Offset: </div>
+					<input class="gd_s_input_x gd_s_row_2" type="text" id="input_mapstr_ofs" value="0" />
+					<div class="labels text_mid gd_s_labels gd_s_row_3" id="label_mapstr_cont">Content: </div>
+					<textarea class="gd_s_textarea gd_s_row_3 gd_s_row_until_last" id="inputarea_mapstr"></textarea>
+					<div class="clickables text_mid gd_s_buttons gd_s_row_last" id="parse_mapstr">Action</div>
+				</div>
+				<div class="subgrid subgrid_hidden" id="flags_area">
+					<div class="labels text_mid gd_s_labels gd_s_row_1" id="label_flags_table">Flags: </div>
+					<div id="flags_table_wrapper">
+						<table id="flags_table"><tbody id="flags_tbody"></tbody></table>
+					</div>
+					<div class="labels text_mid gd_s_labels gd_s_row_last" id="label_flags_value">Value: </div>
+					<div class="flags_row_last_container">
+						<input class="gd_s_input_x" type="text" id="input_flags_value" value="0" />
+						<div class="labels text_mid gd_s_labels" id="label_flags_mode">Mode: </div>
+						<select class="gd_s_select" type="text" id="select_flags_mode">
+							<option id="select_flags_mode_0" selected="selected">Set All</option>
+							<option id="select_flags_mode_1">Set Selected</option>
+							<option id="select_flags_mode_2">Clear Selected</option>
+							<option id="select_flags_mode_3">Clear Unselected</option>
+						</select>
+					</div>
+					<div class="clickables text_mid gd_s_buttons_right gd_s_row_last" id="parse_flags">Action</div>
+				</div>
+				<div class="subgrid subgrid_hidden" id="toollinks_area">
+					<div class="text_mid gd_s_row_1" id="toollinks_label">Extra Tool Links</div>
+					<div class="gd_s_row_2 gd_s_row_until_end" id="toollinks_links">
+						<a href="https://github.com/LDConval/eudtools/" target="_blank">GitHub repository</a> - source code of this web app<br />
+						<a href="Include/ButtonMaker.html" target="_blank">Button Maker</a> - creates buttons<br />
+						<a href="http://farty1billion.dyndns.org/EUDDB/" target="_blank">EUDDB</a> - detailed starcraft memory table<br />
+						<a href="Include/EUDDB.html" target="_blank">EUDDB backup</a> - copy of Farty1billion's EUD DB page<br />
+						<a href="Include/IceDC.html" target="_blank">IceDC</a> - iscript code reference<br />
+						<a href="Include/Icons.html" target="_blank">Icons</a> - cmdicons.grp entries<br />
+						<a href="Include/StatStrings.html" target="_blank">StatStrings</a> - stat_txt.tbl entries<br />
+						<a href="Include/MapStringViewX.html" target="_blank">MapStringViewX</a> - view/edit map string table from raw .chk file<br />
+						<a href="Include/SCQR.html" target="_blank">SCQR</a> - creates QR codes and minimap drawings<br />
+					</div>
+				</div>
+				<div class="subgrid subgrid_hidden plugin_area" id="plugin_area">
+				</div>
+			</div>
+			<div class="gr_object_selection">
+				<div class="gr_object_selection_inner">
+					<div id="object_container"></div>
+				</div>
+			</div>
+			<div class="gr_tl_buttons">
+				<div class="text_mid tl_button" id="settings_toggle">
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Pro 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path d="M495.9 166.6c3.2 8.7 .5 18.4-6.4 24.6l-43.3 39.4c1.1 8.3 1.7 16.8 1.7 25.4s-.6 17.1-1.7 25.4l43.3 39.4c6.9 6.2 9.6 15.9 6.4 24.6c-4.4 11.9-9.7 23.3-15.8 34.3l-4.7 8.1c-6.6 11-14 21.4-22.1 31.2c-5.9 7.2-15.7 9.6-24.5 6.8l-55.7-17.7c-13.4 10.3-28.2 18.9-44 25.4l-12.5 57.1c-2 9.1-9 16.3-18.2 17.8c-13.8 2.3-28 3.5-42.5 3.5s-28.7-1.2-42.5-3.5c-9.2-1.5-16.2-8.7-18.2-17.8l-12.5-57.1c-15.8-6.5-30.6-15.1-44-25.4L83.1 425.9c-8.8 2.8-18.6 .3-24.5-6.8c-8.1-9.8-15.5-20.2-22.1-31.2l-4.7-8.1c-6.1-11-11.4-22.4-15.8-34.3c-3.2-8.7-.5-18.4 6.4-24.6l43.3-39.4C64.6 273.1 64 264.6 64 256s.6-17.1 1.7-25.4L22.4 191.2c-6.9-6.2-9.6-15.9-6.4-24.6c4.4-11.9 9.7-23.3 15.8-34.3l4.7-8.1c6.6-11 14-21.4 22.1-31.2c5.9-7.2 15.7-9.6 24.5-6.8l55.7 17.7c13.4-10.3 28.2-18.9 44-25.4l12.5-57.1c2-9.1 9-16.3 18.2-17.8C227.3 1.2 241.5 0 256 0s28.7 1.2 42.5 3.5c9.2 1.5 16.2 8.7 18.2 17.8l12.5 57.1c15.8 6.5 30.6 15.1 44 25.4l55.7-17.7c8.8-2.8 18.6-.3 24.5 6.8c8.1 9.8 15.5 20.2 22.1 31.2l4.7 8.1c6.1 11 11.4 22.4 15.8 34.3zM256 336c44.2 0 80-35.8 80-80s-35.8-80-80-80s-80 35.8-80 80s35.8 80 80 80z"/></svg>
+				</div>
+				<div class="text_mid tl_button" id="library_toggle">
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Pro 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path d="M96 0C43 0 0 43 0 96V416c0 53 43 96 96 96H384h32c17.7 0 32-14.3 32-32s-14.3-32-32-32V384c17.7 0 32-14.3 32-32V32c0-17.7-14.3-32-32-32H384 96zm0 384H352v64H96c-17.7 0-32-14.3-32-32s14.3-32 32-32zm32-240c0-8.8 7.2-16 16-16H336c8.8 0 16 7.2 16 16s-7.2 16-16 16H144c-8.8 0-16-7.2-16-16zm16 48H336c8.8 0 16 7.2 16 16s-7.2 16-16 16H144c-8.8 0-16-7.2-16-16s7.2-16 16-16z"/></svg>
+				</div>
+			</div>
+			<div class="gr_tr_title">
+				<div class="monospace title_text text_mid" id="title_text">Ar3's EUD Tools v2.00</div>
+			</div>
+			<div class="gr_title">
+
+			</div>
+			<div class="gr_popups">
+				<div class="popup_container settings_area popup_hidden" id="settings_area">
+					<div class="settings_header">Settings</div>
+					<div class="labels text_mid settings_row_1 settings_col_1" id="settings_label_triggerstyle">Trigger Style:</div>
+					<select class="settings_row_1 settings_col_2" id="settings_triggerstyle">
+						<option selected="selected">SCMDraft</option>
+						<option>TrigEditPlus</option>
+						<option>EUDEditor3</option>
+					</select>
+					<div class="labels text_mid settings_row_2 settings_col_1" id="settings_label_hexoutput_memory">Memory Format:</div>
+					<select class="settings_row_2 settings_col_2" id="settings_hexoutput_memory">
+						<option class="settings_hexoutput_dec" selected="selected">Decimal</option>
+						<option class="settings_hexoutput_hex">Hex</option>
+					</select>
+					<div class="labels text_mid settings_row_2 settings_col_3" id="settings_label_hexoutput_value">Value:</div>
+					<select class="settings_row_2 settings_col_4" id="settings_hexoutput_value">
+						<option class="settings_hexoutput_dec" selected="selected">Decimal</option>
+						<option class="settings_hexoutput_hex">Hex</option>
+					</select>
+					<div class="labels text_mid settings_row_2 settings_col_5" id="settings_label_hexoutput_value">Mask:</div>
+					<select class="settings_row_2 settings_col_6" id="settings_hexoutput_mask">
+						<option class="settings_hexoutput_dec" selected="selected">Decimal</option>
+						<option class="settings_hexoutput_hex">Hex</option>
+					</select>
+					<div class="settings_row_3 settings_long">
+						<div class="labels text_mid" id="settings_label_reverse_calc_object">Reverse calculate Object:</div>
+						<div class="text_mid">
+							<input class="settings_checkbox" type="checkbox" value="" id="settings_reverse_calc_object" checked="checked">
+						</div>
+					</div>
+					<div class="labels text_mid settings_row_4 settings_col_1" id="settings_label_language">Language:</div>
+					<select class="settings_row_4 settings_col_2" id="settings_translate"></select>
+				</div>
+				<div class="popup_container library_area popup_hidden" id="library_area">
+					<div class="library_header">Library</div>
+					<div id="library_container"></div>
+					<textarea id="library_output" spellcheck="false"></textarea>
+				</div>
+			</div>
+		</div>
+
+		<script>
+			init();
+		</script>
+	</body>
+</html>
+<!--
+<div id="title_text" class="c_title">LayoutTest</div>
 
 <div class="floatboard" id="settings_floating">
 	<a class="changelink" id="settings_close">X</a>
@@ -101,150 +462,11 @@
 	<input type="text" id="input_value" value="0" />
 	<div class="labels" id="label_origvalue">Original: </div>
 	<input type="text" id="input_origvalue" value="0" />
-	<div id="upg_area">
-		<div class="labels" id="label_upg_player">Player: </div>
-		<input type="text" id="input_upg_player" value="1" />
-		<div class="labels" id="label_upg_uid">Upgrade: </div>
-		<input type="text" id="input_upg_uid" value="0" />
-	</div>
-	<div id="selgroup_area">
-		<div class="labels" id="label_selgroup_player">Player: </div>
-		<input type="text" id="input_selgroup_player" value="1" />
-		<div class="labels" id="label_selgroup_id">Group #: </div>
-		<input type="text" id="input_selgroup_id" value="1" />
-		<div class="labels" id="label_selgroup_unit">Unit: </div>
-		<input type="text" id="input_selgroup_unit" value="0" />
-	</div>
-	<div id="keygroup_area">
-		<div class="labels" id="label_keygroup_player">Player: </div>
-		<input type="text" id="input_keygroup_player" value="1" />
-		<div class="labels" id="label_keygroup_hotkey">Hotkey #: </div>
-		<input type="text" id="input_keygroup_hotkey" value="0" />
-		<div class="labels" id="label_keygroup_id">Group #: </div>
-		<input type="text" id="input_keygroup_id" value="1" />
-		<div class="labels" id="label_keygroup_unit">UnitNode: </div>
-		<input type="text" id="input_keygroup_unit" value="0" />
-		<div class="labels" id="label_keygroup_index">MapIndex: </div>
-		<input type="text" id="input_keygroup_index" value="0" />
-	</div>
-	<div id="unitnodehelper_area">
-		<div class="labels" id="label_unitnodehelper">MapIndex: </div>
-		<input type="text" id="input_unitnodehelper" value="0" />
-	</div>
-	<div id="tables_area">
-		<div class="labels" id="label_tables_player">Player: </div>
-		<input type="text" id="input_tables_player" value="1" />
-		<div class="labels" id="label_tables_unit">UnitID: </div>
-		<input type="text" id="input_tables_unit" value="0" />
-	</div>
-	<div id="req_area">
-		<div class="labels" id="label_req">Req. ID: </div>
-		<input type="text" id="input_req" value="0" />
-	</div>
 	<div id="buttonfunction_area">
 		<div class="labels" id="label_buttonfunction">Function ID: </div>
 		<div id="buttonfunction_select_container"></div>
 	</div>
-	<div id="icecc_area">
-		<div class="labels" id="label_icecc">Trigger Base: </div>
-		<div class="labels" id="label_icecc2">IceCC Code: </div>
-		<textarea id="inputarea_icecc"></textarea>
-		<input type="text" id="input_icecc_trigbase" value="Comment(&quot;Iscript&quot;, 0, ^1, ^2, 0, 7);" />
-		<div class="divbutton" id="parse_icecc">Parse</div>
-	</div>
-	<div id="etg_area">
-		<div class="labels" id="label_etg_base">Trigger Base: </div>
-		<input type="text" id="input_etg_base" value="MemoryAddr(^1, Set To, ^2);" />
-		<div class="labels" id="label_etg_ofs">Offset: </div>
-		<input type="text" id="input_etg_ofs" value="0" />
-		<div class="labels" id="label_etg_cont">Hex Code: </div>
-		<textarea id="inputarea_etg"></textarea>
-		<div class="divbutton" id="parse_etg">Parse</div>
-	</div>
-	<div id="textstack_area">
-		<div class="labels" id="label_textstack_text">Text to Stack: </div>
-		<input type="text" id="input_textstack_text" value="" />
-		<div class="labels" id="label_textstack_unit">Unit Name: </div>
-		<input type="text" id="input_textstack_unit" value="" />
-		<div class="labels" id="label_textstack_disp">Display Text: </div>
-		<input type="text" id="input_textstack_disp" value="" />
-		<div class="labels" id="label_textstack_objs">Objectives: </div>
-		<input type="text" id="input_textstack_objs" value="" />
-		<div class="labels" id="label_textstack_desc">Description: </div>
-		<input type="text" id="input_textstack_desc" value="" />
-	</div>
-	<div id="trigdupl_area">
-		<div class="labels" id="label_trigdupl_count">Count: </div>
-		<input type="text" id="input_trigdupl_count" value="2" />
-		<div class="labels" id="label_trigdupl_area">Trigger: </div>
-		<textarea id="inputarea_trigdupl"></textarea>
-		<textarea id="inputarea_trigdupl_arrays"></textarea>
-		<div class="divbutton" id="parse_trigdupl">Parse</div>
-	</div>
-	<div id="trigslice_area">
-		<div class="labels" id="label_trigslice_player">Player: </div>
-		<input type="text" id="input_trigslice_player" value="Player 8" />
-		<div class="labels" id="label_trigslice_cond">Conditions: </div>
-		<textarea id="inputarea_trigslice_cond"></textarea>
-		<div class="labels" id="label_trigslice_act">Actions: </div>
-		<textarea id="inputarea_trigslice_act"></textarea>
-		<div class="divbutton" id="parse_trigslice">Parse</div>
-	</div>
-	<div id="trigconv_area">
-		<div class="labels" id="label_trigconv_buttonoffset">Button Offset: </div>
-		<input type="text" id="input_trigconv_buttonoffset" value="0x590000" />
-		<div class="labels" id="label_trigconv_area">Triggers: </div>
-		<textarea id="inputarea_trigconv"></textarea>
-		<div class="divbutton" id="parse_trigconv">Parse</div>
-	</div>
-	<div id="reqwrite_area">
-		<div class="labels" id="label_reqwrite_type">Type: </div>
-		<select type="text" id="select_reqwrite_type">
-			<option id="input_reqwrite_reqtype_units" value="1">Units</option>
-			<option id="input_reqwrite_reqtype_upgrades" value="2">Upgrades</option>
-			<option id="input_reqwrite_reqtype_researchtech" value="3">Research Tech</option>
-			<option id="input_reqwrite_reqtype_usetech" value="4">Use Tech</option>
-			<option id="input_reqwrite_reqtype_orders" value="5">Orders</option>
-		</select>
-		<div class="labels" id="label_reqwrite_uid">For ID: </div>
-		<input type="text" id="input_reqwrite_uid" value="0" />
-		<div class="labels" id="label_reqwrite_offset">Req Offset: </div>
-		<input type="text" id="input_reqwrite_offset" value="0" />
-		<div class="labels" id="label_reqwrite_add">Opcodes: </div>
-		<select type="text" id="select_reqwrite_add">
-		</select>
-		<div class="labels" id="label_reqwrite_area"></div>
-		<textarea id="inputarea_reqwrite"></textarea>
-		<div class="divbutton" id="parse_reqwrite">Parse</div>
-	</div>
-	<div id="stattbl_area">
-		<div class="labels" id="label_stattbl_player">CPT Player: </div>
-		<input type="text" id="input_stattbl_player" value="1" />
-		<div class="labels" id="label_stattbl_cond">Conditions: </div>
-		<textarea id="inputarea_stattbl_cond"></textarea>
-		<div class="divbutton" id="parse_stattbl_cpt">CPT</div>
-		<hr id="hr_stattbl" />
-		<div class="labels" id="label_stattbl_offset">Offset: </div>
-		<input type="text" id="input_stattbl_offset" value="27380" />
-		<div class="labels" id="label_stattbl_str1">String1: </div>
-		<input type="text" id="input_stattbl_str1" value="" />
-		<div class="labels" id="label_stattbl_str2">String2: </div>
-		<input type="text" id="input_stattbl_str2" value="" />
-		<div class="labels" id="label_stattbl_content1">Content1: </div>
-		<input type="text" id="input_stattbl_content1" value="" />
-		<div class="labels" id="label_stattbl_content2">Content2: </div>
-		<input type="text" id="input_stattbl_content2" value="" />
-		<select id="select_stattbl_encoding">
-			<option>UTF-8</option>
-			<option selected="selected">EUC-KR</option>
-			<option>ISO-8859-1</option>
-		</select>
-		<hr id="hr_stattbl_batch" />
-		<textarea id="inputarea_stattbl_batch"></textarea>
-		<div class="divbutton" id="parse_stattbl">Parse</div>
-		<div class="divbutton" id="parse_stattbl_batch">Batch</div>
-	</div>
-	<!-- div id="wireframes_area">
+	<!!-- div id="wireframes_area">
 		<div class="labels" id="label_wireframes_player">CPT Player: </div>
 		<input type="text" id="input_wireframes_player" value="1" />
 		<select type="text" id="select_wireframes_type">
@@ -260,95 +482,12 @@
 		<input type="text" id="input_wireframes_uid" value="0" />
 		<div class="labels" id="label_wireframes_target">Change to: </div>
 		<input type="text" id="input_wireframes_target" value="0" />
-		<div class="divbutton" id="parse_wireframes">Parse</div>
-	</div -->
-	<div id="playercolor_area">
-		<div class="labels" id="label_playercolor_id">Player: </div>
-		<input type="text" id="input_playercolor_id" value="1" />
-		<div class="labels" id="label_playercolor_colors">Colors: </div>
-		<div class="labels" id="label_playercolor_colors2">Minimap: </div>
-		<input class="playercolor_i" type="text" id="input_playercolor1" value="111" />
-		<input class="playercolor_i" type="text" id="input_playercolor2" value="23" />
-		<input class="playercolor_i" type="text" id="input_playercolor3" value="23" />
-		<input class="playercolor_i" type="text" id="input_playercolor4" value="98" />
-		<input class="playercolor_i" type="text" id="input_playercolor5" value="94" />
-		<input class="playercolor_i" type="text" id="input_playercolor6" value="171" />
-		<input class="playercolor_i" type="text" id="input_playercolor7" value="170" />
-		<input class="playercolor_i" type="text" id="input_playercolor8" value="168" />
-		<input class="playercolor_i" type="text" id="input_playercolor0" value="111" />
-		<div class="playercolor_d" id="div_playercolor1"></div>
-		<div class="playercolor_d" id="div_playercolor2"></div>
-		<div class="playercolor_d" id="div_playercolor3"></div>
-		<div class="playercolor_d" id="div_playercolor4"></div>
-		<div class="playercolor_d" id="div_playercolor5"></div>
-		<div class="playercolor_d" id="div_playercolor6"></div>
-		<div class="playercolor_d" id="div_playercolor7"></div>
-		<div class="playercolor_d" id="div_playercolor8"></div>
-		<div class="playercolor_d" id="div_playercolor0"></div>
-		<div id="playercolor_imgcontainer">
-			<img src="Include/colors.png" id="playercolor_img" />
-		</div>
-		<div id="playercolor_select_container"></div>
-		<select type="text" id="playercolor_select_tileset">
-			<option id="playercolor_select_tileset_0" value="0" selected="selected">Badlands</option>
-			<option id="playercolor_select_tileset_1" value="1">Space Platform</option>
-			<option id="playercolor_select_tileset_2" value="2">Installation</option>
-			<option id="playercolor_select_tileset_3" value="3">Ash World</option>
-			<option id="playercolor_select_tileset_4" value="4">Jungle</option>
-			<option id="playercolor_select_tileset_5" value="5">Desert</option>
-			<option id="playercolor_select_tileset_6" value="6">Ice World</option>
-			<option id="playercolor_select_tileset_7" value="7">Twilight</option>
-			<option id="playercolor_select_tileset_8" value="8">Game Menu</option>
-		</select>
-		<div class="divbutton" id="parse_playercolor">Parse</div>
-	</div>
-	<div id="mapstr_area">
-		<div class="labels" id="label_mapstr_sid">String ID: </div>
-		<input type="text" id="input_mapstr_sid" value="0" />
-		<div class="labels" id="label_mapstr_ofs">Offset: </div>
-		<input type="text" id="input_mapstr_ofs" value="0" />
-		<div class="labels" id="label_mapstr_cont">Content: </div>
-		<textarea id="inputarea_mapstr"></textarea>
-		<div class="divbutton" id="parse_mapstr">Parse</div>
-	</div>
-	<div id="flags_area">
-		<div class="labels" id="label_flags_table">Flags: </div>
-		<div id="flags_table_wrapper">
-			<table id="flags_table"><tbody id="flags_tbody"></tbody></table>
-		</div>
-		<div class="labels" id="label_flags_value">Value: </div>
-		<input type="text" id="input_flags_value" value="0" />
-		<div class="labels" id="label_flags_mode">Mode: </div>
-		<select type="text" id="select_flags_mode">
-			<option id="select_flags_mode_0" selected="selected">Set All</option>
-			<option id="select_flags_mode_1">Set Selected</option>
-			<option id="select_flags_mode_2">Clear Selected</option>
-			<option id="select_flags_mode_3">Clear Unselected</option>
-		</select>
-		<div class="divbutton" id="parse_flags">Parse</div>
-	</div>
-	<div id="toollinks_area">
-		<div id="toollinks_label">Extra Tool Links</div>
-		<div id="toollinks_links">
-			<a href="https://github.com/LDConval/eudtools/" target="_blank">GitHub repository</a> - source code of this web app<br />
-			<a href="https://github.com/Ar3sgice/eudtools/wiki" target="_blank">GitHub wiki</a> - some tutorials from original author<br />
-			<a href="Include/ButtonMaker.html" target="_blank">Button Maker</a> - creates buttons<br />
-			<a href="http://farty1billion.dyndns.org/EUDDB/" target="_blank">EUDDB</a> - detailed starcraft memory table<br />
-			<a href="Include/EUDDB.html" target="_blank">EUDDB backup</a> - copy of Farty1billion's EUD DB page<br />
-			<a href="Include/IceDC.html" target="_blank">IceDC</a> - iscript code reference<br />
-			<a href="Include/Icons.html" target="_blank">Icons</a> - cmdicons.grp entries<br />
-			<a href="Include/StatStrings.html" target="_blank">StatStrings</a> - stat_txt.tbl entries<br />
-			<a href="Include/MapStringViewX.html" target="_blank">MapStringViewX</a> - view/edit map string table from raw .chk file<br />
-			<a href="Include/SCQR.html" target="_blank">SCQR</a> - creates QR codes and minimap drawings<br />
-		</div>
-	</div>
-	<div id="plugin_area">
-	</div>
+		<div class="divbutton" id="parse_wireframes">Action</div>
+	</div --! >
 	<div class="divbutton" id="make_memory">v</div>
 	<div class="divbutton" id="make_trigger">v</div>
 	<div class="divbutton" id="expand_data_output">v</div>
 	<textarea id="data_output" spellcheck="false"></textarea>
-	<textarea id="trigger_output" spellcheck="false"></textarea>
 </div>
 
 <script>
@@ -357,3 +496,4 @@
 
 </body>
 </html>
+-->

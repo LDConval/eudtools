@@ -1,7 +1,14 @@
+const ColorJs = require("./color");
+
+function toColorJs(rgbArray) {
+    return new ColorJs("srgb", rgbArray.map(x => x / 255));
+}
+
 function findNearestColor(color, colorList) {
     let scores = [];
-    colorList.forEach((c,i) => {
-        scores.push([i, (c[0] - color[0]) ** 2 + (c[1] - color[1]) ** 2 + (c[2] - color[2]) ** 2]);
+    const colorComp = toColorJs(color);
+    colorList.map(toColorJs).forEach((c,i) => {
+        scores.push([i, c.deltaE2000(colorComp)]);
     });
     scores = scores.sort((a,b) => a[1]-b[1]);
     return colorList[scores[0][0]];
@@ -9,8 +16,9 @@ function findNearestColor(color, colorList) {
 
 function findNearestColorIndex(color, colorList) {
     let scores = [];
-    colorList.forEach((c,i) => {
-        scores.push([i, (c[0] - color[0]) ** 2 + (c[1] - color[1]) ** 2 + (c[2] - color[2]) ** 2]);
+    const colorComp = toColorJs(color);
+    colorList.map(toColorJs).forEach((c,i) => {
+        scores.push([i, c.deltaE2000(colorComp)]);
     });
     scores = scores.sort((a,b) => a[1]-b[1]);
     return scores[0][0];

@@ -21,38 +21,37 @@ var flagNames = {
 };
 
 function flagsParse() {
-    if($("input_object").value.toString().indexOf(",") != -1) {
+    if($I("input_object").value.toString().indexOf(",") != -1) {
         // batch set for flags
-        let resetText = $("input_object").value;
-        let objects = $("input_object").value.toString().trim().split(/, */);
+        let resetText = $I("input_object").value;
+        let objects = $I("input_object").value.toString().trim().split(/, */);
         objects.forEach((item, i) => {
-            $("input_object").value = item;
-            updateMemory();
-            $("trigger_output").value += flagsGenerateTrigger(parseInt($("input_memory").value),
-                                                              parseInt($("input_length").value),
-                                                              parseInt($("input_flags_value").value),
-                                                              $("select_flags_mode").selectedIndex);
+            MemData.obj = item;
+            updateMemoryObject(true);
+            calculateAndUpdateMemory();
+            output(
+                flagsGenerateTrigger(MemData.memory, MemData.len, parseInt($I("input_flags_value").value), $I("select_flags_mode").selectedIndex)
+            );
         });
-        $("input_object").value = resetText;
+        $I("input_object").value = resetText;
     }
     else {
-        $("trigger_output").value += flagsGenerateTrigger(parseInt($("input_memory").value),
-                                                          parseInt($("input_length").value),
-                                                          parseInt($("input_flags_value").value),
-                                                          $("select_flags_mode").selectedIndex);
+        output(
+            flagsGenerateTrigger(MemData.memory, MemData.len, parseInt($I("input_flags_value").value), $I("select_flags_mode").selectedIndex)
+        );
     }
 }
 
 function flagsInit() {
-    $("parse_flags").onclick = flagsParse;
-    $("input_flags_value").addEventListener("keydown", evt => setTimeout(flagsUpdateStates, 25));
+    $I("parse_flags").onclick = flagsParse;
+    $I("input_flags_value").addEventListener("keydown", evt => setTimeout(flagsUpdateStates, 25));
 }
 
 function flagsGetStates() {
     let flagStates = [];
     for(let i=0; i<32; i++) {
-        if($("flags_checkbox_" + i)) {
-            if($("flags_checkbox_" + i).checked) {
+        if($I("flags_checkbox_" + i)) {
+            if($I("flags_checkbox_" + i).checked) {
                 flagStates.push(true);
             }
             else {
@@ -76,7 +75,7 @@ function flagsCalcStates(value) {
 }
 
 function flagsUpdateStates(evt) {
-    let flagValue = parseInt($("input_flags_value").value);
+    let flagValue = parseInt($I("input_flags_value").value);
     let states = flagsCalcStates(flagValue);
     flagsSetStates(states);
 }
@@ -84,14 +83,16 @@ function flagsUpdateStates(evt) {
 function flagsUpdateValue(evt) {
     let flags = flagsGetStates();
     let value = flags.map((a, i) => a ? (1<<i) : 0).reduce((a,b) => a+b, 0);
-    $("input_flags_value").value = value;
-    $("input_value").value = value;
+    $I("input_flags_value").value = value;
+    MemData.value = value;
+
+	updateMemoryValue(true);
 }
 
 function flagsSetStates(states) {
     for(let i=0; i<32; i++) {
-        if($("flags_checkbox_" + i)) {
-            $("flags_checkbox_" + i).checked = states[i];
+        if($I("flags_checkbox_" + i)) {
+            $I("flags_checkbox_" + i).checked = states[i];
         }
     }
 }
@@ -106,7 +107,7 @@ function flagsTransposeArray(array) {
 
 function flagsCreateElements(arrayRaw) {
     let array = flagsTransposeArray(arrayRaw);
-    $("flags_tbody").innerHTML = "";
+    $I("flags_tbody").innerHTML = "";
     for(let i=0; i<array.length; i++) {
         let r = document.createElement("tr");
         for(let j=0; j<4; j++) {
@@ -127,12 +128,12 @@ function flagsCreateElements(arrayRaw) {
             r.appendChild(c1);
             r.appendChild(c2);
         }
-        $("flags_tbody").appendChild(r);
+        $I("flags_tbody").appendChild(r);
     }
 }
 
 function flagsCall() {
-    let offset = parseInt($("input_offset").value);
+    let offset = MemData.offset;
     switch(offset) {
         case 0x59CCC8: // UnitNode Movement Flags
         flagsCreateElements(flagNames.UnitNodeMovementFlags);
@@ -174,10 +175,10 @@ function flagsCall() {
         flagsCreateElements(flagNames.SwitchFlags);
         break;
         default: // General
-        if(parseInt($("input_length").value) == 1) {
+        if(MemData.len == 1) {
             flagsCreateElements(flagNames.hex8Flags);
         }
-        else if(parseInt($("input_length").value) == 2) {
+        else if(MemData.len == 2) {
             flagsCreateElements(flagNames.hex16Flags);
         }
         else {

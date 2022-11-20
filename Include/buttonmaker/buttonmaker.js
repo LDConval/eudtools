@@ -168,25 +168,17 @@ function clearButtonset() {
 
 async function createUnitArea(handler)
 {
-	if(typeof packedTextData == "undefined") {
-		var unitIDListRaw = await fetch("../Data/units_dat.txt").then(s => s.text());
-	}
-	else {
-		var unitIDListRaw = packedTextData["units_dat.txt"];
-	}
-	let unitIDList = unitIDListRaw.split(/\r?\n/).filter(s => s.indexOf(",") != -1).map(s => s.split(/, */));
-
-	unitIDsExt = unitIDList.map(item => item[1]);
+	unitIDsExt = getDataType("unitsExt").items;
 	unitIDs = unitIDsExt.slice(0, 229);
 
 	var divSelect = document.createElement("div");
 	divSelect.className = "divselect select-units";
-	for(var i=0;i<unitIDList.length;i++)
+	for(var i=0;i<unitIDsExt.length;i++)
 	{
 		var opt = document.createElement("div");
 		opt.className = "divoption option-units";
-		opt.addEventListener("click", handler.bind(null, unitIDList[i][0]));
-		opt.textContent = "[" + i + "] " + unitIDList[i][1];
+		opt.addEventListener("click", handler.bind(null, i));
+		opt.textContent = "[" + i + "] " + unitIDsExt[i];
 		unitSelectElements.push(opt);
 		divSelect.appendChild(opt);
 	}
@@ -194,19 +186,9 @@ async function createUnitArea(handler)
 }
 
 async function populateGlobalArrays() {
-	if(typeof packedTextData == "undefined") {
-		var upgradeIDListRaw = await fetch("../Data/upgrades_dat.txt").then(s => s.text());
-		var techIDListRaw = await fetch("../Data/techdata_dat.txt").then(s => s.text());
-		var iconNameListRaw = await fetch("../Data/icon_names.txt").then(s => s.text());
-	}
-	else {
-		var upgradeIDListRaw = packedTextData["upgrades_dat.txt"];
-		var techIDListRaw = packedTextData["techdata_dat.txt"];
-		var iconNameListRaw = packedTextData["icon_names.txt"];
-	}
-	upgradeIDs = upgradeIDListRaw.split(/\r?\n/).filter(s => s.indexOf(",") != -1).map(s => s.split(/, */)).map(s => s[1]);
-	techIDs = techIDListRaw.split(/\r?\n/).filter(s => s.indexOf(",") != -1).map(s => s.split(/, */)).map(s => s[1]);
-	iconNames = iconNameListRaw.split(/\r?\n/);
+	upgradeIDs = getDataType("upgrades").items;
+	techIDs = getDataType("techs").items;
+	iconNames = getDataType("icon").items;
 }
 
 function populateSelectElement(elem, array) {
@@ -1055,12 +1037,14 @@ function initTextValues() {
 }
 
 async function init() {
+	initDataTypes();
 	await Promise.all([
 		createUnitArea(unitSelectHandler),
 		populateGlobalArrays(),
 		loadStatTbl(),
 		loadOriginalButtons()
 	]);
+	loadDefaultSettings();
 	populateSelectElement(qs("#redirect-units-select"), unitIDsExt);
 	populateSelectElement(qs("#trait-icon-select"), iconNames);
 	populateSelectElement(qs("#trait-reqfun-select"), bf_list[0].map(item => item[1]));

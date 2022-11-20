@@ -38,17 +38,19 @@ function _plC_imgInit(tileset) {
 	c2.forEach((item, i) => {
 		let elem = document.createElement("div");
 		elem.className = "playercolor_imgGrid";
-		elem.style.background = "rgb(" + item[0] + ", " + item[1] + ", " + item[2] + ")";
+		elem.style.setProperty("background", "rgb(" + item[0] + ", " + item[1] + ", " + item[2] + ")");
+		elem.style.setProperty("grid-column", 1 + (i % 16));
+		elem.style.setProperty("grid-row", 1 + Math.floor(i / 16));
 		elem.addEventListener("click", _plC_selColorEvt.bind(null, i));
-		$("playercolor_imgcontainer").appendChild(elem);
+		$I("playercolor_imgcontainer").appendChild(elem);
 	});
 }
 
 function _plC_selColorEvt(colorCode, evt) {
-	$("input_playercolor" + _plC_sel).value = colorCode;
+	$I("input_playercolor" + _plC_sel).value = colorCode;
 	_plC_BG(_plC_sel);
 	_plC_sel = (_plC_sel+1) % 2;
-	$("input_playercolor" + _plC_sel).select();
+	$I("input_playercolor" + _plC_sel).select();
 }
 
 function _plC_cMe(evt)
@@ -57,7 +59,7 @@ function _plC_cMe(evt)
 	var opt = evt.srcElement || evt.target;
 	var sid = opt.id.toString();
 	var code = parseInt(sid.charAt(sid.length-1));
-	$("input_playercolor" + code).select();
+	$I("input_playercolor" + code).select();
 	_plC_sel = code;
 }
 
@@ -74,7 +76,7 @@ function _plC_m(i)
 
 function _plC_BG(i)
 {
-	$("div_playercolor" + i).style.background = _plC_m(parseInt($("input_playercolor" + i).value));
+	$I("div_playercolor" + i).style.background = _plC_m(parseInt($I("input_playercolor" + i).value));
 }
 
 function _plC_r(evt)
@@ -83,19 +85,18 @@ function _plC_r(evt)
 	var opt = evt.srcElement || evt.target;
 	var sid = opt.id.toString();
 	var code = parseInt(sid.charAt(sid.length-1));
-	$("div_playercolor" + code).style.background = _plC_m(parseInt($("input_playercolor" + code).value));
+	$I("div_playercolor" + code).style.background = _plC_m(parseInt($I("input_playercolor" + code).value));
 }
 
 function playerColorsCall()
 {
-	$("playercolor_area").style.display = "block";
-	for(var i=0;i<9;i++)
+	for(var i=0;i<2;i++)
 	{
 		_plC_BG(i);
 	}
-	$("input_playercolor1").select();
+	$I("input_playercolor1").select();
 	_plC_sel = 1;
-	// $("input_playercolor0").select();
+	// $I("input_playercolor0").select();
 	// _plC_sel = 0;
 }
 
@@ -103,12 +104,12 @@ function playerColorsToTrigger()
 {
 	var triggerPattern_1 = getTriggerPattern(TriggerPatterns.MASKED);
 	var triggerPattern_4 = getTriggerPattern(TriggerPatterns.NORMAL);
-	var _p = function(i){return parseInt($("input_playercolor"+i).value);};
-	var num1 = (_p(4) << 24) + (_p(3) << 16) + (_p(2) << 8) + _p(1);
-	var num2 = (_p(8) << 24) + (_p(7) << 16) + (_p(6) << 8) + _p(5);
+	var _p = function(i){return parseInt($I("input_playercolor"+i).value);};
+	var num1 = _p(1);
+	var num2 = 0;
 	var num0 = _p(0);
-	var player = parseInt($("input_playercolor_id").value) - 1;
-	if(parseInt($("input_offset").value, 10) == 5288862) {
+	var player = parseInt($I("input_playercolor_id").value) - 1;
+	if(MemData.offset == 5288862) {
 		var mem1 = 5288862 + player * 8;
 		var mem2 = 5288958 + player;
 	}
@@ -130,7 +131,7 @@ function playerColorsToTrigger()
 	// out += calculateTrigger(triggerPattern_4, mem1 + 2, (num1 >>> 16) + ((num2 & 0xFFFF) << 16), 4, true, 0);
 	// out += calculateTrigger(triggerPattern_1, mem1 + 6, num2 >>> 16, 2, true, 0);
 	out += calculateTrigger(triggerPattern_1, mem2, num0, 1, true);
-	$("trigger_output").value += out;
+	output(out);
 }
 
 function _plC_UOp(evt)
@@ -141,7 +142,7 @@ function _plC_UOp(evt)
 	var sl = playerColorsComboList[optID][2].split(" ");
 	for(var i=0;i<9;i++)
 	{
-		$("input_playercolor" + i).value = sl[i];
+		$I("input_playercolor" + i).value = sl[i];
 		_plC_BG(i);
 	}
 }
@@ -157,7 +158,7 @@ function _plC_CSA(handler)
 	for(var i=0;i<playerColorsComboList.length;i++)
 	{
 		var opt = document.createElement("div");
-		opt.className = "divoption playercolor_option";
+		opt.className = "playercolor_option";
 		opt.optionID = i;
 		opt.onclick = handler;
 		if(playerColorsComboList[i][0].length == 0)
@@ -168,24 +169,24 @@ function _plC_CSA(handler)
 		opt.style.background = playerColorsComboList[i][1];
 		divSelect.appendChild(opt);
 	}
-	$("playercolor_select_container").appendChild(divSelect);
+	$I("playercolor_select_container").appendChild(divSelect);
 }
 
 function _plC_Tls(evt) {
-	$("playercolor_imgcontainer").innerHTML = "";
-	_plC_imgInit($("playercolor_select_tileset").selectedIndex);
+	$I("playercolor_imgcontainer").innerHTML = "";
+	_plC_imgInit($I("playercolor_select_tileset").selectedIndex);
 }
 
 function playerColorsInit()
 {
-	$("parse_playercolor").onclick = playerColorsToTrigger;
-	$("playercolor_select_tileset").onchange = _plC_Tls;
-	for(var i=0;i<9;i++)
+	$I("parse_playercolor").onclick = playerColorsToTrigger;
+	$I("playercolor_select_tileset").onchange = _plC_Tls;
+	for(var i=0;i<2;i++)
 	{
-		$("input_playercolor" + i).onclick = _plC_cMe;
-		$("div_playercolor" + i).onclick = _plC_cMe;
+		$I("input_playercolor" + i).onclick = _plC_cMe;
+		$I("div_playercolor" + i).onclick = _plC_cMe;
 		_plC_BG(i);
 	}
 	_plC_CSA(_plC_UOp);
-	_plC_imgInit($("playercolor_select_tileset").selectedIndex);
+	_plC_imgInit($I("playercolor_select_tileset").selectedIndex);
 }

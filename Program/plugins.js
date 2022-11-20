@@ -45,12 +45,13 @@ function registerPlugin(plugin) {
         var elem = document.createElement("div");
         elem.innerHTML = plugin.html;
         elem.id = "plugin_" + plugin.name + "_area";
+        elem.classList.add("plugin_grid");
         if(!plugin.defaultDisplay) {
-            elem.style.display = "none";
+            elem.classList.add("plugin_grid_hidden");
         }
         else {
             addEventListener("load", function(evt) {
-                $("plugin_area").style.display = "block";
+                elem.classList.remove("plugin_grid_hidden");
             });
         }
         plugin.area = elem;
@@ -68,15 +69,28 @@ function registerPlugin(plugin) {
         return;
     }
     if(pluginInListOffset == -1) {
-        memorylist.push([0, 0, 0, ""]);
-        memorylist.push([0, 0, 0, "-----Plugins-----"]);
-        categorylist.push([memorylist.length-1, memorylist.length, "Plugins"]);
         pluginCategory = categorylist[categorylist.length-1];
-        categorylist[0][1] += 2;
     }
     pluginInListOffset = memorylist.push([plugin.memory, plugin.length, plugin.type, plugin.title]) - 1;
     categorylist[0][1]++;
     pluginCategory[1]++;
+}
+
+function pluginInvoke(offset) {
+    $A("#plugin_area > .plugin_grid").forEach(elem => elem.classList.add("plugin_grid_hidden"));
+    if(typeof allPlugins == "object" && allPlugins[offset]) {
+        if(typeof allPlugins[offset].resetOffset != "undefined") {
+            MemData.offset = allPlugins[offset].resetOffset;
+            calculateMemory();
+            updateMemoryBaseFields();
+        }
+        if(allPlugins[offset].act) {
+            allPlugins[offset].act();
+        }
+        if(allPlugins[offset].area) {
+            allPlugins[offset].area.classList.remove("plugin_grid_hidden");
+        }
+    }
 }
 
 function pluginLoaderInit() {

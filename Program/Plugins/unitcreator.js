@@ -5,89 +5,57 @@
     const unitTypes = ["Terran Marine", "Terran Ghost", "Terran Vulture", "Terran Goliath", "Goliath Turret", "Terran Siege Tank (Tank Mode)", "Tank Turret type   1", "Terran SCV", "Terran Wraith", "Terran Science Vessel", "Gui Montag (Firebat)", "Terran Dropship", "Terran Battlecruiser", "Vulture Spider Mine", "Nuclear Missile", "Terran Civilian", "Sarah Kerrigan (Ghost)", "Alan Schezar (Goliath)", "Alan Turret", "Jim Raynor (Vulture)", "Jim Raynor (Marine)", "Tom Kazansky (Wraith)", "Magellan (Science Vessel)", "Edmund Duke (Siege Tank)", "Duke Turret type   1", "Edmund Duke (Siege Mode)", "Duke Turret type   2", "Arcturus Mengsk (Battlecruiser)", "Hyperion (Battlecruiser)", "Norad II (Battlecruiser)", "Terran Siege Tank (Siege Mode)", "Tank Turret type   2", "Terran Firebat", "Scanner Sweep", "Terran Medic", "Zerg Larva", "Zerg Egg", "Zerg Zergling", "Zerg Hydralisk", "Zerg Ultralisk", "Zerg Broodling", "Zerg Drone", "Zerg Overlord", "Zerg Mutalisk", "Zerg Guardian", "Zerg Queen", "Zerg Defiler", "Zerg Scourge", "Torrasque (Ultralisk)", "Matriarch (Queen)", "Infested Terran", "Infested Kerrigan (Infested Terran)", "Unclean One (Defiler)", "Hunter Killer (Hydralisk)", "Devouring One (Zergling)", "Kukulza (Mutalisk)", "Kukulza (Guardian)", "Yggdrasill (Overlord)", "Terran Valkyrie", "Cocoon", "Protoss Corsair", "Protoss Dark Templar", "Zerg Devourer", "Protoss Dark Archon", "Protoss Probe", "Protoss Zealot", "Protoss Dragoon", "Protoss High Templar", "Protoss Archon", "Protoss Shuttle", "Protoss Scout", "Protoss Arbiter", "Protoss Carrier", "Protoss Interceptor", "Dark Templar (Hero)", "Zeratul (Dark Templar)", "Tassadar/Zeratul (Archon)", "Fenix (Zealot)", "Fenix (Dragoon)", "Tassadar (Templar)", "Mojo (Scout)", "Warbringer (Reaver)", "Gantrithor (Carrier)", "Protoss Reaver", "Protoss Observer", "Protoss Scarab", "Danimoth (Arbiter)", "Aldaris (Templar)", "Artanis (Scout)", "Rhynadon (Badlands)", "Bengalaas (Jungle)", "Unused type   1", "Unused type   2", "Scantid (Desert)", "Kakaru (Twilight)", "Ragnasaur (Ash World)", "Ursadon (Ice World)", "Zerg Lurker Egg", "Raszagal (Dark Templar)", "Samir Duran (Ghost)", "Alexei Stukov (Ghost)", "Map Revealer", "Gerard DuGalle (Ghost)", "Zerg Lurker", "Infested Duran", "Disruption Field", "Terran Command Center", "Terran Comsat Station", "Terran Nuclear Silo", "Terran Supply Depot", "Terran Refinery", "Terran Barracks", "Terran Academy", "Terran Factory", "Terran Starport", "Terran Control Tower", "Terran Science Facility", "Terran Covert Ops", "Terran Physics Lab", "Unused Terran Bldg type   1", "Terran Machine Shop", "Unused Terran Bldg type   2", "Terran Engineering Bay", "Terran Armory", "Terran Missile Turret", "Terran Bunker", "Norad II (Crashed Battlecruiser)", "Ion Cannon", "Uraj Crystal", "Khalis Crystal", "Infested Command Center", "Zerg Hatchery", "Zerg Lair", "Zerg Hive", "Zerg Nydus Canal", "Zerg Hydralisk Den", "Zerg Defiler Mound", "Zerg Greater Spire", "Zerg Queen's Nest", "Zerg Evolution Chamber", "Zerg Ultralisk Cavern", "Zerg Spire", "Zerg Spawning Pool", "Zerg Creep Colony", "Zerg Spore Colony", "Unused Zerg Bldg", "Zerg Sunken Colony", "Zerg Overmind (With Shell)", "Zerg Overmind", "Zerg Extractor", "Mature Crysalis", "Zerg Cerebrate", "Zerg Cerebrate Daggoth", "Unused Zerg Bldg 5", "Protoss Nexus", "Protoss Robotics Facility", "Protoss Pylon", "Protoss Assimilator", "Protoss Unused type   1", "Protoss Observatory", "Protoss Gateway", "Protoss Unused type   2", "Protoss Photon Cannon", "Protoss Citadel of Adun", "Protoss Cybernetics Core", "Protoss Templar Archives", "Protoss Forge", "Protoss Stargate", "Stasis Cell/Prison", "Protoss Fleet Beacon", "Protoss Arbiter Tribunal", "Protoss Robotics Support Bay", "Protoss Shield Battery", "Khaydarin Crystal Formation", "Protoss Temple", "Xel'Naga Temple", "Mineral Field (Type 1)", "Mineral Field (Type 2)", "Mineral Field (Type 3)", "Cave", "Cave-in", "Cantina", "Mining Platform", "Independent Command Center", "Independent Starport", "Jump Gate", "Ruins", "Kyadarin Crystal Formation", "Vespene Geyser", "Warp Gate", "Psi Disrupter", "Zerg Marker", "Terran Marker", "Protoss Marker", "Zerg Beacon", "Terran Beacon", "Protoss Beacon", "Zerg Flag Beacon", "Terran Flag Beacon", "Protoss Flag Beacon", "Power Generator", "Overmind Cocoon", "Dark Swarm", "Floor Missile Trap", "Floor Hatch (UNUSED)", "Left Upper Level Door", "Right Upper Level Door", "Left Pit Door", "Right Pit Door", "Floor Gun Trap", "Left Wall Missile Trap", "Left Wall Flame Trap", "Right Wall Missile Trap", "Right Wall Flame Trap", "Start Location", "Flag", "Young Chrysalis", "Psi Emitter", "Data Disc", "Khaydarin Crystal", "Mineral Chunk (Type 1)", "Mineral Chunk (Type 2)", "Vespene Orb (Protoss Type 1)", "Vespene Orb (Protoss Type 2)", "Vespene Sac (Zerg Type 1)", "Vespene Sac (Zerg Type 2)", "Vespene Tank (Terran Type 1)", "Vespene Tank (Terran Type 2)", "Invalid Unit"];
 
     const html = `
-        <div class="labels" id="label_unitcreator_locnum">Loc ID: </div>
-        <input type="text" id="input_unitcreator_locnum" value="17" />
-        <div class="labels" id="label_unitcreator_locname">Loc Name: </div>
-        <input type="text" id="input_unitcreator_locname" value="_CREATE" />
-        <div class="labels" id="label_unitcreator_file">Units CHKFile: </div>
-        <input type="file" id="input_unitcreator_file" value="0" />
-        <div class="labels" id="label_unitcreator_player">Player: </div>
-        <input type="text" id="input_unitcreator_player" value="8" />
-        <div class="labels" id="label_unitcreator_cond">Conditions: </div>
-        <textarea id="textarea_unitcreator_cond"></textarea>
-        <div class="divbutton" id="parse_unitcreator">Parse</div>
+        <div class="labels text_mid gd_s_labels gd_s_row_1" id="label_unitcreator_locnum">Loc ID: </div>
+        <input class="gd_s_input_x gd_s_row_1" type="text" id="input_unitcreator_locnum" value="1" />
+        <div class="labels text_mid gd_s_labels gd_s_row_2" id="label_unitcreator_locname">Loc Name: </div>
+        <input class="gd_s_input_x gd_s_row_2" type="text" id="input_unitcreator_locname" value="create" />
+        <div class="labels text_mid gd_s_labels gd_s_row_3" id="label_unitcreator_file">Units CHKFile: </div>
+        <input class="gd_s_input_x gd_s_row_3" type="file" id="input_unitcreator_file" value="0" />
+        <div class="labels text_mid gd_s_labels gd_s_row_4" id="label_unitcreator_player">Player: </div>
+        <input class="gd_s_input_x gd_s_row_4" type="text" id="input_unitcreator_player" value="8" />
+        <div class="labels text_mid gd_s_labels gd_s_row_5" id="label_unitcreator_cond">Conditions: </div>
+        <textarea class="gd_s_textarea gd_s_row_5 gd_s_row_until_last" id="textarea_unitcreator_cond"></textarea>
+        <div class="clickables text_mid gd_s_buttons gd_s_row_last" id="parse_unitcreator">Generate</div>
     `;
 
     const css = `
-        #label_unitcreator_locnum
-        {
-            top: 0px;
-            left: 90px;
-        }
-        #label_unitcreator_locname
-        {
-            top: 0px;
-            left: 215px;
-        }
-        #label_unitcreator_file
-        {
-            top: 26px;
-            left: 37px;
-        }
-        #input_unitcreator_locnum
-        {
-            position: absolute;
-            top: 0px;
-            left: 150px;
-            width: 50px;
-        }
-        #input_unitcreator_locname
-        {
-            position: absolute;
-            top: 0px;
-            left: 300px;
-            width: 420px;
-        }
-        #input_unitcreator_file
-        {
-            position: absolute;
-            top: 26px;
-            left: 150px;
-            width: 570px;
-        }
-        #parse_unitcreator
-        {
-            position: absolute;
-            top: 57px;
-            left: 150px;
-            padding: 8px 11px 10px 11px;
-        }
-        #label_unitcreator_player
-        {
-            top: 108px;
-            left: 89px;
-        }
-        #input_unitcreator_player
-        {
-            position: absolute;
-            top: 108px;
-            left: 150px;
-            width: 150px;
-        }
-        #label_unitcreator_cond
-        {
-            top: 135px;
-            left: 59px;
-        }
-        #textarea_unitcreator_cond
-        {
-            position: absolute;
-            top: 135px;
-            left: 150px;
-            width: 450px;
-            height: 100px;
-        }
     `;
+
+
+    function getEUDTrigger(addr, val, len) {
+        const triggerPattern_1 = getTriggerPattern(TriggerPatterns.MASKED);
+        const triggerPattern_4 = getTriggerPattern(TriggerPatterns.NORMAL);
+        if(len == 4) {
+            return calculateTrigger(triggerPattern_4, addr, val, len, false, 0).trim();
+        }
+        else {
+            return calculateTrigger(triggerPattern_1, addr, val, len, true, 0).trim();
+        }
+    }
+
+    function getCreateUnitTrigger(unit, locName, count = 1) {
+        if(Settings.triggerStyle < 2) {
+            let unitName = unitTypes[unit.unitID];
+            return `Create Unit("Player ${unit.player+1}", "${unitName}", ${count}, "${locName}");`;
+        }
+        else {
+            return `CreateUnit(${count}, ${unit.unitID}, "${locName}", ${unit.player});`;
+        }
+    }
+
+    function getAIScriptTrigger(ai, locName) {
+        if(Settings.triggerStyle < 2) {
+            return `Run AI Script At Location("${ai}", "${locName}");`;
+        }
+        else {
+            return `RunAIScriptAt("${ai}", "${locName}");`;
+        }
+    }
+
+    function getCUWPTrigger(unit, locName, cuwp) {
+        let unitName = unitTypes[unit.unitID];
+        return `Create Unit With Properties("Player ${unit.player+1}", "${unitName}", 1, "${locName}", ${cuwp});`;
+    }
 
     function readFile(file) {
         return new Promise((res, rej) => {
@@ -159,55 +127,94 @@
 
     function basicTrigger(locID, locName) {
         return `
-MemoryAddr(${5823584 + 20 * locID + 0}, Set To, 0);
-MemoryAddr(${5823584 + 20 * locID + 4}, Set To, 0);
+${getEUDTrigger(5823584 + 20 * locID + 0, 0, 4)}
+${getEUDTrigger(5823584 + 20 * locID + 4, 0, 4)}
         `.trim();
     }
 
     function unitToTrigger(unit, locID, locName) {
+        // bunker
+        if(unit.unitID == 125) {
+            return unitToTriggerBunker(unit, locID, locName);
+        }
+
+        if(unit.player >= 8 && unit.player <= 11) {
+            return '';//unitToTriggerNeutral(unit, locID, locName);
+        }
+
+
         return `
-MemoryAddr(${5823584 + 20 * locID + 8}, Set To, ${unit.x * 2});
-MemoryAddr(${5823584 + 20 * locID + 12}, Set To, ${unit.y * 2});
-Create Unit("Player ${unit.player+1}", "${unitTypes[unit.unitID]}", 1, "${locName}");
+${getEUDTrigger(5823584 + 20 * locID + 8, unit.x * 2, 4)}
+${getEUDTrigger(5823584 + 20 * locID + 12, unit.y * 2, 4)}
+${getCreateUnitTrigger(unit, locName)}
         `.trim();
     }
 
+    function unitToTriggerBunker(unit, locID, locName) {
+        return `
+${getEUDTrigger(5823584 + 20 * locID + 0, unit.x - 48, 4)}
+${getEUDTrigger(5823584 + 20 * locID + 4, unit.y - 32, 4)}
+${getEUDTrigger(5823584 + 20 * locID + 8, unit.x + 48, 4)}
+${getEUDTrigger(5823584 + 20 * locID + 12, unit.y + 32, 4)}
+${getCreateUnitTrigger(unit, locName)}
+${getCreateUnitTrigger({unitID: 99, player: unit.player}, locName, 2)}
+${getAIScriptTrigger("EnBk", locName)}
+${getEUDTrigger(5823584 + 20 * locID + 0, 0, 4)}
+${getEUDTrigger(5823584 + 20 * locID + 4, 0, 4)}
+        `.trim();
+    }
+
+    function doActionify(trigs) {
+        return "DoActions(\n\t" + trigs.trim().replace(/;/g, ",").replace(/,$/, "").replace(/\n+/g, "\n\t") + "\n);"
+    }
+
     async function parse() {
-        if($("input_unitcreator_file").files.length > 0) {
-            let file = $("input_unitcreator_file").files[0];
+        if($I("input_unitcreator_file").files.length > 0) {
+            let file = $I("input_unitcreator_file").files[0];
             let fileContent = await readFile(file);
             let uint8Result = new Uint8Array(fileContent);
             let chunk = findChunk(uint8Result, "UNIT");
 
             if(!chunk) {
-                $("trigger_output").value += "Chunk not found!\n";
+                $I("trigger_output").value += "Chunk not found!\n";
                 return;
             }
 
             let unitData = splitChunk(chunk.data, 36).map(u => parseUnit(u));
 
-            let locID = parseInt($("input_unitcreator_locnum").value) - 1;
-            let locName = $("input_unitcreator_locname").value;
+            // move addons to first
+            const addonIds = [107, 108, 115, 117, 118, 120];
+            unitData = unitData.sort((a,b) => addonIds.indexOf(b.unitID) - addonIds.indexOf(a.unitID));
+
+            let locID = parseInt($I("input_unitcreator_locnum").value) - 1;
+            let locName = $I("input_unitcreator_locname").value;
 
             let out = "";
 
             out += basicTrigger(locID, locName) + "\n" + unitData.map(u => unitToTrigger(u, locID, locName)).join("\n") + "\n";
 
-            out += "Comment(\"Create Unit Triggers\");\n";
+            if(Settings.triggerStyle < 4) {
+                out += "Comment(\"Create Unit Triggers\");\n";
+            }
 
-            let cond = $("textarea_unitcreator_cond").value;
-            let player = "Player " + $("input_unitcreator_player").value;
+            let cond = $I("textarea_unitcreator_cond").value;
+            let player = "Player " + $I("input_unitcreator_player").value;
 
-            out = sliceTrigger(player, cond, out);
+            if(Settings.triggerStyle < 4) {
+                out = sliceTrigger(player, cond, out);
+            }
+            else {
+                out = doActionify(out);
+            }
 
-            $("trigger_output").value += out;
+            $I("trigger_output").value += out;
         }
     }
 
     function init() {
-        $("parse_unitcreator").addEventListener("click", parse);
-        if($("textarea_unitcreator_cond").value == "") {
-            $("textarea_unitcreator_cond").value = "\tAlways();";
+        $I("parse_unitcreator").addEventListener("click", parse);
+        if($I("textarea_unitcreator_cond").value == "") {
+            $I("textarea_unitcreator_cond").value = "\tAlways();";
         }
     }
 

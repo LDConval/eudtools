@@ -1,0 +1,11 @@
+usage.txt
+common-values.txt
+unitnode_offsets.txt
+createmax.txt
+damagemultipliers.txt
+extweapons.txt
+weapontargetflags.txt
+mm106.txt
+cheats.txt
+iscriptopcodes.txt
+iscriptanimations.txt

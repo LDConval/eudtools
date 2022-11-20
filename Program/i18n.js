@@ -25,21 +25,25 @@ function addScript(file, callback) {
     document.head.appendChild(scriptElem);
 }
 
-function translatePage(lang) {
+async function translatePage(lang) {
 	switch(lang) {
 		case "kr":
-		addScript("Data/i18n/packedTextData_kr.js", translateHelpText);
-		addScript("Data/i18n/eudtools_data_kr.js", translateDataList);
-		addScript("Data/i18n/elements_kr.js", translateElements);
+            await Promise.all([
+                new Promise((res, rej) => addScript("Data/i18n/eudtools_data_kr.js", res)).then(translateDataList),
+                new Promise((res, rej) => addScript("Data/i18n/elements_kr.js", res)).then(translateElements),
+            ]);
+            new Promise((res, rej) => addScript("Data/i18n/packedTextData_kr.js", res)).then(() => globalScope.populateLibrary());
 		return;
 		case "zh-CN":
-		addScript("Data/i18n/packedTextData_cn.js", translateHelpText);
-		addScript("Data/i18n/eudtools_data_cn.js", translateDataList);
-		addScript("Data/i18n/elements_cn.js", translateElements);
+            await Promise.all([
+                new Promise((res, rej) => addScript("Data/i18n/eudtools_data_cn.js", res)).then(translateDataList),
+                new Promise((res, rej) => addScript("Data/i18n/elements_cn.js", res)).then(translateElements),
+            ]);
+            new Promise((res, rej) => addScript("Data/i18n/packedTextData_cn.js", res)).then(() => globalScope.populateLibrary());
 		return;
 		case "en":
 		default:
-		addScript("Data/packedTextData.js", translateHelpText);
+            new Promise((res, rej) => addScript("Data/packedTextData.js", res)).then(() => globalScope.populateLibrary());
 		return;
 	}
 }
@@ -98,36 +102,21 @@ function translateDataList(evt) {
             c[2] = i18d.categories[i];
         }
     });
-
-	if(typeof document.getElementById("category_container") != 'undefined') {
-		while(document.getElementById("category_container").hasChildNodes()) {
-			document.getElementById("category_container").removeChild(document.getElementById("category_container").firstChild);
-		}
-		globalScope.createCategoryArea(globalScope.useCategory);
-		document.querySelector("#category_container > .select_category > .option_category").click();
-	}
-
-	if(typeof document.querySelector("#select_container") != 'undefined') {
-		while(document.querySelector("#select_container > .select_data")) {
-			document.querySelector("#select_container").removeChild(document.querySelector("#select_container > .select_data"));
-		}
-		globalScope.createSelectArea2(globalScope.useOption2);
-	}
 }
 
 function translateAddSettingsElems() {
-    while(document.querySelector("#settings_translate > option")) {
-        document.querySelector("#settings_translate").removeChild(document.querySelector("#settings_translate > option"));
-    }
+    document.querySelector("#settings_translate").innerHTML = "";
+
     availableTranslations.forEach((t,i) => {
         let d = document.createElement("option");
-        d.innerHTML = t.text;
+        d.textContent = t.text;
         d.selected = (i == 0);
         document.querySelector("#settings_translate").appendChild(d);
     });
 
     // since this component desyncs with others it must be loaded here separately
-    $("settings_translate").addEventListener("change", translateUpdate);
+    $Q("#settings_translate").addEventListener("change", translateUpdate);
+    $Q("#settings_translate").addEventListener("mousedown", evt => evt.stopPropagation());
 }
 
 function translatePlugins() {
@@ -178,12 +167,13 @@ function autoTranslate() {
     catch(e){}
 }
 
-function translateInit() {
+async function translateInit() {
     translateAddSettingsElems();
     let item;
-    if(item = localStorage.getItem("eudscr_translate")) {
+    if(item = localStorage.getItem("eudscr_language")) {
         if(availableTranslations[item]) {
-            translatePage(availableTranslations[item].key);
+            await translatePage(availableTranslations[item].key);
+            Settings.language = parseInt(item);
         }
     }
     else {
@@ -192,13 +182,13 @@ function translateInit() {
 }
 
 function translateUpdate(evt) {
-    globalScope.settingsUpdate();
+    localStorage.setItem("eudscr_language", document.querySelector("#settings_translate").selectedIndex);
+    globalScope.updateSettingsDisplay();
     // translatePage($("settings_translate").selectedIndex);
     location.reload();
 }
 
 exports.translateComponentLoaded = true;
 exports.translateInit = translateInit;
-exports.settingsUpdate = settingsUpdate;
 
 })(window, window);

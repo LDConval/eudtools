@@ -1,26 +1,25 @@
 function slicerParse()
 {
-	$("trigger_output").value += sliceTrigger($("input_trigslice_player").value, $("inputarea_trigslice_cond").value, $("inputarea_trigslice_act").value);
+	$I("trigger_output").value += sliceTrigger($I("input_trigslice_player").value, $I("inputarea_trigslice_cond").value, $I("inputarea_trigslice_act").value);
 }
 
 function slicerInit()
 {
-	if($("inputarea_trigslice_cond").value == "" && $("inputarea_trigslice_act").value == "")
+	if($I("inputarea_trigslice_cond").value == "" && $I("inputarea_trigslice_act").value == "")
 	{
-		$("inputarea_trigslice_act").value = "Actions";
-		$("inputarea_trigslice_cond").value = "Conditions";
+		$I("inputarea_trigslice_act").value = "Actions";
+		$I("inputarea_trigslice_cond").value = "Conditions";
 	}
-	$("parse_trigslice").onclick = slicerParse;
+	$I("parse_trigslice").onclick = slicerParse;
 }
 
-function sliceTrigger(player, cond, actRaw)
-{
+function sliceTrigger(player, cond, actRaw) {
 	var preserved = false;
 	var preserveSpace = false;
 	var comment = "";
 	var commentLong = false;
 	var out = "";
-	var triggerStyle = getTriggerPattern(TriggerPatterns.NAME);
+	var triggerStyle = Settings.triggerStyle;
 
 	let act = actRaw.split(/\r?\n/).map(line => line.trim()).map(line => {
 		if(line.toLowerCase().indexOf("preserve trigger") == 0) {
@@ -48,7 +47,7 @@ function sliceTrigger(player, cond, actRaw)
 
 	let actCount = 64 - (preserved ? 1 : 0) - (comment.length > 0 ? 1 : 0);
 
-	if(triggerStyle == 'tep' || triggerStyle == 'tepcond') {
+	if(triggerStyle == TriggerStyleEnum.TEP) {
 		while(act.length) {
 			out += "Trigger {\n";
 			out += "\tplayers = {" + player + "},\n";
@@ -74,11 +73,29 @@ function sliceTrigger(player, cond, actRaw)
 		}
 
 	}
+	else if(triggerStyle == TriggerStyleEnum.EUD3) {
+		const condConnected = cond.split("\n").map(line => line.trim().replace(/;$/, "")).join("\n&& ");
+		let indent = "";
+		if(condConnected.length > 1 && condConnected != "Conditions") {
+			out += "if(";
+			out += cond + ") {\n";
+			indent += "\t";
+		}
+		out += indent + "DoActions(\n";
+		out += act.map(line => indent + "\t" + line.trim().replace(/;$/, ","))
+				  .join("\n")
+				  .replace(/,$/, "") + "\n";
+		out += indent + ");\n";
+		if(condConnected.length > 1) {
+			out += "}\n";
+		}
+	}
 	else {
+		const condIndented = cond.split("\n").map(line => "\t" + line.trim()).join("\n");
 		while(act.length) {
 			out += "Trigger(\"" + player + "\"){\n";
 			out += "Conditions:\n";
-			out += cond + "\n";
+			out += condIndented + "\n";
 			out += "Actions:\n";
 			out += act.splice(0, actCount).map(line => "\t" + line).join("\n") + "\n";
 			if(preserved && preserveSpace) {
