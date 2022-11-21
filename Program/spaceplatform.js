@@ -25,6 +25,7 @@ function initSpacePlatform() {
         elem.classList.add("space_platform");
         elem.style.left = `${100 * x}vw`;
         elem.style.top = `${100 * y}vh`;
+        
         elem.src = getPlatformImageSrc();
         platforms.push({
             x : x,

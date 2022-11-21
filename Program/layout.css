@@ -57,7 +57,7 @@ a:hover {
 .main_grid {
     display: grid;
     grid-template-columns: 10em 1fr 2fr 20em minmax(15em, 1fr) 15em 2fr 1fr 10em;
-    grid-template-rows: 15px 4em minmax(calc(14em + 40px), 1fr) 2fr 3em 10px;
+    grid-template-rows: 15px 4em calc(14em + 40px) 1fr 3em 10px;
     width: 100%;
     height: calc(100vh - 8px);
     padding: none;
@@ -984,7 +984,7 @@ a:hover {
 
 .gr_tl_buttons {
     display: grid;
-    grid-template-columns: 15px 1fr 1fr 1fr 15px;
+    grid-template-columns: 15px 4em 4em 4em 1fr 15px;
     grid-template-rows: 10px 1fr 10px;
 }
 
@@ -1003,6 +1003,12 @@ a:hover {
     grid-row: 2;
 }
 
+#memarea_toggle {
+    grid-column: 4;
+    grid-row: 2;
+    display: none;
+}
+
 .tl_button svg {
     width: 3em;
     height: 3em;
@@ -1011,6 +1017,39 @@ a:hover {
 }
 
 .tl_button svg:hover {
+    transform-origin: 50% 50%;
+    transform: scale(1.1);
+}
+
+/*
+ * Topright Buttons
+ */
+
+.gr_tr_buttons {
+    display: grid;
+    grid-template-columns: 15px 1fr 4em 4em 4em 15px;
+    grid-template-rows: 10px 1fr 10px;
+}
+
+.tr_button {
+    cursor: pointer;
+    text-align: middle;
+}
+
+#objcheck_toggle {
+    grid-column: 5;
+    grid-row: 2;
+    display: none;
+}
+
+.tr_button svg {
+    width: 3em;
+    height: 3em;
+    transition: 300ms;
+    fill: rgba(225, 225, 225, 0.85);
+}
+
+.tr_button svg:hover {
     transform-origin: 50% 50%;
     transform: scale(1.1);
 }
@@ -1128,8 +1167,189 @@ a:hover {
 }
 
 /*
+ * Mobile viewports
+ */
+
+@media screen and (max-width: 512px) {
+    .main_grid {
+        /* it scales everything relative to em. */
+        font-size: 80%;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 4em calc(14em + 40px) 1fr minmax(10em, 1fr);
+        row-gap: 10px;
+    }
+    .gr_tr_title {
+        display: none;
+    }
+    
+    .gr_memory_selection {
+        grid-row: 2 / 5;
+        grid-column: 1 / 3;
+        z-index: 1;
+        pointer-events: none;
+    }
+
+    .gr_memory_selection_inner {
+        background: rgba(70, 70, 70, 0.85);
+        pointer-events: auto;
+    }
+
+    .gd_ms_left #category_container {
+        width: 33%;
+    }
+    
+    .gd_ms_left #select_container {
+        width: 66%;
+    }
+    
+    .gd_ms_right #category_container {
+        width: 33%;
+    }
+    
+    .gd_ms_right #select_container {
+        width: 66%;
+    }
+    
+    .gr_input {
+        grid-row: 2;
+        grid-column: 1 / 3;
+    }
+    
+    .gr_helpers {
+        grid-row: 3;
+        grid-column: 1 / 3;
+        pointer-events: none;
+        background: rgba(70, 70, 70, 0.85);
+        border-bottom: solid 1px rgba(255, 255, 255, 0.75);
+        margin-left: 5px;
+        margin-right: 5px;
+        z-index: 0;
+    }
+
+    .gr_helpers > .subgrid {
+        pointer-events: auto;
+        z-index: 1;
+    }
+    
+    .gr_offset_info {
+        grid-row: 3 / 6;
+        grid-column: 1 / 3;
+        pointer-events: none;
+    }
+    
+    .gr_library {
+        grid-row: 3 / 4;
+        grid-column: 1 / 3;
+    }
+    
+    .gr_output {
+        grid-row: 3 / 5;
+        grid-column: 1 / 3;
+    }
+    
+    .gr_output_move {
+        grid-row: 4;
+    }
+    
+    .gr_supplementary {
+        grid-row: 3;
+        grid-column: 1 / 3;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    .gr_supplementary > .subgrid {
+        pointer-events: auto;
+        z-index: 1;
+    }
+    
+    .gr_object_selection {
+        grid-row: 2 / 5;
+        grid-column: 1 / 3;
+    }
+    
+    .gr_tl_buttons {
+        grid-row: 1;
+        grid-column: 1;
+    }
+    
+    .gr_tr_buttons {
+        grid-row: 1;
+        grid-column: 2;
+    }
+    
+    .gr_space_platforms {
+        position: relative;
+        grid-row: 1 / 7;
+        grid-column: 1 / 10;
+        pointer-events: none;
+    }
+    
+    .gr_popups {
+        position: relative;
+        grid-row: 1 / 7;
+        grid-column: 1 / 10;
+        pointer-events: none;
+    }
+
+    #settings_area, #library_area {
+        left: 0;
+        width: 100vw;
+    }
+
+    #memarea_toggle {
+        display: block;
+    }
+
+    #objcheck_toggle {
+        display: block;
+    }
+
+    #hover_offset_help {
+        margin-right: 5px;
+    }
+
+    .gr_object_selection_inner {
+        width: 70%;
+    }
+    
+    .gr_object_selection_inner:hover {
+        width: 70%;
+    }
+
+    #object_container {
+        background: rgba(70, 70, 70, 0.85);
+    }
+
+    #object_container:empty {
+        background: none;
+    }
+    
+    .gr_offset_info {
+        z-index: 2;
+    }
+
+    #offset_info {
+        border: solid 1px #cccccc;
+    }
+
+    body {
+        padding: 0;
+        margin: 0;
+    }
+
+    .space_platform {
+        transform: scale(0.5) translate(-50%, -50%);
+    }
+}
+
+/*
  * Hide subgrids
  */
+
+.gr_grid_hidden {
+    display: none;
+}
 
 .gr_offset_info > .subgrid_hidden {
     display: none;

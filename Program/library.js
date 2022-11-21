@@ -57,7 +57,7 @@ function toggleLibrary() {
 }
 
 function initLibrary() {
-    $Q("#library_toggle").addEventListener("click", evt => toggleLibrary());
+    $Q("#library_toggle").addEventListener(clickEvent, evt => toggleLibrary());
 
     $Q("#library_output").addEventListener("mousedown", evt => evt.stopPropagation());
     $Q("#library_output").addEventListener("mouseup", evt => evt.stopPropagation());

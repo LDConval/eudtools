@@ -297,6 +297,11 @@ function attachEvents() {
 
 function subareaInit() {
 	attachEvents();
+
+	if(isMobileScreen()) {
+		$Q(".gr_supplementary").classList.add("gr_grid_hidden");
+		$Q(".gr_helpers").classList.add("gr_grid_hidden");
+	}
 }
 
 exports.updateCUnitOffset = updateCUnitOffset;

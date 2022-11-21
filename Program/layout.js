@@ -38,6 +38,9 @@ var valueInputHandlers = [];
 
 let categorySelectDisabled = false;
 
+// device-specific, set on beginning of init()
+var clickEvent = "click";
+
 /*
  * I still like to do this lol
  * No frameworks anyways so it is the best and only option
@@ -73,7 +76,7 @@ function initializeMemoryCategories(handler) {
 		let opt = $C("div");
 		opt.className = "div_option option_category text_mid";
 		opt.optionID = i;
-		opt.addEventListener("click", handler.bind(null, i, opt));
+		opt.addEventListener(clickEvent, handler.bind(null, i, opt));
 		opt.textContent = categorylist[i][2];
 		divSelect.appendChild(opt);
 	}
@@ -89,7 +92,7 @@ function initializeMemorySelection(handler) {
 		let opt = $C("div");
 		opt.className = "div_option option_memory text_mid";
 		opt.optionID = i;
-		opt.addEventListener("click", handler.bind(null, i, opt));
+		opt.addEventListener(clickEvent, handler.bind(null, i, opt));
 		opt.innerHTML = memorylist[i][3];
 		divSelect.appendChild(opt);
 	}
@@ -179,6 +182,42 @@ function updateGenerateButtons() {
 		$Q("#link_generate_action").classList.remove("gr_input_hidden");
 	}
 
+}
+
+/*
+ * Toggle memory area
+ */
+
+function evtToggleMemSelector(evt) {
+	if($Q(".gr_memory_selection_inner").classList.contains("gr_grid_hidden")) {
+		$Q(".gr_memory_selection_inner").classList.remove("gr_grid_hidden");
+	}
+	else {
+		$Q(".gr_memory_selection_inner").classList.add("gr_grid_hidden");
+	}
+}
+
+function evtToggleObjSelector(evt) {
+	if($Q(".gr_object_selection_inner").classList.contains("gr_grid_hidden")) {
+		$Q(".gr_object_selection_inner").classList.remove("gr_grid_hidden");
+	}
+	else {
+		$Q(".gr_object_selection_inner").classList.add("gr_grid_hidden");
+	}
+}
+
+/*
+ * Mobile devices
+ */
+
+function isMobileScreen() {
+	return document.body.offsetWidth <= 512;
+}
+
+function hideMemSelectorIfMobileScreen() {
+	if(isMobileScreen()) {
+		$Q(".gr_memory_selection_inner").classList.add("gr_grid_hidden");
+	}
 }
 
 /*
@@ -352,6 +391,19 @@ function setMemoryFromList(k) {
 
 	objectInputHandlers = memoryInfo.objectInputHandlers;
 	valueInputHandlers = memoryInfo.valueInputHandlers;
+
+	if(isMobileScreen()) {
+		if(memoryInfo.activatedElems.length > 0) {
+			$Q(".gr_supplementary").classList.remove("gr_grid_hidden");
+			$Q(".gr_helpers").classList.remove("gr_grid_hidden");
+			$Q(".gr_output").classList.add("gr_output_move");
+		}
+		else {
+			$Q(".gr_supplementary").classList.add("gr_grid_hidden");
+			$Q(".gr_helpers").classList.add("gr_grid_hidden");
+			$Q(".gr_output").classList.remove("gr_output_move");
+		}
+	}
 }
 
 function setInputObject(objVal) {
@@ -735,6 +787,8 @@ function evtSelectMemory(k, elem, evt) {
     highlightMemory(elem);
 	setMemoryFromList(k);
 
+	hideMemSelectorIfMobileScreen();
+
 	evt.stopPropagation();
 	evt.preventDefault();
 }
@@ -771,6 +825,8 @@ function evtGenerateCondition(evt) {
 	}
 	const triggers = generateTriggersFromMemData();
 	output(triggers);
+	evt.preventDefault();
+	evt.stopPropagation();
 }
 
 function evtGenerateAction(evt) {
@@ -786,6 +842,8 @@ function evtGenerateAction(evt) {
 	}
 	const triggers = generateTriggersFromMemData();
 	output(triggers);
+	evt.preventDefault();
+	evt.stopPropagation();
 }
 
 function evtGenerateRead(evt) {
@@ -843,18 +901,23 @@ function attachPageEvents() {
     $Q("#input_memory_x").addEventListener("focus", evtSelectSelf);
 
 	// Click events
-	$Q("#link_calc_update_memory").addEventListener("click", evtUpdateMemory);
+	$Q("#link_calc_update_memory").addEventListener(clickEvent, evtUpdateMemory);
 	
-	$Q("#link_generate_condition").addEventListener("click", evtGenerateCondition);
-	$Q("#link_generate_action").addEventListener("click", evtGenerateAction);
+	$Q("#link_generate_condition").addEventListener(clickEvent, evtGenerateCondition);
+	$Q("#link_generate_action").addEventListener(clickEvent, evtGenerateAction);
 
-	$Q("#link_generate_read_eud3").addEventListener("click", evtGenerateRead);
-	$Q("#link_generate_condition_eud3").addEventListener("click", evtGenerateCondition);
-	$Q("#link_generate_action_eud3").addEventListener("click", evtGenerateAction);
+	$Q("#link_generate_read_eud3").addEventListener(clickEvent, evtGenerateRead);
+	$Q("#link_generate_condition_eud3").addEventListener(clickEvent, evtGenerateCondition);
+	$Q("#link_generate_action_eud3").addEventListener(clickEvent, evtGenerateAction);
 
 	// Special events
 	
-	$Q("#parse_icecc").addEventListener("click", evtParseIceCC);
+	$Q("#parse_icecc").addEventListener(clickEvent, evtParseIceCC);
+
+	// Device events
+
+	$Q("#memarea_toggle").addEventListener(clickEvent, evtToggleMemSelector);
+	$Q("#objcheck_toggle").addEventListener(clickEvent, evtToggleObjSelector);
 }
 
 
@@ -863,6 +926,10 @@ function attachPageEvents() {
  */
 
 async function init() {
+	// set touch event
+	clickEvent = typeof document.body.ontouchstart !== "undefined" ? "touchstart" : "click";
+	hideMemSelectorIfMobileScreen();
+
 	if(typeof translateComponentLoaded == "boolean" && translateComponentLoaded) {
 		await translateInit();
 	}

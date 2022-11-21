@@ -1,3 +1,21 @@
+NOTE: Since I don't know Korean, all korean text
+(including this text) is Google Translated.
+If anyone is able to help with correct translation,
+please send pull request for these files:
+
+- Data/i18n/elements_kr.js (i18n for each html tag)
+- Data/i18n/eudtools_data_kr.js (memory address)
+- Data/i18n/packedTextData_kr.js (this file)
+
+For the last file, you can compile from text files using
+```shell
+# node jsonp_compiler.js
+```
+
+if you had node.js installed.
+
+Thank you very much.
+
 ## 기본 사용법
 
 1. 왼쪽에서 편집할 항목 선택

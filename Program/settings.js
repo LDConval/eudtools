@@ -116,7 +116,7 @@ function initSettings() {
     $Q("#settings_hexoutput_mask").addEventListener("mousedown", evt => evt.stopPropagation());
     $Q("#settings_reverse_calc_object").addEventListener("mousedown", evt => evt.stopPropagation());
 
-    $Q("#settings_toggle").addEventListener("click", evt => toggleSettings());
+    $Q("#settings_toggle").addEventListener(clickEvent, evt => toggleSettings());
     
     try {
         const u = localStorage.getItem("eudscr_settings");

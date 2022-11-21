@@ -2,6 +2,12 @@
 
 (function(exports) {
 
+function closeObjectListIfMobile() {
+    if(isMobileScreen()) {
+		$Q(".gr_object_selection_inner").classList.add("gr_grid_hidden");
+    }
+}
+
 function updateObjectList(dataList, callback) {
     // still fastest way to clear a container!
     const container = $Q("#object_container");
@@ -81,6 +87,9 @@ function evtSendToObject(val, evt) {
     }
 	updateMemoryObject(true);
 	calculateAndUpdateMemory();
+    closeObjectListIfMobile();
+	evt.preventDefault();
+	evt.stopPropagation();
 }
 
 function evtSendToValue(val, evt) {
@@ -117,6 +126,9 @@ function evtSendToValue(val, evt) {
         MemData.value = val;
     }
 	updateMemoryValue(true);
+    closeObjectListIfMobile();
+	evt.preventDefault();
+	evt.stopPropagation();
 }
 
 function evtObjectCheck(evt) {
@@ -170,13 +182,16 @@ function evtUpgrLevelCheck(evt) {
         break;
     }
     const elem = $Q("#input_upg_uid");
-    updateObjectList(dt, val => {
+    updateObjectList(dt, (val, evt) => {
         elem.value = val;
         // dispatch the input event, so it could update other things
         elem.dispatchEvent(new Event('input', {
             bubbles: true,
             cancelable: true
         }));
+        closeObjectListIfMobile();
+        evt.preventDefault();
+        evt.stopPropagation();
     });
 }
 
@@ -221,26 +236,32 @@ function evtReqCheck(evt) {
         break;
     }
     const elem = $Q("#input_req");
-    updateObjectList(dt, val => {
+    updateObjectList(dt, (val, evt) => {
         updateElemValue(elem, val, evt.shiftKey, evt.altKey);
         // dispatch the input event, so it could update other things
         elem.dispatchEvent(new Event('input', {
             bubbles: true,
             cancelable: true
         }));
+        closeObjectListIfMobile();
+        evt.preventDefault();
+        evt.stopPropagation();
     });
 }
 
 function evtSpecialBindCheck(checkType, evt) {
     const dt = getDataType(checkType);
     const elem = evt.target;
-    updateObjectList(dt, val => {
+    updateObjectList(dt, (val, evt) => {
         updateElemValue(elem, val, evt.shiftKey, evt.altKey);
         // dispatch the input event, so it could update other things
         elem.dispatchEvent(new Event('input', {
             bubbles: true,
             cancelable: true
         }));
+        closeObjectListIfMobile();
+        evt.preventDefault();
+        evt.stopPropagation();
     });
 }
 
