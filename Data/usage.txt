@@ -1,5 +1,3 @@
-This tool was originally made by Ar3sgice. I tweaked it a little to make it support TrigEditPlus and EUDEditor3 types of triggers, plus various other improvements.
-
 ## Basic usage
 
 1. Select item to edit from the left
@@ -8,9 +6,21 @@ This tool was originally made by Ar3sgice. I tweaked it a little to make it supp
 4. Click the "v" after the value field
 5. Copy the generated trigger into SCMDraft
 
-## Advanced usage
+## Update v2.0
 
-Click the "v" beside this box to enlarge this text area
+1. Added object selection box
+
+Press Shift+Click to add units, Alt+Click to remove units.
+It can batch generate for several units at one time
+
+If the generated triggers become too many, use the
+"Trigger Slicer" to help (chops triggers into 64-size blocks
+for SCMD, or use If/DoActions for EUD3)
+
+2. Added most of the supported addresses from EUDDB
+3. Added memory info (from EUDDB, hover to read)
+4. Fully revamped UI with Space Platform background style
+5. Mobile viewport support (probably unnecessary)
 
 ## Settings
 
@@ -18,19 +28,30 @@ Click the "v" beside this box to enlarge this text area
 Edit the target based on a original value.
 
 - Trigger Style
-Changes form of output triggers to match different softwares.
-The ones with "condition" are for condition triggers.
+SCMDraft = SCMDraft triggers
+TrigEditPlus = TEP triggers (need support EUDX)
+EUDEditor3 = EPScript Triggers
 
 - Number Format
 "hex" - output hexadecimal numbers
 "decimal" - output decimal
-For SCMD style, memory and mask should be hex while value is decimal.
+For SCMD style, memory and mask should be hex while value is decimal
+
+- Reverse calculate object
+Calculates object number if input on the memory field
+Only supports single value
 
 ## Using different data types
+
+- Set object or value to an array
+Separate values using comma
+e.g. 1, 10, 100, 101, 102
 
 - Set an address to a string
 Put "string" in Value input. (must be double quotation)
 Uses UTF-8 to encode the string, and adds \x00 at the end.
+Supports SCMD color tags.
+e.g. "<10>H<4>ello <10>W<4>orld"
 
 - Set an address to a hexadecimal string
 Put 'hex' in Value input (must be single quotation)
@@ -48,7 +69,8 @@ The memory from 0x10000 to 0x10008 will become 01 00 02 00 04 00 08 00
 
 ## Buttons
 
-Don't use the buttons tab here. Use the Button Maker in the Extra Tools tab.
+DO NOT use the buttons tab here
+Use the Button Maker in the "Extra Tools" section.
 
 To use the Button Maker:
 1. edit the buttons using the left and middle tab
@@ -67,8 +89,7 @@ It's a legacy tool for starcraft version 1.08 EUDs.
 
 ## Editing Stat_txt.tbl
 
-1. Generate CPT triggers at the upper part (click CPT)
-2. Notice there is a part saying PUT STRING EDITS HERE
-3. Generate string triggers at the lower part. 2 strings at a time
-4. Put the generated triggers where it said PUT STRING EDITS HERE.
-5. If the trigger action count is over 64, put the last trigger in Trigger Slicer.
+I have upgraded this tool to use fixed address since SC:R string address
+seems fixed to 0x19184660.
+To add condition in batch generation add line
+cond=Switch("start", Set);
