@@ -21,10 +21,10 @@ var flagNames = {
 };
 
 function flagsParse() {
-    if($I("input_object").value.toString().indexOf(",") != -1) {
+    if(typeof MemData.obj != "number") {
         // batch set for flags
-        let resetText = $I("input_object").value;
-        let objects = $I("input_object").value.toString().trim().split(/, */);
+        let resetText = MemData.obj;
+        let objects = MemData.obj;
         objects.forEach((item, i) => {
             MemData.obj = item;
             updateMemoryObject(true);
@@ -33,7 +33,9 @@ function flagsParse() {
                 flagsGenerateTrigger(MemData.memory, MemData.len, parseInt($I("input_flags_value").value), $I("select_flags_mode").selectedIndex)
             );
         });
-        $I("input_object").value = resetText;
+        MemData.obj = resetText;
+        updateMemoryObject(true);
+        calculateAndUpdateMemory();
     }
     else {
         output(
