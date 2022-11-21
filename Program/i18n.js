@@ -155,16 +155,27 @@ function translateExtras() {
     });
 }
 
-function autoTranslate() {
+async function autoTranslate() {
+    let translated = false;
     try {
-        availableTranslations.forEach((t, i) => {
+        for(let i = 0; i < availableTranslations.length; i++) {
+            const t = availableTranslations[i];
             if(t.key == navigator.language) {
-                translatePage(t.key);
+                await translatePage(t.key);
                 document.querySelector("#settings_translate").selectedIndex = i;
+                translated = true;
             }
-        });
+        }
     }
     catch(e){}
+
+    if(!translated) {
+        try {
+            await translatePage(availableTranslations[0].key);
+            document.querySelector("#settings_translate").selectedIndex = 0;
+        }
+        catch(e){}
+    }
 }
 
 async function translateInit() {
@@ -176,9 +187,13 @@ async function translateInit() {
             Settings.language = parseInt(item);
             globalScope.updateSettingsDisplay();
         }
+        else {
+            await translatePage(availableTranslations[0].key);
+            document.querySelector("#settings_translate").selectedIndex = 0;
+        }
     }
     else {
-        autoTranslate();
+        await autoTranslate();
     }
 }
 
