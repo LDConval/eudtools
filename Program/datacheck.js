@@ -24,7 +24,7 @@ function updateObjectList(dataList, callback) {
             dataItem.classList.add("text_mid");
         }
         if(!dataList.keys) {
-            dataItem.addEventListener("click", callback.bind(null, i));
+            dataItem.addEventListener(clickEvent, callback.bind(null, i));
             if(dataList.color) {
                 dataItem.innerHTML = `[${i}] ${colorTextLite(dataList.items[i], dataList.isStatTbl)}`;
             }
@@ -33,7 +33,7 @@ function updateObjectList(dataList, callback) {
             }
         }
         else {
-            dataItem.addEventListener("click", callback.bind(null, dataList.keys[i]));
+            dataItem.addEventListener(clickEvent, callback.bind(null, dataList.keys[i]));
             if(dataList.color) {
                 dataItem.innerHTML = `[${dataList.keys[i]}] ${colorTextLite(dataList.items[i], dataList.isStatTbl)}`;
             }
@@ -155,7 +155,7 @@ function evtValueCheck(evt) {
     }
 }
 
-function evtUpgrLevelCheck(evt) {
+function evtUpgrLevelCheck(evtMain) {
     let dt;
     switch(MemData.offset) {
         case 0x58D088:
@@ -196,14 +196,14 @@ function evtUpgrLevelCheck(evt) {
 }
 
 function updateElemValue(elem, val, shiftKey = false, altKey = false) {
-    if(evt.shiftKey) {
+    if(shiftKey) {
         const elemVals = elem.value.split(",").map(v => parseInt(v.trim()));
         if(elemVals.indexOf(val) == -1) {
             elemVals.push(val);
         }
         elem.value = elemVals.join(", ");
     }
-    else if(evt.altKey) {
+    else if(altKey) {
         const elemVals = elem.value.split(",").map(v => parseInt(v.trim()));
         if(elemVals.indexOf(val) != -1) {
             elemVals.splice(elemVals.indexOf(val), 1);
@@ -218,7 +218,7 @@ function updateElemValue(elem, val, shiftKey = false, altKey = false) {
     }
 }
 
-function evtReqCheck(evt) {
+function evtReqCheck(evtMain) {
     let dt;
     switch(MemData.offset) {
         case 0x514178:
@@ -249,9 +249,9 @@ function evtReqCheck(evt) {
     });
 }
 
-function evtSpecialBindCheck(checkType, evt) {
+function evtSpecialBindCheck(checkType, evtMain) {
     const dt = getDataType(checkType);
-    const elem = evt.target;
+    const elem = evtMain.target;
     updateObjectList(dt, (val, evt) => {
         updateElemValue(elem, val, evt.shiftKey, evt.altKey);
         // dispatch the input event, so it could update other things
