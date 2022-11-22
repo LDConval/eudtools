@@ -1341,6 +1341,14 @@ a:hover {
     .space_platform {
         transform: scale(0.5) translate(-50%, -50%);
     }
+
+    .option_memory {
+        margin-right: 5em;
+    }
+
+    .option_object {
+        margin-right: 5em;
+    }
 }
 
 /*
