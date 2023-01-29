@@ -86,9 +86,6 @@ function sliceTrigger(player, cond, actRaw) {
 				  .join("\n")
 				  .replace(/,$/, "") + "\n";
 		out += indent + ");\n";
-		if(condConnected.length > 1) {
-			out += "}\n";
-		}
 	}
 	else {
 		const condIndented = cond.split("\n").map(line => "\t" + line.trim()).join("\n");
