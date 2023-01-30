@@ -28,7 +28,7 @@ function upgToObject() {
 		break;
 		case 0x58F050:
 		case 0x58F140:
-			MemData.obj = numberOrArrayOnText((player, upg) => (player - 1) * 15 + upg - 24, false) (
+			MemData.obj = numberOrArrayOnText((player, upg) => (player - 1) * 20 + upg - 24, false) (
 				$I("input_upg_player").value, $I("input_upg_uid").value
 			);
 		break;
