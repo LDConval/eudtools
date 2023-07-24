@@ -358,7 +358,6 @@ function getValueTypeFromOffset(offset) {
         case 0x0059CCCC:
         case 0x006610B0:
         case 0x006644F8:
-        case 0x006CA318:
         case 0x00656CA8:
             return DT.flingy;
         case 0x0059CCCF:
