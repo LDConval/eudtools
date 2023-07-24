@@ -308,7 +308,7 @@ function getValueTypeFromOffset(offset) {
         case 0x00655BFC:
         case 0x00656488:
         case 0x006D0FDA:
-            return DT.race;
+            return DT.races;
 
         case 0x0059CCF8:
         case 0x0059CD0C:
