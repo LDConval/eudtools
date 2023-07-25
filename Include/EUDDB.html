@@ -201,7 +201,11 @@ http://farty1billion.dyndns.org/EUDDB/?pg=entry&amp;id=423</td>
 <td>4</td>
 <td>7</td>
 <td>Simple Data</td>
-<td>Contains the value in milliseconds required for each frame. Array index dependant on game speed...</td>
+<td>Contains the value in milliseconds required for each frame. Array index dependant on game speed.
+
+To change current game speed needs to set all 7 values (0x5124D8, 0x5124DC, ..., 0x5124F0)
+Fastest=42, #x1=36, #x2=29, #x3=21, #x4=12, #x5=1
+</td>
 </tr>
 <tr>
 <td>005124F4</td>
@@ -660,8 +664,7 @@ int getRandomNumber(){
 
 Described at http://wiki.teamliquid.net/starcraft/LatencyChanger
 
-Editted by PereC, 2021.03.31:
-In SC:R, the value is always 1000</td>
+In SC:R, the value is determined by the combination of Turn Rate and room name (#x) speed.</td>
 </tr>
 <tr>
 <td>0051CE88</td>
@@ -673,8 +676,7 @@ In SC:R, the value is always 1000</td>
 <td></td>
 <td>Appears to be a duplicate of 0x0051CE84. Not sure which value is the one that is actually used.
 
-Editted by PereC, 2021.03.31:
-In SC:R, the value is always 1000</td>
+In SC:R, the value is determined by the combination of Turn Rate and room name (#x) speed.</td>
 </tr>
 <tr>
 <td>0051CE8C</td>
