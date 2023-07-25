@@ -12,6 +12,7 @@ var flagNames = {
     "UnitNodeParasiteFlags": ["Player 1", "Player 2", "Player 3", "Player 4", "Player 5", "Player 6", "Player 7", "Player 8"],
     "VisionFlags": ["Player 1", "Player 2", "Player 3", "Player 4", "Player 5", "Player 6", "Player 7", "Player 8", "Player 9 (unused)", "Player 10 (unused)", "Player 11 (unused)", "Player 12 (unused)"],
     "LocationFlags": ["Low Ground", "Med Ground", "High Ground", "Low Air", "Med Air", "High Air"],
+    "ForceFlags" : ["Random Location", "Ally", "Allied Victory", "Shared Vision", "0x10", "0x20", "0x40", "0x80"],
     "TileFlags": ["Visible P1", "Visible P2", "Visible P3", "Visible P4", "Visible P5", "Visible P6", "Visible P7", "Visible P8", "Explored P1", "Explored P2", "Explored P3", "Explored P4", "Explored P5", "Explored P6", "Explored P7", "Explored P8", "0x00010000", "0x00020000", "Unwalkable", "0x00080000", "0x00100000", "0x00200000", "Has Creep", "Unbuildable (i.e., water tiles)", "Low Ground", "Med Ground", "High Ground", "Occupied (i.e. contains a building)", "Creep Receeding", "Cliff Edge", "Temporary Creep", "0x80000000"],
     "CheatFlags": ["Black Sheep Wall", "Operation Cwal", "Power Overwhelming", "Something For Nothing", "Show Me The Money", "Unused 0x0020", "Game Over Man", "There Is No Cow Level", "Staying Alive", "Ophelia", "Unused 0x0400", "The Gathering", "Medieval Man", "Modify The Phase Variance", "War Aint What It Used To Be", "Unused 0x8000", "0x00010000", "Food For Thought", "Whats Mine Is Mine", "Breathe Deep", "0x00100000", "0x00200000", "0x00400000", "0x00800000", "0x01000000", "0x02000000", "0x04000000", "0x08000000", "0x10000000", "noglues", "0x40000000", "0x80000000"],
     "SwitchFlags" : ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32"],
@@ -175,6 +176,9 @@ function flagsCall() {
         break;
         case 0x58DC40: // Switch Flags
         flagsCreateElements(flagNames.SwitchFlags);
+        break;
+        case 0x58D5B8: // Force Flags
+        flagsCreateElements(flagNames.ForceFlags);
         break;
         default: // General
         if(MemData.len == 1) {

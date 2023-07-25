@@ -228,11 +228,11 @@ function reqUpdate() {
 		break;
 		case 0x514A48:
 			new_offset = array_usetech[$I("input_req").value] || MemData.offset;
-		if(array_usetech[$I("input_req").value] > 0) {
-			$I("select_reqwrite_type").selectedIndex = 3;
-			$I("input_reqwrite_uid").value = $I("input_req").value;
-			$I("input_reqwrite_offset").value = (array_usetech[$I("input_req").value] - 0x514A48) >>> 1;
-		}
+			if(array_usetech[$I("input_req").value] > 0) {
+				$I("select_reqwrite_type").selectedIndex = 3;
+				$I("input_reqwrite_uid").value = $I("input_req").value;
+				$I("input_reqwrite_offset").value = (array_usetech[$I("input_req").value] - 0x514A48) >>> 1;
+			}
 		break;
 		case 0x514CF8:
 			new_offset = array_orders[$I("input_req").value] || MemData.offset;

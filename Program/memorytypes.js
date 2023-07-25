@@ -78,6 +78,7 @@ function getActionFromMemoryListOption(memOffset, memLen, memType) {
                 break;
                 case 0x581D76:
                     ret.offset = memOffset;
+                    ret.next = 8;
                     ret.activatedElems.push("#playercolor_area");
                     ret.activatedFunctions.push("playerColors");
                 break;

@@ -74,13 +74,26 @@ function initDataTypes() {
     DataTypes.weaponsExplosionType = ats(`${w[130]}|${n} Hit|Splash (Radial)|Splash (Enemy)|${w[32]}|${u[14]}|${w[56]}|${s[133]}s|${w[33]}|${w[34]}|${s[364]}|${w[60]}|${w[83]}|${u[202]}|${s[363]}|${s[350]}|${w[102]}|${u[105]}|${w[104]}|${w[105]}|${w[106]}|${w[107]}|${w[108]}|${o} (Crash)|Splash (Air)`);
     DataTypes.imagesDrawingFunction = ats(`${n}|Doesn't draw hallucination|Non-vision cloaking|Non-vision cloaked|Non-vision uncloaking|Vision cloaking|Vision cloaked|Vision uncloaking|${w[33]}|Uses remapping (not in SCR)|${d}|HP bar (crash)|Warp texture (hidden in remastered)|All green|Same as normal|Draw update rectangle|${h[20]}|Warp Flash`);
     DataTypes.iscriptAnimation = ats(`Init|Death|GndAttkInit|AirAttkInit|${o}1|GndAttkRpt|AirAttkRpt|CastSpell|GndAttkToIdle|AirAttkToIdle|${o}2|Walking|WalkingToIdle|SpecialState1|SpecialState2|AlmostBuilt|Built|Landing|LiftOff|IsWorking|WorkingToIdle|WarpIn|${o}3|StarEditInit|Disable|Burrow|UnBurrow|Enable`);
-    
+    DataTypes.movementState = ats(`Init|InitSeq|Lump|Turret|Bunker|BldgTurret|Hidden|Flyer|FakeFlyer|AtRest|Dormant|AtMoveTarget|CheckIllegal|MoveToLegal|LumpWannabe|FailedPath|RetryPath|StartPath|UIOrderDelay|TurnAndStart|FaceTarget|NewMoveTarget|AnotherPath|Repath|RepathMovers|FollowPath|ScoutPath|ScoutFree|FixCollision|WaitFree|GetFree|SlidePrep|SlideFree|ForceMoveFree|FixTerrain|TerrainSlide`);
+
     const pl = Array(12).fill(0).map((_,i) => "Player "+(i+1));
     
     DataTypes.player = ato(pl);
     DataTypes.playerHuman = ato(pl.slice(0, 8));
     DataTypes.playerLAP = ato(pl.slice(0, 8).concat(["None"]));
+    DataTypes.playerChat = ato(pl.slice(0, 8).concat(["All", "Allies"]));
     DataTypes.buildingSlot = ato(Array(5).fill(0).map((_,i) => "Slot "+(i+1)));
+
+    const fo = Array(4).fill(0).map((_,i) => "Force "+(i+1));
+
+    DataTypes.force = ato(fo);
+    
+    const lc = Array(255).fill(0).map((_,i) => i == 63 ? "Anywhere" : "Location "+(i+1));
+
+    DataTypes.location = ato(lc);
+    DataTypes.widthOrHeight = ato(["Width", "Height"]);
+    DataTypes.minimapState = ato(["Normal", "Minimap Team Colors", "Full Team Colors"]);
+
 
     // sound
     const j = 'bullet|glue|misc|misc/critters|misc/door'.split("|").concat("advisor|arbiter|archon|artanis|bldg|carrier|corsair|darchon|darktemplar|dragoon|fenixd|fenixz|gantrithor|intercep|probe|scout|shuttle|tassadar|templar|trilobyte|witness|zealot|zeratul".split("|").map(q=>"protoss/"+q)).concat("advisor|battle|bldg|civilian|dropship|dukeb|duket|duran|firebat|frigate|ghost|goliath|kerrigan|marine|medic|phoenix|raynorm|raynorv|scv|tank|vessel|vulture".split("|").map(q=>"terran/"+q)).concat("advisor|avenger|bldg|broodling|bugguy|defiler|devourer|drone|egg|guardian|hydra|larva|lurker|mutalid|overlord|queen|ultra|zergduran|zergkerri|zergling".split("|").map(q=>"zerg/"+q));
@@ -140,6 +153,17 @@ function initDataTypes() {
     DataTypes.sublabel = ato(st.slice(550));
 
     // netDelay
+    const nd = Array(6).fill(0).map((_,i) => [24, 20, 16, 14, 12, 10, 8].map(v=>(i==0?"":"#x"+i+" ")+"Turn Rate "+v)).reduce((t,a)=>t.concat(a),[]);
+    const nv = [1157,1389,1736,1984,2315,2778,3472,1437,1724,2155,2463,2874,3448,4310,1984,2381,2976,3401,3968,4762,5952,3472,4167,5208,5952,6944,8333,10417,41667,50000,62500,71429,83333,100000,125000]
+
+    DataTypes.netDelay = {
+        'keys' : [1000,1042,1302,1488,1736,2083,2604].concat(nv),
+        'items' : nd
+    };
+    DataTypes.netDelay2 = {
+        'keys' : [1000,1190,1488,1701,1984,2381,2976].concat(nv),
+        'items' : nd
+    };
 
     // leaderboardType
     DataTypes.leaderboardType = {
@@ -171,7 +195,15 @@ function initDataTypes() {
     DataTypes.vkArray = {
         'keys' : [1, 2, 3, 4, 5, 6, 8, 9, 12, 13, 14, 16, 17, 18, 19, 20, 21, 23, 24, 25, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 144, 145, 146, 147, 148, 149, 150, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 179, 177, 178, 180, 181, 182, 183, 186, 187, 188, 189, 190, 191, 192, 193, 194, 219, 220, 221, 222, 223, 225, 226, 227, 228, 229, 230, 231, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255],
         'items' : `LBUTTON|RBUTTON|CANCEL|MBUTTON|XBUTTON1|XBUTTON2|BACK|TAB|CLEAR|ENTER|NX5|SHIFT|LCTRL|LALT|PAUSE|CAPSLOCK|RALT|JUNJA|FINAL|RCTRL|ESC|CONVERT|NONCONVERT|ACCEPT|MODECHANGE|SPACE|PGUP|PGDN|END|HOME|LEFT|UP|RIGHT|DOWN|SELECT|PRINTSCREEN|EXECUTE|SNAPSHOT|INSERT|DELETE|HELP|0|1|2|3|4|5|6|7|8|9|A|B|C|D|E|F|G|H|I|J|K|L|M|N|O|P|Q|R|S|T|U|V|W|X|Y|Z|LWIN|RWIN|APPS|SLEEP|NUMPAD0|NUMPAD1|NUMPAD2|NUMPAD3|NUMPAD4|NUMPAD5|NUMPAD6|NUMPAD7|NUMPAD8|NUMPAD9|NUMPAD*|NUMPAD+|SEPARATOR|NUMPAD-|NUMPAD.|NUMPAD/|F1|F2|F3|F4|F5|F6|F7|F8|F9|F10|F11|F12|F13|F14|F15|F16|F17|F18|F19|F20|F21|F22|F23|F24|NUMLOCK|SCROLL|OEM_FJ_JISHO|OEM_FJ_MASSHOU|OEM_FJ_TOUROKU|OEM_FJ_LOYA|OEM_FJ_ROYA|LSHIFT|RSHIFT|LCONTROL|RCONTROL|LMENU|RMENU|BROWSER_BACK|BROWSER_FORWARD|BROWSER_REFRESH|BROWSER_STOP|BROWSER_SEARCH|BROWSER_FAVORITES|BROWSER_HOME|VOLUME_MUTE|VOLUME_DOWN|VOLUME_UP|MEDIA_NEXT_TRACK|MEDIA_PLAY_PAUSE|MEDIA_PREV_TRACK|MEDIA_STOP|LAUNCH_MAIL|LAUNCH_MEDIA_SELECT|LAUNCH_APP1|LAUNCH_APP2|SEMICOLON|=|,|-|.|/|\`|ABNT_C1|ABNT_C2|[|PIPE|]|'|OEM_8|OEM_AX|OEM_102|ICO_HELP|ICO_00|PROCESSKEY|ICO_CLEAR|PACKET|OEM_RESET|OEM_JUMP|OEM_PA1|OEM_PA2|OEM_PA3|OEM_WSCTRL|OEM_CUSEL|OEM_ATTN|OEM_FINISH|OEM_COPY|OEM_AUTO|OEM_ENLW|OEM_BACKTAB|ATTN|CRSEL|EXSEL|EREOF|PLAY|ZOOM|NONAME|PA1|OEM_CLEAR|_NONE_`.split("|")
-    }
+    };
+    DataTypes.unitUserAction = {
+        'keys' : [2, 3, 4],
+        'items' : ["Issued Order", "Interrupted Order", "Self Destructing"]
+    };
+    DataTypes.mouseButton = {
+        'keys' : [2, 8, 32],
+        'items' : ["Left Click", "Right Click", "Middle Click"]
+    };
 }
 
 function getDataType(key) {
@@ -209,6 +241,9 @@ function getObjectTypeFromOffset(offset) {
     }
     if(offset >= 0x006C9858 && offset < 0x006CA4BC) {
         return DT.flingy;
+    }
+    if(offset >= 0x0058DC60 && offset < 0x0058F060) {
+        return DT.location;
     }
     switch(offset) {
         case 0x00512510:
@@ -275,6 +310,12 @@ function getObjectTypeFromOffset(offset) {
         case 0x005124D8:
         case 0x005124F4:
             return DT.speed;
+
+        case 0x0057F1D4:
+            return DT.widthOrHeight;
+
+        case 0x0058D5B8:
+            return DT.force;
     }
 }
 
@@ -347,6 +388,7 @@ function getValueTypeFromOffset(offset) {
 
         case 0x006616E0:
         case 0x006636B8:
+        case 0x00665880:
             return DT.weapons;
         case 0x00656670:
             return DT.weaponsBehavior;
@@ -374,7 +416,8 @@ function getValueTypeFromOffset(offset) {
             return DT.upgrades;
 
         case 0x006573E8:
-            return DT.tech;
+        case 0x00664E00:
+            return DT.techs;
 
         case 0x00666160:
             return DT.images;
@@ -414,6 +457,8 @@ function getValueTypeFromOffset(offset) {
         case 0x00655AC0:
         case 0x00656780:
         case 0x00656430:
+        case 0x00664EC0:
+        case 0x00590002:
             return DT.icon;
 
         case 0x00655A40:
@@ -434,23 +479,42 @@ function getValueTypeFromOffset(offset) {
             return DT.alliance;
 
         case 0x0057F1DC:
+        case 0x006D0F74:
             return DT.tilesets;
 
         case 0x006CDFD4:
+        case 0x006D0F6A:
             return DT.speed;
 
         case 0x0051CE84:
-        case 0x0051CE88:
             return DT.netDelay;
+        case 0x0051CE88:
+            return DT.netDelay2;
 
         case 0x005193A4:
             return DT.hudStatus;
         case 0x005193A8:
-            return DT.hudStatus;
+            return DT.hudDisplay;
 
         case 0x00590004:
             return DT.buttonReq;
         case 0x00590008:
             return DT.buttonAct;
+
+        case 0x006D5BBE:
+            return DT.minimapState;
+        
+        case 0x0058D5B0:
+        case 0x006D0FDB:
+            return DT.force;
+        
+        case 0x0059CD3B:
+            return DT.unitUserAction;
+        case 0x0059CD3F:
+            return DT.movementState;
+        case 0x00581D60:
+            return DT.playerChat;
+        case 0x006CDDC0:
+            return DT.mouseButton;
     }
 }
