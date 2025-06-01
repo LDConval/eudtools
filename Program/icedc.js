@@ -300,6 +300,7 @@ function loadIscriptBin(ab) {
     let codeLength = b2w(...u8a.slice(0, 2));
     let mainCode = u8a.splice(0, codeLength);
     let headerPointerCode = u8a;
+    let headerPointerCodeCopy = headerPointerCode.slice();
     let headerOffsets = Array(500).fill(0);
     let headers = Array(500).fill([]);
 
@@ -317,7 +318,7 @@ function loadIscriptBin(ab) {
 
     return {
         headers: headers,
-        allCode: mainCode.concat(headerPointerCode),
+        allCode: mainCode.concat(headerPointerCodeCopy),
         mainCode: mainCode,
         headerPointerCode: headerPointerCode,
         headerOffsets: headerOffsets
@@ -327,9 +328,9 @@ function loadIscriptBin(ab) {
 async function readIscriptFile(file) {
     let ab = await fetch(file).then(w => w.arrayBuffer());
     let iscriptData = loadIscriptBin(ab);
-    iscriptData.readIscript = readIscript.bind(null, iscriptData.mainCode);
-    iscriptData.readIscriptText = readIscriptText.bind(null, iscriptData.mainCode);
-    iscriptData.getHeaderAnimationOffset = getHeaderAnimationOffset.bind(null, iscriptData.mainCode);
+    iscriptData.readIscript = readIscript.bind(null, iscriptData.allCode);
+    iscriptData.readIscriptText = readIscriptText.bind(null, iscriptData.allCode);
+    iscriptData.getHeaderAnimationOffset = getHeaderAnimationOffset.bind(null, iscriptData.allCode);
     return iscriptData;
 }
 
